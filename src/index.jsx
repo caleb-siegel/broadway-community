@@ -5,17 +5,19 @@ import './index.css'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ThemeProvider } from '@emotion/react';
 import { createTheme } from '@mui/material';
+import Error from './components/Error.jsx';
+import Home from './components/Home.jsx';
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
-    // errorElement: <Error />,
-    // children: [
-    //   {
-    //     path: "/",
-    //     element: <Home />
-    //   },
+    errorElement: <Error />,
+    children: [
+      {
+        path: "/",
+        element: <Home />
+      },
     //   {
     //     path: "login",
     //     element: <Login />,
@@ -28,7 +30,7 @@ const router = createBrowserRouter([
     //     path: "user/:id",
     //     element: <ProfilePage />,
     //   }
-    // ]
+    ]
   }
 ])
 
@@ -66,15 +68,18 @@ const theme = createTheme({
     h1: {
       fontSize: "3rem",
       fontWeight: 600,
+      color: '#156064'
     },
     h2: {
       fontSize: "1.75rem",
       fontWeight: 600,
+      color: '#156064'
     },
     h3: {
       fontSize: "1.5rem",
       fontWeight: 600,
-    },
+      color: '#156064'
+    }
   },
 })
 
