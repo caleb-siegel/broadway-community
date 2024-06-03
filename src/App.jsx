@@ -6,6 +6,7 @@ import { Outlet } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { Container, Typography } from '@mui/material';
 import Navbar from './Navbar';
+import { Analytics } from "@vercel/analytics/react"
 
 
 function App() {
@@ -68,6 +69,7 @@ function App() {
         <Navbar toggleDarkMode={toggleDarkMode} darkMode={darkMode}/>
         <Outlet />
       </Typography>
+      <Analytics /> 
     </Container>
   )
 }
