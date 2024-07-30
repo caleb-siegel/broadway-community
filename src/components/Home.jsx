@@ -1,6 +1,7 @@
 import { Container, Box, Typography } from '@mui/material'
 import React from 'react'
 import ShowCard from './ShowCard'
+import Slider from './Slider'
 
 function Home() {
     const shows = [
@@ -30,9 +31,10 @@ function Home() {
             <Typography variant="h2">Where We Make Broadway Affordable</Typography>
             {/* <video class="x1lliihq x5yr21d xh8yej3" playsinline="" preload="none" src="blob:https://www.instagram.com/bed48ae9-f8a8-48e4-ae87-45354fa14792" style="display: block;"></video> */}
         </Box>
-        {shows.map(show => {
+        <Slider shows={shows} />
+        {/* {shows.map(show => {
             return <ShowCard key={show.id} show={show}></ShowCard>
-        })}
+        })} */}
     </Container>
   )
 }
