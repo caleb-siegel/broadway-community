@@ -3,6 +3,8 @@ import { Card, CardHeader, CardMedia, Chip, Container, IconButton, Box, Typograp
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import ShowCard from './ShowCard';
+import { useSwipeable } from 'react-swipeable';
+
 
 function Slider({ shows }) {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -14,10 +16,17 @@ function Slider({ shows }) {
     const handlePrev = () => {
         setCurrentIndex((prevIndex) => (prevIndex - 1 + shows.length) % shows.length);
     };
+
+    const handlers = useSwipeable({
+        onSwipedLeft: handleNext,
+        onSwipedRight: handlePrev,
+        preventDefaultTouchmoveEvent: true,
+        trackMouse: true
+      });
     
     return (
         <Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box {...handlers} sx={{ display: 'flex', alignItems: 'center' }}>
                 <IconButton onClick={handlePrev} disabled={shows.length <= 1}>
                     <ArrowBackIosIcon />
                 </IconButton>
