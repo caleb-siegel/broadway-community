@@ -25,17 +25,13 @@ function Home() {
         },
     ]
     return (
-    <Container>
+        <Container disableGutters sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: 2 }}>
         <Box>
-            <Typography variant="h1">Welcome to the Broadway Community</Typography>
-            <Typography variant="h2">Where We Make Broadway Affordable</Typography>
-            {/* <video class="x1lliihq x5yr21d xh8yej3" playsinline="" preload="none" src="blob:https://www.instagram.com/bed48ae9-f8a8-48e4-ae87-45354fa14792" style="display: block;"></video> */}
+          <Typography variant="h2" gutterBottom>Welcome to the Broadway Community</Typography>
+          <Typography variant="h3" gutterBottom>Where We Make Broadway Affordable</Typography>
         </Box>
         <Slider shows={shows} />
-        {/* {shows.map(show => {
-            return <ShowCard key={show.id} show={show}></ShowCard>
-        })} */}
-    </Container>
+      </Container>
   )
 }
 

@@ -25,7 +25,7 @@ function Slider({ shows }) {
       });
     
     return (
-        <Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
+        <Container disableGutters sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
             <Box {...handlers} sx={{ display: 'flex', alignItems: 'center' }}>
                 <IconButton onClick={handlePrev} disabled={shows.length <= 1}>
                     <ArrowBackIosIcon />

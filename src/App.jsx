@@ -64,7 +64,7 @@ function App() {
   };
 
   return (
-    <Container disableGutters maxWidth={false} sx={{ height: '100vh', width: '100%', padding: '0px'}}>
+    <Container disableGutters maxWidth={false} sx={{ height: '100vh', width: '100%', padding: '0px', margin: 0}}>
       <Typography component={'span'}>
         <Navbar toggleDarkMode={toggleDarkMode} darkMode={darkMode}/>
         <Outlet />
