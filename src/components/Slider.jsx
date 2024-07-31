@@ -25,13 +25,17 @@ function Slider({ shows }) {
       });
     
     return (
-        <Container disableGutters sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
-            <Box {...handlers} sx={{ display: 'flex', alignItems: 'center' }}>
+        <Container disableGutters sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', overflow: 'hidden', width: '100%' }}>
+            <Box {...handlers} sx={{ display: 'flex', alignItems: 'center', overflow: 'hidden', width: '100%', position: 'relative' }}>
                 <IconButton onClick={handlePrev} disabled={shows.length <= 1}>
                     <ArrowBackIosIcon />
                 </IconButton>
-                <Box>
-                    <ShowCard show={shows[currentIndex]} />
+                <Box sx={{ display: 'flex', transition: 'transform 0.5s ease', transform: `translateX(-${currentIndex * 100}%)`, width: '100%' }}>
+                    {shows.map((show, index) => (
+                        <Box key={index} sx={{ minWidth: '100%', flex: '0 0 100%' }}>
+                            <ShowCard show={show} />
+                        </Box>
+                    ))}
                 </Box>
                 <IconButton onClick={handleNext} disabled={shows.length <= 1}>
                     <ArrowForwardIosIcon />

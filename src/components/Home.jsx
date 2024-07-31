@@ -1,7 +1,7 @@
-import { Container, Box, Typography } from '@mui/material'
+import { Container } from '@mui/material'
 import React from 'react'
-import ShowCard from './ShowCard'
 import Slider from './Slider'
+import HeroBanner from './HeroBanner'
 
 function Home() {
     const shows = [
@@ -23,16 +23,22 @@ function Home() {
             seatLocation: "Mezzanine",
             row: "Row B",
         },
+        {
+            id: 3,
+            name: "MJ",
+            price: 61,
+            image: "/public/MJ.jpeg",
+            seatCount: 1,
+            seatLocation: "Center Orchestra",
+            row: "Row A",
+        },
     ]
     return (
         <Container disableGutters sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: 2 }}>
-        <Box>
-          <Typography variant="h2" gutterBottom>Welcome to the Broadway Community</Typography>
-          <Typography variant="h3" gutterBottom>Where We Make Broadway Affordable</Typography>
-        </Box>
-        <Slider shows={shows} />
-      </Container>
-  )
+            <HeroBanner />
+            <Slider shows={shows} />
+        </Container>
+    )
 }
 
 export default Home
