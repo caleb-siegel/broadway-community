@@ -3,6 +3,7 @@ import React from 'react'
 import Slider from './Slider'
 import HeroBanner from './HeroBanner'
 import ShowTable from './ShowTable'
+import Table from './Table'
 
 function Home() {
     const shows = [
@@ -38,7 +39,8 @@ function Home() {
         <Container disableGutters sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: 2 }}>
             <HeroBanner />
             <Slider shows={shows} />
-            <ShowTable />
+            {/* <ShowTable shows={shows}/> */}
+            <Table shows={shows}/>
         </Container>
     )
 }
