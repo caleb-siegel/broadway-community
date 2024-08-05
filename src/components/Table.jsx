@@ -5,10 +5,10 @@ import { Paper } from '@mui/material'
 
 function Table({ shows }) {
     const columns = [
-        { field: 'name', headerName: 'Show', width: 200 },
-        { field: 'price', headerName: 'Price', width: 200 },
+        { field: 'name', headerName: 'Show', width: 180 },
+        { field: 'price', headerName: 'Price', width: 80, type:'number' },
         
-        { field: 'seatCount', headerName: '# of Seats', width: 130 },
+        { field: 'seatCount', headerName: '# of Seats', width: 130, type:'number' },
         { field: 'seatLocation', headerName: 'Location', width: 150 },
         { field: 'row', headerName: 'Row', width: 130 },
         // 
