@@ -31,12 +31,12 @@ function Navbar({ darkMode, toggleDarkMode }) {
                                 <span>Welcome, {user.name}</span>
                             </Box>
                         )} */}
-                        <FormGroup>
+                        {/* <FormGroup>
                             <FormControlLabel
                                 control={<Switch defaultChecked onChange={toggleDarkMode} />}
                                 label={darkMode ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
                             />
-                        </FormGroup>
+                        </FormGroup> */}
                     </Box>
                 </Grid>
             </Grid>

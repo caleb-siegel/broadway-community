@@ -1,9 +1,10 @@
-import { Container } from '@mui/material'
+import { Container, Typography } from '@mui/material'
 import React from 'react'
 import Slider from './Slider'
 import HeroBanner from './HeroBanner'
 import ShowTable from './ShowTable'
 import Table from './Table'
+import NewSlider from './NewSlider'
 
 function Home() {
     const shows = [
@@ -34,13 +35,35 @@ function Home() {
             seatLocation: "Center Orchestra",
             row: "Row A",
         },
+        {
+            id: 4,
+            name: "& Juliet",
+            price: 95,
+            image: "/&juliet.jpeg",
+            seatCount: 1,
+            seatLocation: "Center Orchestra",
+            row: "Row A",
+        },
+        {
+            id: 5,
+            name: "The Outsiders",
+            price: 42,
+            image: "/outsiders.jpg",
+            seatCount: 1,
+            seatLocation: "Center Orchestra",
+            row: "Row A",
+        },
     ]
     return (
         <Container disableGutters sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: 2 }}>
-            <HeroBanner />
-            <Slider shows={shows} />
+            {/* <HeroBanner /> */}
+            {/* <Slider shows={shows} /> */}
+            <Typography variant="h2"> Welcome to the Broadway Community </Typography>
+            <Typography variant="h3"> Making Broadway Affordable </Typography>
+            <NewSlider shows={shows} />
             {/* <ShowTable shows={shows}/> */}
             <Table shows={shows}/>
+
         </Container>
     )
 }
