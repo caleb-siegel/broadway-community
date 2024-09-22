@@ -1,53 +1,59 @@
-import React, { useState } from 'react';
-import { Card, CardHeader, CardMedia, Chip, Container, IconButton, Box, Typography } from '@mui/material';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import ShowCard from './ShowCard';
-import { useSwipeable } from 'react-swipeable';
+import React from 'react'
+import "./newslider.css";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/pagination';
+import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
 
-
-function Slider({ shows }) {
-    const [currentIndex, setCurrentIndex] = useState(0);
-
-    const handleNext = () => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % shows.length);
-    };
-
-    const handlePrev = () => {
-        setCurrentIndex((prevIndex) => (prevIndex - 1 + shows.length) % shows.length);
-    };
-
-    const handlers = useSwipeable({
-        onSwipedLeft: handleNext,
-        onSwipedRight: handlePrev,
-        preventDefaultTouchmoveEvent: true,
-        trackMouse: true
-      });
-    
+const Slider = ({ shows }) => {
     return (
-        <Container disableGutters sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column', overflow: 'hidden', width: '100%' }}>
-            <Box {...handlers} sx={{ display: 'flex', alignItems: 'center', overflow: 'hidden', width: '100%', position: 'relative' }}>
-                <IconButton onClick={handlePrev} disabled={shows.length <= 1}>
-                    <ArrowBackIosIcon />
-                </IconButton>
-                <Box sx={{ display: 'flex', transition: 'transform 0.5s ease', transform: `translateX(-${currentIndex * 100}%)`, width: '100%' }}>
-                    {shows.map((show, index) => (
-                        <Box key={index} sx={{ minWidth: '100%', flex: '0 0 100%' }}>
-                            <ShowCard show={show} />
-                        </Box>
-                    ))}
-                </Box>
-                <IconButton onClick={handleNext} disabled={shows.length <= 1}>
-                    <ArrowForwardIosIcon />
-                </IconButton>
-            </Box>
-            <Box sx={{ marginTop: 2 }}>
-                <Typography variant="body2">
-                    {currentIndex + 1} / {shows.length}
-                </Typography>
-            </Box>
-        </Container>
-    );
+      <section className="slider container section" id='slider'>
+        {/* <h2 className="section__title">Shows</h2> */}
+        {/* <span className="section__subtitle">What Makes Me... Me </span> */}
+
+        <Swiper className="slider__container"
+            modules={[ Pagination ]}
+            spaceBetween={24}
+            slidesPerView={1.3}
+            loop={true}
+            grabCursor={true}
+            centeredSlides={true}
+            breakpoints={{
+                350: {
+                    slidesPerView: 1.7,
+                },
+                576: {
+                    slidesPerView: 1.7,
+                },
+                768: {
+                    slidesPerView: 2,
+                    spaceBetween: 48,
+                }
+            }}
+            pagination={{ clickable: true }}
+        >
+            {shows.map((show) => {
+                return (
+                  <SwiperSlide className='slider__card' key={show.id}>
+                      {/* <img src={show.image} alt="" className="slider__img" /> */}
+
+                      <h3 className="slider__name">{show.name}
+                          <i className={show.image}></i>
+                      </h3>
+                      <p className="slider__description">${show.min_ticket_price}</p>
+                      <p className="slider__description">{show.venue_name}</p>
+                      <p className="slider__description">{show.start_date}</p>
+                      
+                      <a href={show.href} className="slider__button" target="_blank" rel="noopener noreferrer">
+                          Buy Now <i className="bx bx-right-arrow-alt slider__button-icon"></i>
+                      </a>
+                      
+                  </SwiperSlide>
+                )
+            })}
+        </Swiper>
+      </section>
+    )
 }
 
-export default Slider;
+export default Slider

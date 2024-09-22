@@ -1,13 +1,10 @@
+import React, { useState, useEffect } from 'react'
 import { Container, Typography } from '@mui/material'
-import React from 'react'
-import Slider from './Slider'
-import HeroBanner from './HeroBanner'
-import ShowTable from './ShowTable'
 import Table from './Table'
-import NewSlider from './NewSlider'
+import Slider from './Slider'
 
 function Home() {
-    const shows = [
+    const showsOld = [
         {
             id: 1,
             name: "Hamilton",
@@ -54,14 +51,21 @@ function Home() {
             row: "Row A",
         },
     ]
+
+    const [shows, setShows] = useState([]);
+    useEffect(() => {
+        fetch("http://127.0.0.1:5000/api/shows")
+        .then((response) => response.json())
+        .then((data) => {
+            setShows(data);
+        });
+    }, []);
+
     return (
         <Container disableGutters sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: 2 }}>
-            {/* <HeroBanner /> */}
-            {/* <Slider shows={shows} /> */}
             <Typography variant="h2"> Welcome to the Broadway Community </Typography>
             <Typography variant="h3"> Making Broadway Affordable </Typography>
-            <NewSlider shows={shows} />
-            {/* <ShowTable shows={shows}/> */}
+            <Slider shows={shows}/>
             <Table shows={shows}/>
 
         </Container>

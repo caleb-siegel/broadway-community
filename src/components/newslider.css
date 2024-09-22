@@ -47,11 +47,12 @@
 }
 
 .slider__button {
-    color: var(--text-color);
-    font-size: var(--smaller-font-size);
-    display: flex;
-    align-items: center;
-    column-gap: 0.25rem;
+    background-color: #FB8F67;
+    border: 1px solid white;
+    border-radius: 0.5rem;
+    text-align: center;
+    padding: 0.5rem 1.25rem;
+    color: white;
 }
 
 .slider__button:hover {

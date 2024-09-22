@@ -1,16 +1,35 @@
 import * as React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { Paper } from '@mui/material'
+import { Paper, Link } from '@mui/material'
 
 
 function Table({ shows }) {
     const columns = [
         { field: 'name', headerName: 'Show', width: 180 },
-        { field: 'price', headerName: 'Price', width: 80, type:'number' },
-        
-        { field: 'seatCount', headerName: '# of Seats', width: 130, type:'number' },
-        { field: 'seatLocation', headerName: 'Location', width: 150 },
-        { field: 'row', headerName: 'Row', width: 130 },
+        { 
+            field: 'min_ticket_price', 
+            headerName: 'Price', 
+            width: 80, 
+            type: 'number',
+            renderCell: (params) => {
+              if (params.value != null) {
+                return `$${params.value}`;  // Ensures two decimal places for the price
+              }
+              return '';
+            }
+        },
+        { field: 'venue_name', headerName: 'Theater', width: 130, type:'number' },
+        { field: 'start_date', headerName: 'Date', width: 150 },
+        {
+            field: 'href',
+            headerName: 'Link',
+            width: 150,
+            renderCell: (params) => (
+                <Link href={params.value} target="_blank" rel="noopener noreferrer">
+                    View Tickets
+                </Link>
+            ),
+        },
         // 
         // {
         //   field: 'name',
