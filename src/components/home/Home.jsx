@@ -4,6 +4,7 @@ import Table from '../table/Table'
 import Slider from '../slider/Slider'
 import "./home.css";
 import Search from '../search/Search';
+import ShowSkeleton from './ShowSkeleton';
 
 
 function Home() {
@@ -54,13 +55,14 @@ function Home() {
             row: "Row A",
         },
     ]
-
+    const [loading, setLoading] = useState(true)
     const [shows, setShows] = useState([]);
     useEffect(() => {
         fetch("https://broadwaycommunity-backend.vercel.app/api/shows")
         .then((response) => response.json())
         .then((data) => {
             setShows(data);
+            setLoading(false);
         });
     }, []);
 
@@ -99,7 +101,13 @@ function Home() {
                         <h3 className="home__subtitle">Making Broadway Affordable</h3>
                         <p className="home__description">Below you will see the cheapest available ticket for each Broadway show on Stubhub. Note that each ticket will cost an additional 15-20% for Stubhub's fee.</p>
                         <Search searchTerm={searchTerm} handleSearchTerm={handleSearchTerm}/>
-                        <Slider shows={filteredShows}/>
+                        {!loading
+                            ?
+                                <Slider shows={filteredShows}/>
+                            :
+                                <ShowSkeleton />
+                        }
+                        {/* <Table shows={shows}/> */}
                     </div>
                 </div>
             </div>
