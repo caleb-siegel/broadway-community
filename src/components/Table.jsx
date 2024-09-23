@@ -19,7 +19,7 @@ function Table({ shows }) {
             }
         },
         { field: 'venue_name', headerName: 'Theater', width: 130, type:'number' },
-        { field: 'start_date', headerName: 'Date', width: 150 },
+        { field: 'start_date', headerName: 'Date', width: 150, type: "datetime" },
         {
             field: 'href',
             headerName: 'Link',
@@ -47,12 +47,12 @@ function Table({ shows }) {
             <DataGrid
                 rows={shows}
                 columns={columns}
-                initialState={{
-                    pagination: {
-                        paginationModel: { page: 0, pageSize: 5 },
-                    },
-                }}
-                pageSizeOptions={[5, 10]}
+                // initialState={{
+                //     pagination: {
+                //         paginationModel: { page: 0, pageSize: 5 },
+                //     },
+                // }}
+                // pageSizeOptions={[5, 10]}
                 // checkboxSelection
             />
         </Paper>

@@ -54,7 +54,7 @@ function Home() {
 
     const [shows, setShows] = useState([]);
     useEffect(() => {
-        fetch("http://127.0.0.1:5000/api/shows")
+        fetch("https://broadwaycommunity-backend.vercel.app/api/shows")
         .then((response) => response.json())
         .then((data) => {
             setShows(data);
