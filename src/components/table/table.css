@@ -1,0 +1,32 @@
+/* Table.css */
+
+/* Base styles for desktop */
+.table-container {
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  /* Responsive styles for mobile devices */
+  @media only screen and (max-width: 600px) {
+    .table-container {
+      padding: 10px; /* Smaller padding on mobile */
+    }
+  }
+  
+  /* Adjust column widths and layout for mobile devices */
+  @media only screen and (max-width: 480px) {
+    .MuiDataGrid-root {
+      font-size: 0.75rem; /* Smaller font size for mobile */
+    }
+  
+    /* Reduce the height of rows on mobile */
+    .MuiDataGrid-row {
+      min-height: 40px; /* Make rows more compact */
+    }
+  
+    /* Adjust the column header font size */
+    .MuiDataGrid-columnHeaderTitle {
+      font-size: 0.75rem;
+    }
+  }

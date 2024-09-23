@@ -1,5 +1,5 @@
 import React from 'react'
-import "./newslider.css";
+import "./slider.css";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
@@ -20,17 +20,17 @@ const Slider = ({ shows }) => {
             centeredSlides={true}
             breakpoints={{
                 350: {
+                    slidesPerView: 1.7, 
+                  },
+                  576: {
                     slidesPerView: 1.7,
-                },
-                576: {
-                    slidesPerView: 1.7,
-                },
-                768: {
+                  },
+                  768: {
                     slidesPerView: 2,
                     spaceBetween: 48,
-                }
+                  },
             }}
-            pagination={{ clickable: true }}
+            pagination={{ clickable: true, dynamicBullets: true, mainDynamicBullets: 8 }}
         >
             {shows.map((show) => {
                 return (

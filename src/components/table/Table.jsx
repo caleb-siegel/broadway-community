@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { Paper, Link } from '@mui/material'
+import { Paper, Link } from '@mui/material';
+import "./table.css";
 
 
 function Table({ shows }) {
@@ -19,7 +20,7 @@ function Table({ shows }) {
             }
         },
         { field: 'venue_name', headerName: 'Theater', width: 130, type:'number' },
-        { field: 'start_date', headerName: 'Date', width: 150, type: "datetime" },
+        { field: 'start_date', headerName: 'Date', width: 150, },
         {
             field: 'href',
             headerName: 'Link',
@@ -43,7 +44,7 @@ function Table({ shows }) {
     ];
     
     return (
-        <Paper style={{ height: 400, width: '100%', marginTop: '20px' }}>
+        <Paper >
             <DataGrid
                 rows={shows}
                 columns={columns}

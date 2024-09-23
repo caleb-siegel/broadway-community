@@ -1,17 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import { Outlet } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-import { Container, Typography } from '@mui/material';
-import Navbar from './Navbar';
 import { Analytics } from "@vercel/analytics/react"
 
 
 function App() {
-  const [count, setCount] = useState(0)
-
   // const [user, setUser] = useState(null);
   // const navigate = useNavigate();
 
@@ -64,13 +57,12 @@ function App() {
   };
 
   return (
-    <Container disableGutters maxWidth={false} sx={{ height: '100vh', width: '100%', padding: '0px', margin: 0}}>
-      <Typography component={'span'}>
-        <Navbar toggleDarkMode={toggleDarkMode} darkMode={darkMode}/>
-        <Outlet />
-      </Typography>
+    <>
+    <main className='main'>
+      <Outlet />
       <Analytics /> 
-    </Container>
+    </main>
+    </>
   )
 }
 

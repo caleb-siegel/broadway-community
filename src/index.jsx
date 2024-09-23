@@ -6,7 +6,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ThemeProvider } from '@emotion/react';
 import { createTheme } from '@mui/material';
 import Error from './components/Error.jsx';
-import Home from './components/Home.jsx';
+import Home from './components/home/Home.jsx';
 import { Analytics } from "@vercel/analytics/react"
 
 const router = createBrowserRouter([

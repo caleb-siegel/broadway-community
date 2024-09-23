@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { Container, Typography } from '@mui/material'
-import Table from './Table'
-import Slider from './Slider'
+import Table from '../table/Table'
+import Slider from '../slider/Slider'
+import "./home.css";
+
 
 function Home() {
     const showsOld = [
@@ -62,13 +64,28 @@ function Home() {
     }, []);
 
     return (
-        <Container disableGutters sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: 2 }}>
-            <Typography variant="h2"> Welcome to the Broadway Community </Typography>
-            <Typography variant="h3"> Making Broadway Affordable </Typography>
-            <Slider shows={shows}/>
-            <Table shows={shows}/>
+        // <Container disableGutters sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: 2 }}>
+        //     {/* <Typography variant="h2"> Welcome to the Broadway Community </Typography> */}
+        //     <h1 className="home__title">Welcome to the Broadway Community</h1>
+        //     <Typography variant="h3"> Making Broadway Affordable </Typography>
+        //     <Slider shows={shows}/>
+        //     {/* <Table shows={shows}/> */}
 
-        </Container>
+        // </Container>
+
+        <section className="home section" id="home">
+            <div className="home__container container grid">
+                <div className="home__content grid">
+                    <div className="home__data">
+                        <h1 className="home__title">Welcome to the Broadway Community
+                        </h1>
+                        <h3 className="home__subtitle">Making Broadway Affordable</h3>
+                        <p className="home__description">Below you will see the cheapest available ticket for each Broadway show on Stubhub. Note that each ticket will cost an additional 15-20% for Stubhub's fee.</p>
+                        <Slider shows={shows}/>
+                    </div>
+                </div>
+            </div>
+        </section>
     )
 }
 
