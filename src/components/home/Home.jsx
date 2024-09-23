@@ -3,6 +3,7 @@ import { Container, Typography } from '@mui/material'
 import Table from '../table/Table'
 import Slider from '../slider/Slider'
 import "./home.css";
+import Search from '../search/Search';
 
 
 function Home() {
@@ -63,6 +64,22 @@ function Home() {
         });
     }, []);
 
+    const [searchTerm, setSearchTerm] = useState("")
+    
+    const handleSearchTerm = (event) => {
+        setSearchTerm(event.target.value)
+    }
+    
+
+    const filteredShows = shows.filter(show => {
+        return (
+            show && 
+            show.name &&
+            show.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+    })
+    // console.log(filteredShows)
+
     return (
         // <Container disableGutters sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', padding: 2 }}>
         //     {/* <Typography variant="h2"> Welcome to the Broadway Community </Typography> */}
@@ -81,7 +98,8 @@ function Home() {
                         </h1>
                         <h3 className="home__subtitle">Making Broadway Affordable</h3>
                         <p className="home__description">Below you will see the cheapest available ticket for each Broadway show on Stubhub. Note that each ticket will cost an additional 15-20% for Stubhub's fee.</p>
-                        <Slider shows={shows}/>
+                        <Search searchTerm={searchTerm} handleSearchTerm={handleSearchTerm}/>
+                        <Slider shows={filteredShows}/>
                     </div>
                 </div>
             </div>
