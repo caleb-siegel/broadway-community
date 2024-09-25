@@ -2,8 +2,9 @@ import React from 'react'
 import "./slider.css";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
+import 'swiper/css/free-mode';
 import 'swiper/css/pagination';
-import { Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
+import { Mousewheel, FreeMode, Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
 
 const Slider = ({ shows }) => {
     return (
@@ -12,12 +13,15 @@ const Slider = ({ shows }) => {
         {/* <span className="section__subtitle">What Makes Me... Me </span> */}
 
         <Swiper className="slider__container"
-            modules={[ Pagination ]}
+            modules={[ Mousewheel, FreeMode, Pagination ]}
             spaceBetween={24}
             slidesPerView={1.3}
-            loop={true}
+            // autoHeight={false}
+            freeMode={true}
+            // loop={true}
             grabCursor={true}
             centeredSlides={true}
+            mousewheel={true}
             breakpoints={{
                 350: {
                     slidesPerView: 1.7, 
@@ -30,7 +34,7 @@ const Slider = ({ shows }) => {
                     spaceBetween: 48,
                   },
             }}
-            pagination={{ clickable: true, dynamicBullets: true, mainDynamicBullets: 8 }}
+            pagination={{ clickable: true, }}
         >
             {shows.map((show) => {
                 return (
@@ -40,9 +44,9 @@ const Slider = ({ shows }) => {
                       <h3 className="slider__name">{show.name}
                           <i className={show.image}></i>
                       </h3>
-                      <p className="slider__description">${show.min_ticket_price}</p>
-                      <p className="slider__description">{show.venue_name}</p>
-                      <p className="slider__description">{show.start_date}</p>
+                      <p className="slider__description-price">${show.min_ticket_price}</p>
+                      <p className="slider__description-theater">{show.venue_name}</p>
+                      <p className="slider__description-date">{show.formatted_date}</p>
                       
                       <a href={show.href} className="slider__button" target="_blank" rel="noopener noreferrer">
                           Buy Now <i className="bx bx-right-arrow-alt slider__button-icon"></i>

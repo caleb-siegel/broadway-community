@@ -19,17 +19,24 @@ function Table({ shows }) {
               return '';
             }
         },
-        { field: 'venue_name', headerName: 'Theater', width: 130, type:'number' },
-        { field: 'start_date', headerName: 'Date', width: 150, },
         {
             field: 'href',
             headerName: 'Link',
             width: 150,
+            sortable: false,
             renderCell: (params) => (
                 <Link href={params.value} target="_blank" rel="noopener noreferrer">
                     View Tickets
                 </Link>
             ),
+        },
+        { field: 'venue_name', headerName: 'Theater', width: 130, type:'number' },
+        { 
+            field: 'start_date', 
+            headerName: 'Date', 
+            width: 150, 
+            // type: 'date',
+            // valueGetter: (params) => new Date(params.row['start_date']),
         },
         // 
         // {
