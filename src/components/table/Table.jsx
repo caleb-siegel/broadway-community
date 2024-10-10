@@ -7,8 +7,17 @@ import "./table.css";
 function Table({ shows }) {
     const columns = [
         { field: 'name', headerName: 'Show', width: 180 },
+        // {
+        //     field: 'name',
+        //     headerName: 'Show',
+        //     width: 180,
+        //     valueGetter: (params) => {
+        //         // Safely access the nested event_info[0].name
+        //         return params.row.event_info && params.row.event_info[0] ? params.row.event_info[0].name : 'N/A';
+        //     }
+        // },
         { 
-            field: 'min_ticket_price', 
+            field: 'price', 
             headerName: 'Price', 
             width: 80, 
             type: 'number',
@@ -32,7 +41,7 @@ function Table({ shows }) {
         },
         { field: 'venue_name', headerName: 'Theater', width: 130, type:'number' },
         { 
-            field: 'start_date', 
+            field: 'formatted_date', 
             headerName: 'Date', 
             width: 150, 
             // type: 'date',

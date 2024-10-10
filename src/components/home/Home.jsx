@@ -6,154 +6,144 @@ import "./home.css";
 import Search from '../search/Search';
 import ShowSkeleton from './ShowSkeleton';
 import Filter from '../filter/Filter';
+import Categories from '../categories/Categories';
 
 
 function Home() {
-    const showsOld = [
-        {
-            id: 1,
-            name: "Hamilton",
-            price: 144,
-            image: "/hamilton.jpeg",
-            seatCount: 4,
-            seatLocation: "Center Orchestra",
-            row: "Row F",
-        },
-        {
-            id: 2,
-            name: "Six",
-            price: 75,
-            image: "/six.jpeg",
-            seatCount: 2,
-            seatLocation: "Mezzanine",
-            row: "Row B",
-        },
-        {
-            id: 3,
-            name: "MJ",
-            price: 61,
-            image: "/MJ.jpeg",
-            seatCount: 1,
-            seatLocation: "Center Orchestra",
-            row: "Row A",
-        },
-        {
-            id: 4,
-            name: "& Juliet",
-            price: 95,
-            image: "/&juliet.jpeg",
-            seatCount: 1,
-            seatLocation: "Center Orchestra",
-            row: "Row A",
-        },
-        {
-            id: 5,
-            name: "The Outsiders",
-            price: 42,
-            image: "/outsiders.jpg",
-            seatCount: 1,
-            seatLocation: "Center Orchestra",
-            row: "Row A",
-        },
-    ]
-
     const [loading, setLoading] = useState(true)
     const [shows, setShows] = useState([]);
+    const [newshows, setnewShows] = useState([]);
+    
+
+    const [category, setCategory] = useState("broadway")
+    const handleSetCategory = (event) => {
+        setCategory(event.target.value)
+        setLoading(true)
+    }
+    
+    // useEffect(() => {
+    //     fetch("http://broadwaycommunity-backend.vercel.app/api/data")
+    //     .then((response) => response.json())
+    //     .then((data) => {
+    //         setShows(data);
+    //         setLoading(false);
+    //     });
+    // }, [category]);
+
     useEffect(() => {
-        fetch("https://broadwaycommunity-backend.vercel.app/api/shows")
+        fetch(`http://127.0.0.1:5000/api/categories/${category}`)
         .then((response) => response.json())
         .then((data) => {
-            setShows(data);
+            setnewShows(data);
             setLoading(false);
         });
-    }, []);
+    }, [category]);
+    
+    const refreshData = () => {
+        console.log("fetch is running")
+        setLoading(true);
+        fetch(`http://127.0.0.1:5000/api/fetch_tickets`, {
+            method: 'POST',
+        })
+        .then((response) => response.json())
+        .then(() => {
+            fetch(`http://127.0.0.1:5000/api/categories/${category}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    setnewShows(data);
+                    setLoading(false);
+                });
+        })
+        .catch((error) => {
+            console.error('Error refreshing data:', error);
+            setLoading(false);
+        });
+    };
 
     const [searchTerm, setSearchTerm] = useState("")
     
     const handleSearchTerm = (event) => {
+        event.preventDefault();
         setSearchTerm(event.target.value)
     }
     
-    let filteredShows = shows
+    let filteredShows = newshows.event
     
     const [active, setActive] = useState("all");
 
     const handleActive = (event) => {
+        event.preventDefault();
         setActive(event.target.value)
     }
     
-    const today = new Date();
     if (active === "all") {
-        filteredShows = filteredShows
+        filteredShows = newshows.event
     } else if (active === "today") {
-        filteredShows = shows.filter(show => {
-            const showDate = new Date(show.start_date);
-            return showDate.toISOString().split('T')[0] === today.toISOString().split('T')[0];
+        const today = new Date().toISOString().split('T')[0];
+        filteredShows = filteredShows?.filter(show => {
+            const showDate = show?.event_info[0]?.event_date;
+            console.log(`today: ${today} is before the date of the show: ${showDate}: ${today === showDate}`)
+            if (!showDate) {
+                console.error("Invalid date:", showDate);
+                return false;
+            }
+            return showDate === today;
         });    
     } else if (active === "7days") {
-        filteredShows = shows.filter(show => {
-            const showDate = new Date(show.start_date);
-            const nextWeek = new Date();
-            nextWeek.setDate(today.getDate() + 7);
-            return showDate.toISOString().split('T')[0] >= today.toISOString().split('T')[0] && showDate.toISOString().split('T')[0] <= nextWeek.toISOString().split('T')[0];
+        const today = new Date();
+        const sevenDaysFromNow = new Date(today);
+        sevenDaysFromNow.setDate(today.getDate() + 7);
+        const formattedSevenDaysFromNow = sevenDaysFromNow.toISOString().split('T')[0];
+
+        filteredShows = filteredShows.filter(show => {
+            const showDate = show?.event_info[0]?.event_date;
+            if (!showDate) {
+                console.error("Invalid date:", showDate);
+                return false;
+            }
+            return showDate <= formattedSevenDaysFromNow;
         });
     }
     
-    filteredShows = filteredShows.filter(show => {
+    filteredShows = filteredShows?.filter(show => {
         return (
             show && 
             show.name &&
-            show.name.toLowerCase().includes(searchTerm.toLowerCase())
+            (
+                show.event_info[0]?.name?.toLowerCase().includes(searchTerm.toLowerCase())
+                ||
+                show.name.toLowerCase().includes(searchTerm.toLowerCase())
+            )
+
         );
     })
-
-    // const handleActive = (event) => {
-    //     setActive(event.target.value)
-    //     filterDate(active)
-    // }
-
-    // const filterDate = (filter) => {
-    //     active && console.log(active)
-    //     const today = new Date();
-    //     if (active === "all") {
-    //         filteredShows = shows;
-    //     } else if (active && active === "today") {
-    //         filteredShows = shows.filter(show => {
-    //             const showDate = new Date(show.start_date);
-    //             return showDate.toISOString().split('T')[0] === today.toISOString().split('T')[0];
-    //         });
-    //     } else if (active && active === "7days") {
-    //         const nextWeek = new Date();
-    //         const today = new Date();
-    //         nextWeek.setDate(today.getDate() + 7);
-    //         console.log(nextWeek)
-        
-    //         filteredShows = shows.filter(show => {  
-    //             const showDate = new Date(show.start_date);
-    //             return (
-    //                 showDate >= today && showDate <= nextWeek
-    //             );
-    //         });
-    //     }
-    // }
 
     return (
         <section className="home section" id="home">
             <div className="home__container container grid">
                 <div className="home__content grid">
                     <div className="home__data">
-                        <h1 className="home__title">Welcome to the Broadway Community
+                        {/* <h1 className="home__title">Attend the Event for Cheap</h1> */}
+                        <h1 className="home__subtitle">Find Tickets To  
+                            <Categories category={category} handleSetCategory={handleSetCategory}/>
                         </h1>
-                        <h3 className="home__subtitle">Making Broadway Affordable</h3>
-                        <p className="home__description">Below you will see the cheapest available ticket for each Broadway show on Stubhub. Note that each ticket will cost an additional ~30% for Stubhub's fee.</p>
+                        <p className="home__description">Below you will see the cheapest available ticket on Stubhub for each event listed. See if you can find an unbeatable deal. Note that each ticket will cost an additional ~30% for Stubhub's fee.</p>
+                        
                         <div className="home__filters">
-                            <Search searchTerm={searchTerm} handleSearchTerm={handleSearchTerm}/>
+                            <div className='home__top-filters'>
+                                <Search searchTerm={searchTerm} handleSearchTerm={handleSearchTerm}/>
+                                {/* <Categories category={category} handleSetCategory={handleSetCategory}/> */}
+                            </div>
                             <Filter active={active} handleActive={handleActive} />
+                            <button className="home__refresh-button" onClick={refreshData}> <i class='bx bx-refresh home__refresh-button-icon'></i> Refresh Data</button>
                         </div>
                         
                         {!loading
                             ?
+                                <>
                                 <Slider shows={filteredShows}/>
+                                </>
+                                
                             :
                                 <ShowSkeleton />
                         }

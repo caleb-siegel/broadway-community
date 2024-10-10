@@ -6,7 +6,7 @@ import 'swiper/css/free-mode';
 import 'swiper/css/pagination';
 import { Mousewheel, FreeMode, Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
 
-const Slider = ({ shows }) => {
+const OldSlider = ({ shows }) => {
     return (
       <section className="slider container section" id='slider'>
         {/* <h2 className="section__title">Shows</h2> */}
@@ -36,20 +36,18 @@ const Slider = ({ shows }) => {
             }}
             pagination={{ clickable: true, }}
         >
-            {shows && shows.map((show) => {
+            {shows.map((show) => {
                 return (
-                  show.event_info[0] && <SwiperSlide className='slider__card' key={show.id}>
-                      <p className="slider__description-subheader">{show.name}</p>
+                  <SwiperSlide className='slider__card' key={show.id}>
                       {/* <img src={show.image} alt="" className="slider__img" /> */}
-                      
-                      <h3 className="slider__name">{show.event_info[0]?.name}
+                      <h3 className="slider__name">{show.name}
                           <i className={show.image}></i>
                       </h3>
-                      <p className="slider__description-price">${show.event_info[0]?.price}</p>
-                      <p className="slider__description-theater">{show.venue?.name}</p>
-                      <p className="slider__description-date">{show.event_info[0]?.formatted_date}</p>
+                      <p className="slider__description-price">${show.min_ticket_price}</p>
+                      <p className="slider__description-theater">{show.venue_name}</p>
+                      <p className="slider__description-date">{show.formatted_date}</p>
                       
-                      <a href={show.event_info[0]?.link} className="slider__button" target="_blank" rel="noopener noreferrer">
+                      <a href={show.href} className="slider__button" target="_blank" rel="noopener noreferrer">
                           Buy Now <i className="bx bx-right-arrow-alt slider__button-icon"></i>
                       </a>
                       
@@ -61,4 +59,4 @@ const Slider = ({ shows }) => {
     )
 }
 
-export default Slider
+export default OldSlider
