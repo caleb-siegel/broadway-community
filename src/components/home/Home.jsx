@@ -12,29 +12,18 @@ import Categories from '../categories/Categories';
 function Home() {
     const [loading, setLoading] = useState(true)
     const [shows, setShows] = useState([]);
-    const [newshows, setnewShows] = useState([]);
-    
 
     const [category, setCategory] = useState("broadway")
     const handleSetCategory = (event) => {
         setCategory(event.target.value)
         setLoading(true)
     }
-    
-    // useEffect(() => {
-    //     fetch("http://broadwaycommunity-backend.vercel.app/api/data")
-    //     .then((response) => response.json())
-    //     .then((data) => {
-    //         setShows(data);
-    //         setLoading(false);
-    //     });
-    // }, [category]);
 
     useEffect(() => {
         fetch(`https://broadwaycommunity-backend.vercel.app/api/categories/${category}`)
         .then((response) => response.json())
         .then((data) => {
-            setnewShows(data);
+            setShows(data);
             setLoading(false);
         });
     }, [category]);
@@ -50,7 +39,7 @@ function Home() {
             fetch(`https://broadwaycommunity-backend.vercel.app/api/categories/${category}`)
                 .then((response) => response.json())
                 .then((data) => {
-                    setnewShows(data);
+                    setShows(data);
                     setLoading(false);
                 });
         })
@@ -67,7 +56,7 @@ function Home() {
         setSearchTerm(event.target.value)
     }
     
-    let filteredShows = newshows.event
+    let filteredShows = shows.event
     
     const [active, setActive] = useState("all");
 
@@ -77,7 +66,7 @@ function Home() {
     }
     
     if (active === "all") {
-        filteredShows = newshows.event
+        filteredShows = shows.event
     } else if (active === "today") {
         const today = new Date().toISOString().split('T')[0];
         filteredShows = filteredShows?.filter(show => {
