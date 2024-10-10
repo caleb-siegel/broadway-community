@@ -31,7 +31,7 @@ function Home() {
     // }, [category]);
 
     useEffect(() => {
-        fetch(`http://broadwaycommunity-backend.vercel.app/api/categories/${category}`)
+        fetch(`https://broadwaycommunity-backend.vercel.app/api/categories/${category}`)
         .then((response) => response.json())
         .then((data) => {
             setnewShows(data);
@@ -42,12 +42,12 @@ function Home() {
     const refreshData = () => {
         console.log("fetch is running")
         setLoading(true);
-        fetch(`http://broadwaycommunity-backend.vercel.app/api/fetch_tickets`, {
+        fetch(`https://broadwaycommunity-backend.vercel.app/api/fetch_tickets`, {
             method: 'POST',
         })
         .then((response) => response.json())
         .then(() => {
-            fetch(`http://broadwaycommunity-backend.vercel.app/api/categories/${category}`)
+            fetch(`https://broadwaycommunity-backend.vercel.app/api/categories/${category}`)
                 .then((response) => response.json())
                 .then((data) => {
                     setnewShows(data);
