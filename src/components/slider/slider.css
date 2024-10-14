@@ -77,12 +77,24 @@
 /*=============== BREAKPOINTS ===============*/
 /* For large devices */
 @media screen and (max-width: 992px) {
+    .slider {
+        margin-left: var(--mb-0-5);
+        margin-right: var(--mb-0-5);
+    }
+    
     .slider__container {
         width: initial;
     }
 
     .slider__card {
         padding: 1.25rem 1.5rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .slider {
+        margin-left: var(--mb-2-5);
+        margin-right: var(--mb-2-5);
     }
 }
 

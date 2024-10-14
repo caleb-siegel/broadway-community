@@ -15,7 +15,7 @@ const Slider = ({ shows }) => {
         <Swiper className="slider__container"
             modules={[ Mousewheel, FreeMode, Pagination ]}
             spaceBetween={24}
-            slidesPerView={1.3}
+            slidesPerView={2}
             // autoHeight={false}
             freeMode={true}
             // loop={true}
@@ -24,10 +24,12 @@ const Slider = ({ shows }) => {
             mousewheel={true}
             breakpoints={{
                 350: {
-                    slidesPerView: 1.7, 
+                    slidesPerView: 1.5,
+                    spaceBetween: 24,
                   },
                   576: {
-                    slidesPerView: 1.7,
+                    slidesPerView: 1.5,
+                    spaceBetween: 24,
                   },
                   768: {
                     slidesPerView: 2,
@@ -39,7 +41,7 @@ const Slider = ({ shows }) => {
             {shows && shows.map((show) => {
                 return (
                   show.event_info[0] && <SwiperSlide className='slider__card' key={show.id}>
-                      <p className="slider__description-subheader">{show.name}</p>
+                      {!(show.category_id === 1) && <p className="slider__description-subheader">{show.name}</p>}
                       {/* <img src={show.image} alt="" className="slider__img" /> */}
                       
                       <h3 className="slider__name">{show.event_info[0]?.name}

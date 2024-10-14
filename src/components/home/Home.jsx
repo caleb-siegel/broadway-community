@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { Container, Typography } from '@mui/material'
 import Table from '../table/Table'
 import Slider from '../slider/Slider'
 import "./home.css";
@@ -57,6 +56,9 @@ function Home() {
     }
     
     let filteredShows = shows.event
+    if (shows?.event?.length > 1) {
+        filteredShows = shows?.event?.sort((a, b) => a?.event_info[0]?.price - b?.event_info[0]?.price);
+    }
     
     const [active, setActive] = useState("all");
 
@@ -71,7 +73,6 @@ function Home() {
         const today = new Date().toISOString().split('T')[0];
         filteredShows = filteredShows?.filter(show => {
             const showDate = show?.event_info[0]?.event_date;
-            console.log(`today: ${today} is before the date of the show: ${showDate}: ${today === showDate}`)
             if (!showDate) {
                 console.error("Invalid date:", showDate);
                 return false;
@@ -84,7 +85,7 @@ function Home() {
         sevenDaysFromNow.setDate(today.getDate() + 7);
         const formattedSevenDaysFromNow = sevenDaysFromNow.toISOString().split('T')[0];
 
-        filteredShows = filteredShows.filter(show => {
+        filteredShows = filteredShows?.filter(show => {
             const showDate = show?.event_info[0]?.event_date;
             if (!showDate) {
                 console.error("Invalid date:", showDate);
@@ -92,6 +93,8 @@ function Home() {
             }
             return showDate <= formattedSevenDaysFromNow;
         });
+    } else if (active === "cheapest") {
+        filteredShows = filteredShows.sort((a, b) => a.event_info[0].price - b.event_info[0].price);
     }
     
     filteredShows = filteredShows?.filter(show => {
@@ -113,18 +116,20 @@ function Home() {
                 <div className="home__content grid">
                     <div className="home__data">
                         {/* <h1 className="home__title">Attend the Event for Cheap</h1> */}
-                        <h1 className="home__subtitle">Find Tickets To  
+                        <h1 className="home__title">Find Tickets To  
                             <Categories category={category} handleSetCategory={handleSetCategory}/>
                         </h1>
-                        <p className="home__description">Below you will see the cheapest available ticket on Stubhub for each event listed. See if you can find an unbeatable deal. Note that each ticket will cost an additional ~30% for Stubhub's fee.</p>
+                        <p className="home__description">Find the cheapest available ticket on Stubhub for each event listed below. Note that each ticket will cost an additional ~30% for Stubhub's fee.</p>
                         
                         <div className="home__filters">
+                            
                             <div className='home__top-filters'>
+                                
                                 <Search searchTerm={searchTerm} handleSearchTerm={handleSearchTerm}/>
-                                {/* <Categories category={category} handleSetCategory={handleSetCategory}/> */}
+                                <button className="home__refresh-button" onClick={refreshData}> <i class='bx bx-refresh home__refresh-button-icon'></i> Refresh Data</button>
                             </div>
                             <Filter active={active} handleActive={handleActive} />
-                            <button className="home__refresh-button" onClick={refreshData}> <i class='bx bx-refresh home__refresh-button-icon'></i> Refresh Data</button>
+                            
                         </div>
                         
                         {!loading

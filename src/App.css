@@ -106,6 +106,7 @@ button {
   cursor: pointer;
   border: none;
   outline: none;
+  background-color: var(--container-color);
 }
 
 img {
@@ -210,6 +211,10 @@ img {
     --h1-font-size: 1.25rem;
     --h2-font-size: 1.1rem;
     --h3-font-size: 1rem;
+  }
+
+  .section {
+    padding: 0.75rem 0 2rem;
   }
 }
 
