@@ -7,7 +7,6 @@ import ShowSkeleton from './ShowSkeleton';
 import Filter from '../filter/Filter';
 import Categories from '../categories/Categories';
 
-
 function Home() {
     const [loading, setLoading] = useState(true)
     const [shows, setShows] = useState([]);
@@ -106,7 +105,6 @@ function Home() {
                 ||
                 show.name.toLowerCase().includes(searchTerm.toLowerCase())
             )
-
         );
     })
 
