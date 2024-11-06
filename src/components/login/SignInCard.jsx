@@ -112,9 +112,9 @@ export default function SignInCard() {
 
   return (
     <Card variant="outlined">
-      <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
+      {/* <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
         <SitemarkIcon />
-      </Box>
+      </Box> */}
       <Typography
         component="h1"
         variant="h4"
@@ -185,13 +185,8 @@ export default function SignInCard() {
                     onMouseDown={handleMouseDownPassword}
                     edge="end"
                     sx={{
-                      // padding: 0,
-                      minWidth: 30,
                       height: '100%',
-                      display: 'flex',
                       marginRight: '0.025rem',
-                      justifyContent: 'center',
-                      alignItems: 'center',
                     }}
                   >
                     {showPassword ? <VisibilityOff sx={{ fontSize: 12 }} /> : <Visibility sx={{ fontSize: 12 }} />}
@@ -201,10 +196,10 @@ export default function SignInCard() {
             }}
           />
         </FormControl>
-        <FormControlLabel
+        {/* <FormControlLabel
           control={<Checkbox value="remember" color="primary" />}
           label="Remember me"
-        />
+        /> */}
         <ForgotPassword open={open} handleClose={handleClose} />
         <Button type="submit" fullWidth variant="contained" onClick={validateInputs}>
           Sign in
@@ -222,7 +217,7 @@ export default function SignInCard() {
           </span>
         </Typography>
       </Box>
-      <Divider>or</Divider>
+      {/* <Divider>or</Divider>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Button
           fullWidth
@@ -240,7 +235,7 @@ export default function SignInCard() {
         >
           Sign in with Facebook
         </Button>
-      </Box>
+      </Box> */}
     </Card>
   );
 }

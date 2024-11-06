@@ -18,6 +18,9 @@ import { styled } from '@mui/material/styles';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
 // import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import { useOutletContext } from "react-router-dom";
+import { InputAdornment, IconButton } from '@mui/material';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -62,12 +65,13 @@ const Card = styled(MuiCard)(({ theme }) => ({
 // }));
 
 export default function SignUp(props) {
-  const [emailError, setEmailError] = React.useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
-  const [passwordError, setPasswordError] = React.useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-  const [nameError, setNameError] = React.useState(false);
-  const [nameErrorMessage, setNameErrorMessage] = React.useState('');
+    const [emailError, setEmailError] = React.useState(false);
+    const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
+    const [passwordError, setPasswordError] = React.useState(false);
+    const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
+    const [nameError, setNameError] = React.useState(false);
+    const [nameErrorMessage, setNameErrorMessage] = React.useState('');
+    const [showPassword, setShowPassword] = useState(false);
 
     const [newEmail, setNewEmail] = useState("")
     const [newPassword, setNewPassword] = useState("")
@@ -76,51 +80,51 @@ export default function SignUp(props) {
     const [newNumber, setNewNumber] = useState("")
     const { attemptLogin } = useOutletContext();
 
-  const validateInputs = () => {
-    const email = document.getElementById('email');
-    const password = document.getElementById('password');
-    const name = document.getElementById('name');
+    const validateInputs = () => {
+        const email = document.getElementById('email');
+        const password = document.getElementById('password');
+        const name = document.getElementById('name');
 
-    let isValid = true;
+        let isValid = true;
 
-    if (!newEmail || !/\S+@\S+\.\S+/.test(newEmail)) {
-      setEmailError(true);
-      setEmailErrorMessage('Please enter a valid email address.');
-      isValid = false;
-    } else {
-      setEmailError(false);
-      setEmailErrorMessage('');
-    }
-
-    if (!newPassword || newPassword.length < 6) {
-      setPasswordError(true);
-      setPasswordErrorMessage('Password must be at least 6 characters long.');
-      isValid = false;
-    } else {
-      setPasswordError(false);
-      setPasswordErrorMessage('');
-    }
-
-    if (!newFirstName || newFirstName.length < 1) {
-      setNameError(true);
-      setNameErrorMessage('First name is required.');
-      isValid = false;
-    } else {
-      setNameError(false);
-      setNameErrorMessage('');
-    }
-
-    if (!newLastName || newLastName.length < 1) {
-        setNameError(true);
-        setNameErrorMessage('Last name is required.');
+        if (!newEmail || !/\S+@\S+\.\S+/.test(newEmail)) {
+        setEmailError(true);
+        setEmailErrorMessage('Please enter a valid email address.');
         isValid = false;
-      } else {
+        } else {
+        setEmailError(false);
+        setEmailErrorMessage('');
+        }
+
+        if (!newPassword || newPassword.length < 6) {
+        setPasswordError(true);
+        setPasswordErrorMessage('Password must be at least 6 characters long.');
+        isValid = false;
+        } else {
+        setPasswordError(false);
+        setPasswordErrorMessage('');
+        }
+
+        if (!newFirstName || newFirstName.length < 1) {
+        setNameError(true);
+        setNameErrorMessage('First name is required.');
+        isValid = false;
+        } else {
         setNameError(false);
         setNameErrorMessage('');
-      }
+        }
 
-    return isValid;
-  };
+        if (!newLastName || newLastName.length < 1) {
+            setNameError(true);
+            setNameErrorMessage('Last name is required.');
+            isValid = false;
+        } else {
+            setNameError(false);
+            setNameErrorMessage('');
+        }
+
+        return isValid;
+    };
 
 //   const handleSubmit = (event) => {
 //     if (nameError || emailError || passwordError) {
@@ -142,6 +146,14 @@ const handleChangePassword = (e) => setNewPassword(e.target.value);
 const handleChangeFirstName = (e) => setNewFirstName(e.target.value);
 const handleChangeLastName = (e) => setNewLastName(e.target.value);
 const handleChangeNumber = (e) => setNewNumber(e.target.value);
+
+const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+};
+
+const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+};
 
 function handleSubmit(e) {
     e.preventDefault();
@@ -237,25 +249,43 @@ function handleSubmit(e) {
                 color={passwordError ? 'error' : 'primary'}
                 onChange={handleChangeEmail} 
                 value={newEmail}
-              />
+            />
             </FormControl>
             <FormControl>
-              <FormLabel htmlFor="password">Create password</FormLabel>
-              <TextField
-                required
-                fullWidth
-                name="password"
-                placeholder="••••••"
-                type="password"
-                id="password"
-                autoComplete="new-password"
-                variant="outlined"
-                error={passwordError}
-                helperText={passwordErrorMessage}
-                color={passwordError ? 'error' : 'primary'}
-                onChange={handleChangePassword} 
-                value={newPassword}
-              />
+                <FormLabel htmlFor="password">Create password</FormLabel>
+                <TextField
+                    required
+                    fullWidth
+                    name="password"
+                    placeholder="••••••"
+                    type={showPassword ? 'text' : 'password'} // Toggle the type of input
+                    id="password"
+                    autoComplete="new-password"
+                    variant="outlined"
+                    error={passwordError}
+                    helperText={passwordErrorMessage}
+                    color={passwordError ? 'error' : 'primary'}
+                    onChange={handleChangePassword} 
+                    value={newPassword}
+                    InputProps={{
+                        endAdornment: (
+                            <InputAdornment position="end" >
+                            <IconButton
+                                aria-label="toggle password visibility"
+                                onClick={handleClickShowPassword}
+                                onMouseDown={handleMouseDownPassword}
+                                edge="end"
+                                sx={{
+                                    height: '100%',
+                                    marginRight: '0.025rem',
+                                }}
+                            >
+                                {showPassword ? <VisibilityOff sx={{ fontSize: 18 }} /> : <Visibility sx={{ fontSize: 18 }} />}
+                            </IconButton>
+                            </InputAdornment>
+                        ),
+                    }}
+                />
             </FormControl>
             <FormControl>
                 <FormLabel htmlFor="phone">Phone number</FormLabel>
@@ -300,7 +330,7 @@ function handleSubmit(e) {
               </span>
             </Typography>
           </Box>
-          <Divider>
+          {/* <Divider>
             <Typography sx={{ color: 'text.secondary' }}>or</Typography>
           </Divider>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -320,7 +350,7 @@ function handleSubmit(e) {
             >
               Sign up with Facebook
             </Button>
-          </Box>
+          </Box> */}
         </Card>
       {/* </SignUpContainer> */}
     {/* </AppTheme> */}

@@ -15,26 +15,26 @@ const items = [
     icon: <SettingsSuggestRoundedIcon sx={{ color: 'text.secondary' }} />,
     title: 'Find great deals',
     description:
-      'Choose your category and see the cheapest ticket for each related event on Stubhub.',
+      'Find great deals on Stubhub for tonight or specific shows at any point.',
   },
   {
     icon: <ConstructionRoundedIcon sx={{ color: 'text.secondary' }} />,
     title: 'Set preferences',
     description:
-      'Create an account and save preferences based on category or event to be notified when your event is selling at that price.',
+      'Create an account and save preferences based on category or event to be notified when your event is selling at, or below, that price.',
   },
-  {
-    icon: <ThumbUpAltRoundedIcon sx={{ color: 'text.secondary' }} />,
-    title: 'Great user experience',
-    description:
-      'Integrate our product into your routine with an intuitive and easy-to-use interface.',
-  },
-  {
-    icon: <AutoFixHighRoundedIcon sx={{ color: 'text.secondary' }} />,
-    title: 'Innovative functionality',
-    description:
-      'Stay ahead with features that set new standards, addressing your evolving needs better than the rest.',
-  },
+  // {
+  //   icon: <ThumbUpAltRoundedIcon sx={{ color: 'text.secondary' }} />,
+  //   title: 'Great user experience',
+  //   description:
+  //     'Integrate our product into your routine with an intuitive and easy-to-use interface.',
+  // },
+  // {
+  //   icon: <AutoFixHighRoundedIcon sx={{ color: 'text.secondary' }} />,
+  //   title: 'Innovative functionality',
+  //   description:
+  //     'Stay ahead with features that set new standards, addressing your evolving needs better than the rest.',
+  // },
 ];
 
 export default function Content() {

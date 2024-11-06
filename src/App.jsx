@@ -3,13 +3,16 @@ import './App.css';
 import { Outlet } from 'react-router-dom';
 import { Analytics } from "@vercel/analytics/react";
 import { useNavigate } from 'react-router-dom';
+import Header from './header/Header';
 
 function App() {
   const [user, setUser] = useState(null);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(`https://broadwaycommunity-backend.vercel.app/api/check_session`).then((res) => {
+    fetch(`https://broadwaycommunity-backend.vercel.app/api/check_session`, {
+      credentials: 'include',
+    }).then((res) => {
         if (res.ok) {
             res.json().then((user) => setUser(user));
         }
@@ -34,7 +37,7 @@ function App() {
         .then((data) => {
             setUser(data);
             console.log(data)
-            // navigate("/recipes");
+            navigate("/");
         })
         .catch((e) => {
             alert('incorrect email or password')
@@ -53,6 +56,7 @@ function App() {
   return (
     <>
     <main className='main'>
+      <Header logout={logout} user={user} />
       <Outlet context={{ user, attemptLogin, logout }} />
       <Analytics /> 
     </main>
