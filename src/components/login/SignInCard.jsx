@@ -1,16 +1,15 @@
 import * as React from 'react';
 import { useState } from 'react';
-import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import MuiCard from '@mui/material/Card';
 import Checkbox from '@mui/material/Checkbox';
 import Divider from '@mui/material/Divider';
-import FormLabel from '@mui/material/FormLabel';
-import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Link from '@mui/material/Link';
-import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { FormControl, Box, FormLabel, TextField, InputAdornment, IconButton } from '@mui/material';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 import { styled } from '@mui/material/styles';
 
@@ -45,6 +44,7 @@ export default function SignInCard() {
   const [open, setOpen] = React.useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const { attemptLogin } = useOutletContext();
 
   const handleClickOpen = () => {
@@ -72,11 +72,16 @@ export default function SignInCard() {
     attemptLogin({ email: email, password: password });
   }
 
-  const handleChangeEmail = (e) => {
-    setEmail(e.target.value);
-    console.log(email)
-  }
+  const handleChangeEmail = (e) => setEmail(e.target.value);
   const handleChangePassword = (e) => setPassword(e.target.value);
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
 
   const validateInputs = () => {
     const email = document.getElementById('email');
@@ -120,7 +125,7 @@ export default function SignInCard() {
       <Box
         component="form"
         onSubmit={handleSubmit}
-        noValidate
+        // noValidate
         sx={{ display: 'flex', flexDirection: 'column', width: '100%', gap: 2 }}
       >
         <FormControl>
@@ -146,7 +151,7 @@ export default function SignInCard() {
         <FormControl>
           <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
             <FormLabel htmlFor="password">Password</FormLabel>
-            <Link
+            {/* <Link
               component="button"
               type="button"
               onClick={handleClickOpen}
@@ -154,14 +159,14 @@ export default function SignInCard() {
               sx={{ alignSelf: 'baseline' }}
             >
               Forgot your password?
-            </Link>
+            </Link> */}
           </Box>
           <TextField
             error={passwordError}
             helperText={passwordErrorMessage}
             name="password"
             placeholder="••••••"
-            type="password"
+            type={showPassword ? 'text' : 'password'} // Toggle the type of input
             id="password"
             autoComplete="current-password"
             autoFocus
@@ -171,6 +176,29 @@ export default function SignInCard() {
             color={passwordError ? 'error' : 'primary'}
             onChange={handleChangePassword} 
             value={password}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end" >
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                    onMouseDown={handleMouseDownPassword}
+                    edge="end"
+                    sx={{
+                      // padding: 0,
+                      minWidth: 30,
+                      height: '100%',
+                      display: 'flex',
+                      marginRight: '0.025rem',
+                      justifyContent: 'center',
+                      alignItems: 'center',
+                    }}
+                  >
+                    {showPassword ? <VisibilityOff sx={{ fontSize: 12 }} /> : <Visibility sx={{ fontSize: 12 }} />}
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
           />
         </FormControl>
         <FormControlLabel
@@ -185,7 +213,7 @@ export default function SignInCard() {
           Don&apos;t have an account?{' '}
           <span>
             <Link
-              href="/material-ui/getting-started/templates/sign-in/"
+              href="/signup"
               variant="body2"
               sx={{ alignSelf: 'center' }}
             >

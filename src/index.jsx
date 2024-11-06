@@ -7,6 +7,7 @@ import { createTheme } from '@mui/material';
 import Error from './components/Error.jsx';
 import Home from './components/home/Home.jsx';
 import SignInSide from './components/login/SignInSide.jsx';
+import SignUp from './components/login/SignUp';
 
 const router = createBrowserRouter([
   {
@@ -21,6 +22,10 @@ const router = createBrowserRouter([
       {
         path: "login",
         element: <SignInSide />,
+      },
+      {
+        path: "signup",
+        element: <SignUp />,
       },
     //   {
     //     path: "recipes/:id",

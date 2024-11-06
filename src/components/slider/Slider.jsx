@@ -7,6 +7,14 @@ import 'swiper/css/pagination';
 import { Mousewheel, FreeMode, Navigation, Pagination, Scrollbar, A11y } from 'swiper/modules';
 
 const Slider = ({ shows }) => {
+  const generateWhatsAppLink = (show) => {
+    const message = `${show.event_info[0]?.name}: $${show.event_info[0]?.price}
+${show.event_info[0]?.formatted_date}
+${show.event_info[0]?.link}`;
+
+    // Encode the message for WhatsApp URL
+    return `https://wa.me/?text=${encodeURIComponent(message)}`;
+    };
     return (
       <section className="slider container section" id='slider'>
         {/* <h2 className="section__title">Shows</h2> */}
@@ -46,6 +54,14 @@ const Slider = ({ shows }) => {
                       
                       <h3 className="slider__name">{show.event_info[0]?.name}
                           <i className={show.image}></i>
+                          <a
+                            href={generateWhatsAppLink(show)}
+                            className="slider__button slider__button--whatsapp"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                        >
+                            Share <i class='bx bx-share'></i>
+                        </a>
                       </h3>
                       <p className="slider__description-price">${show.event_info[0]?.price}</p>
                       <p className="slider__description-theater">{show.venue?.name}</p>
