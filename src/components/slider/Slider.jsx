@@ -14,7 +14,7 @@ import {
   A11y,
 } from "swiper/modules";
 
-const Slider = ({ shows }) => {
+const Slider = ({ shows, refreshIndividualData }) => {
   const [localShows, setLocalShows] = useState(shows);
   //   const generateWhatsAppLink = (show) => {
   //     const message = `${show.event_info[0]?.name}: $${show.event_info[0]?.price}
@@ -24,47 +24,6 @@ const Slider = ({ shows }) => {
   //     // Encode the message for WhatsApp URL
   //     return `https://wa.me/?text=${encodeURIComponent(message)}`;
   //     };
-
-  const refreshData = (id) => {
-    console.log("fetch is running");
-    // setLoading(true);
-    fetch(
-      `https://broadwaycommunity-backend.vercel.app/api/fetch_ticket/${id}`,
-      {
-        method: "POST",
-      }
-    )
-      .then((response) => response.json())
-      .then((updatedShowArray) => {
-        const updatedShow = updatedShowArray[0];
-        console.log(shows);
-        console.log(updatedShow);
-
-        setLocalShows((prevShows) =>
-          prevShows.map((show) =>
-            show.id !== updatedShow.event_id
-              ? show
-              : {
-                  category_id: updatedShow.event.category_id,
-                  event_info: [updatedShow],
-                  event_preferences: updatedShow.event.event_preferences,
-                  id: updatedShow.event.id,
-                  image: updatedShow.event.image,
-                  lottery_url: updatedShow.event.lottery_url,
-                  name: updatedShow.event.name,
-                  show_duration: updatedShow.event.show_duration,
-                  stubhub_category_id: updatedShow.event.stubhub_category_id,
-                  venue: updatedShow.event.venue,
-                  venue_id: updatedShow.event.venue_id,
-                }
-          )
-        );
-      })
-      .catch((error) => {
-        console.error("Error refreshing data:", error);
-        // setLoading(false);
-      });
-  };
 
   return (
     <section className="slider container section" id="slider">
@@ -98,8 +57,8 @@ const Slider = ({ shows }) => {
         }}
         pagination={{ clickable: true }}
       >
-        {localShows &&
-          localShows.map((show) => {
+        {shows &&
+          shows.map((show) => {
             return (
               show.event_info[0] && (
                 <SwiperSlide className="slider__card" key={show.id}>
@@ -113,7 +72,7 @@ const Slider = ({ shows }) => {
                     <i className={show.image}></i>
                     <button
                       className="slider__refresh-button"
-                      onClick={() => refreshData(show.id)}
+                      onClick={() => refreshIndividualData(show.id)}
                     >
                       {" "}
                       <i className="bx bx-refresh home__refresh-button-icon"></i>

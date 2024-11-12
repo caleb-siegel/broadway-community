@@ -110,6 +110,46 @@ function Home() {
     );
   });
 
+  const refreshIndividualData = (id) => {
+    console.log("fetch is running");
+    fetch(
+      `https://broadwaycommunity-backend.vercel.app/api/fetch_ticket/${id}`,
+      {
+        method: "POST",
+      }
+    )
+      .then((response) => response.json())
+      .then((updatedShowArray) => {
+        const updatedShow = updatedShowArray[0];
+        console.log(shows);
+        console.log(updatedShow);
+        setShows((prevShows) => ({
+          ...prevShows,
+          event: prevShows.event.map((show) =>
+            show.id !== updatedShow.event_id
+              ? show
+              : {
+                  ...show,
+                  event_info: [updatedShow],
+                  event_preferences: updatedShow.event.event_preferences,
+                  id: updatedShow.event.id,
+                  image: updatedShow.event.image,
+                  lottery_url: updatedShow.event.lottery_url,
+                  // name: updatedShow.event.name,
+                  name: "test successful",
+                  show_duration: updatedShow.event.show_duration,
+                  stubhub_category_id: updatedShow.event.stubhub_category_id,
+                  venue: updatedShow.event.venue,
+                  venue_id: updatedShow.event.venue_id,
+                }
+          ),
+        }));
+      })
+      .catch((error) => {
+        console.error("Error refreshing individual show data:", error);
+      });
+  };
+
   return (
     <section className="home section" id="home">
       <div className="home__container container grid">
@@ -146,7 +186,10 @@ function Home() {
 
             {!loading ? (
               <>
-                <Slider shows={filteredShows} />
+                <Slider
+                  shows={filteredShows}
+                  refreshIndividualData={refreshIndividualData}
+                />
               </>
             ) : (
               <ShowSkeleton />
