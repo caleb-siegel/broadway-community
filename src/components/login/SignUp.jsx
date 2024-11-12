@@ -1,43 +1,43 @@
-import * as React from 'react';
-import { useState } from 'react';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormLabel from '@mui/material/FormLabel';
-import FormControl from '@mui/material/FormControl';
-import Link from '@mui/material/Link';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import Stack from '@mui/material/Stack';
-import MuiCard from '@mui/material/Card';
-import { styled } from '@mui/material/styles';
+import * as React from "react";
+import { useState } from "react";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import CssBaseline from "@mui/material/CssBaseline";
+import Divider from "@mui/material/Divider";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import FormLabel from "@mui/material/FormLabel";
+import FormControl from "@mui/material/FormControl";
+import Link from "@mui/material/Link";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import Stack from "@mui/material/Stack";
+import MuiCard from "@mui/material/Card";
+import { styled } from "@mui/material/styles";
 // import AppTheme from '../shared-theme/AppTheme';
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
+import { GoogleIcon, FacebookIcon, SitemarkIcon } from "./CustomIcons";
 // import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import { useOutletContext } from "react-router-dom";
-import { InputAdornment, IconButton } from '@mui/material';
-import Visibility from '@mui/icons-material/Visibility';
-import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import { InputAdornment, IconButton } from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
 
 const Card = styled(MuiCard)(({ theme }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  alignSelf: 'center',
-  width: '100%',
+  display: "flex",
+  flexDirection: "column",
+  alignSelf: "center",
+  width: "100%",
   padding: theme.spacing(4),
   gap: theme.spacing(2),
-  margin: 'auto',
+  margin: "auto",
   boxShadow:
-    'hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px',
-  [theme.breakpoints.up('sm')]: {
-    width: '450px',
+    "hsla(220, 30%, 5%, 0.05) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.05) 0px 15px 35px -5px",
+  [theme.breakpoints.up("sm")]: {
+    width: "450px",
   },
-  ...theme.applyStyles('dark', {
+  ...theme.applyStyles("dark", {
     boxShadow:
-      'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
+      "hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px",
   }),
 }));
 
@@ -65,272 +65,277 @@ const Card = styled(MuiCard)(({ theme }) => ({
 // }));
 
 export default function SignUp(props) {
-    const [emailError, setEmailError] = React.useState(false);
-    const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
-    const [passwordError, setPasswordError] = React.useState(false);
-    const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-    const [nameError, setNameError] = React.useState(false);
-    const [nameErrorMessage, setNameErrorMessage] = React.useState('');
-    const [showPassword, setShowPassword] = useState(false);
+  const [emailError, setEmailError] = React.useState(false);
+  const [emailErrorMessage, setEmailErrorMessage] = React.useState("");
+  const [passwordError, setPasswordError] = React.useState(false);
+  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
+  const [nameError, setNameError] = React.useState(false);
+  const [nameErrorMessage, setNameErrorMessage] = React.useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
-    const [newEmail, setNewEmail] = useState("")
-    const [newPassword, setNewPassword] = useState("")
-    const [newFirstName, setNewFirstName] = useState("")
-    const [newLastName, setNewLastName] = useState("")
-    const [newNumber, setNewNumber] = useState("")
-    const { attemptLogin } = useOutletContext();
+  const [newEmail, setNewEmail] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [newFirstName, setNewFirstName] = useState("");
+  const [newLastName, setNewLastName] = useState("");
+  const [newNumber, setNewNumber] = useState("");
+  const { attemptLogin } = useOutletContext();
 
-    const validateInputs = () => {
-        const email = document.getElementById('email');
-        const password = document.getElementById('password');
-        const name = document.getElementById('name');
+  const validateInputs = () => {
+    const email = document.getElementById("email");
+    const password = document.getElementById("password");
+    const name = document.getElementById("name");
 
-        let isValid = true;
+    let isValid = true;
 
-        if (!newEmail || !/\S+@\S+\.\S+/.test(newEmail)) {
-        setEmailError(true);
-        setEmailErrorMessage('Please enter a valid email address.');
-        isValid = false;
-        } else {
-        setEmailError(false);
-        setEmailErrorMessage('');
-        }
+    if (!newEmail || !/\S+@\S+\.\S+/.test(newEmail)) {
+      setEmailError(true);
+      setEmailErrorMessage("Please enter a valid email address.");
+      isValid = false;
+    } else {
+      setEmailError(false);
+      setEmailErrorMessage("");
+    }
 
-        if (!newPassword || newPassword.length < 6) {
-        setPasswordError(true);
-        setPasswordErrorMessage('Password must be at least 6 characters long.');
-        isValid = false;
-        } else {
-        setPasswordError(false);
-        setPasswordErrorMessage('');
-        }
+    if (!newPassword || newPassword.length < 6) {
+      setPasswordError(true);
+      setPasswordErrorMessage("Password must be at least 6 characters long.");
+      isValid = false;
+    } else {
+      setPasswordError(false);
+      setPasswordErrorMessage("");
+    }
 
-        if (!newFirstName || newFirstName.length < 1) {
-        setNameError(true);
-        setNameErrorMessage('First name is required.');
-        isValid = false;
-        } else {
-        setNameError(false);
-        setNameErrorMessage('');
-        }
+    if (!newFirstName || newFirstName.length < 1) {
+      setNameError(true);
+      setNameErrorMessage("First name is required.");
+      isValid = false;
+    } else {
+      setNameError(false);
+      setNameErrorMessage("");
+    }
 
-        if (!newLastName || newLastName.length < 1) {
-            setNameError(true);
-            setNameErrorMessage('Last name is required.');
-            isValid = false;
-        } else {
-            setNameError(false);
-            setNameErrorMessage('');
-        }
+    if (!newLastName || newLastName.length < 1) {
+      setNameError(true);
+      setNameErrorMessage("Last name is required.");
+      isValid = false;
+    } else {
+      setNameError(false);
+      setNameErrorMessage("");
+    }
 
-        return isValid;
-    };
+    return isValid;
+  };
 
-//   const handleSubmit = (event) => {
-//     if (nameError || emailError || passwordError) {
-//       event.preventDefault();
-//       return;
-//     }
-//     const data = new FormData(event.currentTarget);
-//     console.log({
-//       name: data.get('name'),
-//       lastName: data.get('lastName'),
-//       email: data.get('email'),
-//       password: data.get('password'),
-//     });
-//   };
+  //   const handleSubmit = (event) => {
+  //     if (nameError || emailError || passwordError) {
+  //       event.preventDefault();
+  //       return;
+  //     }
+  //     const data = new FormData(event.currentTarget);
+  //     console.log({
+  //       name: data.get('name'),
+  //       lastName: data.get('lastName'),
+  //       email: data.get('email'),
+  //       password: data.get('password'),
+  //     });
+  //   };
 
+  const handleChangeEmail = (e) => setNewEmail(e.target.value);
+  const handleChangePassword = (e) => setNewPassword(e.target.value);
+  const handleChangeFirstName = (e) => setNewFirstName(e.target.value);
+  const handleChangeLastName = (e) => setNewLastName(e.target.value);
+  const handleChangeNumber = (e) => setNewNumber(e.target.value);
 
-const handleChangeEmail = (e) => setNewEmail(e.target.value);
-const handleChangePassword = (e) => setNewPassword(e.target.value);
-const handleChangeFirstName = (e) => setNewFirstName(e.target.value);
-const handleChangeLastName = (e) => setNewLastName(e.target.value);
-const handleChangeNumber = (e) => setNewNumber(e.target.value);
-
-const handleClickShowPassword = () => {
+  const handleClickShowPassword = () => {
     setShowPassword(!showPassword);
-};
+  };
 
-const handleMouseDownPassword = (event) => {
+  const handleMouseDownPassword = (event) => {
     event.preventDefault();
-};
+  };
 
-function handleSubmit(e) {
+  function handleSubmit(e) {
     e.preventDefault();
     const userData = {
-        email: newEmail,
-        password_hash: newPassword,
-        first_name: newFirstName,
-        last_name: newLastName,
-        phone_number: newNumber,
+      email: newEmail,
+      password_hash: newPassword,
+      first_name: newFirstName,
+      last_name: newLastName,
+      phone_number: newNumber,
     };
     fetch("https://broadwaycommunity-backend.vercel.app/api/user", {
-        method: "POST",
-        headers: {
-            "Content-Type": "Application/JSON",
-        },
-        body: JSON.stringify(userData),
+      method: "POST",
+      headers: {
+        "Content-Type": "Application/JSON",
+      },
+      body: JSON.stringify(userData),
     })
-    .then((response) => response.json())
-    .then((newUser) => {
+      .then((response) => response.json())
+      .then((newUser) => {
         setNewEmail("");
         setNewPassword("");
         setNewFirstName("");
         setNewLastName("");
         setNewNumber("");
         attemptLogin({ email: newEmail, password: newPassword });
-    });
-}
+      });
+  }
 
   return (
-    <>
-    {/* // <AppTheme {...props}> */}
-      {/* <CssBaseline enableColorScheme /> */}
-      {/* <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} /> */}
-      {/* <SignUpContainer direction="column" justifyContent="space-between"> */}
-        <Card variant="outlined">
-          {/* <SitemarkIcon /> */}
-          <Typography
-            component="h1"
-            variant="h4"
-            sx={{ width: '100%', fontSize: 'clamp(2rem, 10vw, 2.15rem)' }}
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+      }}
+    >
+      <Card
+        variant="outlined"
+        sx={{ width: { xs: "90%", sm: "50%" }, marginTop: "75px" }}
+      >
+        {/* <SitemarkIcon /> */}
+        <Typography
+          component="h1"
+          variant="h4"
+          sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}
+        >
+          Sign up
+        </Typography>
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{ display: "flex", flexDirection: "column", gap: 2 }} // can add in width: '100%' but not sure if does anything
+        >
+          <FormControl>
+            <FormLabel htmlFor="name">First name</FormLabel>
+            <TextField
+              autoComplete="firstname"
+              name="firstname"
+              required
+              fullWidth
+              id="firstname"
+              placeholder="Alexander"
+              error={nameError}
+              helperText={nameErrorMessage}
+              color={nameError ? "error" : "primary"}
+              onChange={handleChangeFirstName}
+              value={newFirstName}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel htmlFor="name">Last name</FormLabel>
+            <TextField
+              autoComplete="lastname"
+              name="lastname"
+              required
+              fullWidth
+              id="lastname"
+              placeholder="Hamilton"
+              error={nameError}
+              helperText={nameErrorMessage}
+              color={nameError ? "error" : "primary"}
+              onChange={handleChangeLastName}
+              value={newLastName}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel htmlFor="email">Email</FormLabel>
+            <TextField
+              required
+              fullWidth
+              id="email"
+              placeholder="alexander.hamilton@gmail.com"
+              name="email"
+              autoComplete="email"
+              variant="outlined"
+              error={emailError}
+              helperText={emailErrorMessage}
+              color={passwordError ? "error" : "primary"}
+              onChange={handleChangeEmail}
+              value={newEmail}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel htmlFor="password">Create password</FormLabel>
+            <TextField
+              required
+              fullWidth
+              name="password"
+              placeholder="••••••"
+              type={showPassword ? "text" : "password"} // Toggle the type of input
+              id="password"
+              autoComplete="new-password"
+              variant="outlined"
+              error={passwordError}
+              helperText={passwordErrorMessage}
+              color={passwordError ? "error" : "primary"}
+              onChange={handleChangePassword}
+              value={newPassword}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      onMouseDown={handleMouseDownPassword}
+                      edge="end"
+                      sx={{
+                        height: "100%",
+                        marginRight: "0.025rem",
+                      }}
+                    >
+                      {showPassword ? (
+                        <VisibilityOff sx={{ fontSize: 18 }} />
+                      ) : (
+                        <Visibility sx={{ fontSize: 18 }} />
+                      )}
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </FormControl>
+          <FormControl>
+            <FormLabel htmlFor="phone">Phone number</FormLabel>
+            <TextField
+              required
+              fullWidth
+              name="phone"
+              placeholder="(123) 456-7890"
+              type="tel"
+              id="phone"
+              autoComplete="tel"
+              variant="outlined"
+              // error={phoneError}
+              // helperText={phoneErrorMessage}
+              // color={phoneError ? 'error' : 'primary'}
+              onChange={handleChangeNumber}
+              value={newNumber}
+            />
+          </FormControl>
+          <FormControlLabel
+            control={<Checkbox value="allowExtraEmails" color="primary" />}
+            label="I want to receive updates via email."
+          />
+          <Button
+            type="submit"
+            fullWidth
+            variant="contained"
+            onClick={validateInputs}
           >
             Sign up
+          </Button>
+          <Typography sx={{ textAlign: "center" }}>
+            Already have an account?{" "}
+            <span>
+              <Link href="/login" variant="body2" sx={{ alignSelf: "center" }}>
+                Sign in
+              </Link>
+            </span>
           </Typography>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            sx={{ display: 'flex', flexDirection: 'column', gap: 2 }} // can add in width: '100%' but not sure if does anything
-          >
-            <FormControl>
-              <FormLabel htmlFor="name">First name</FormLabel>
-              <TextField
-                autoComplete="firstname"
-                name="firstname"
-                required
-                fullWidth
-                id="firstname"
-                placeholder="Alexander"
-                error={nameError}
-                helperText={nameErrorMessage}
-                color={nameError ? 'error' : 'primary'}
-                onChange={handleChangeFirstName} 
-                value={newFirstName}
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel htmlFor="name">Last name</FormLabel>
-              <TextField
-                autoComplete="lastname"
-                name="lastname"
-                required
-                fullWidth
-                id="lastname"
-                placeholder="Hamilton"
-                error={nameError}
-                helperText={nameErrorMessage}
-                color={nameError ? 'error' : 'primary'}
-                onChange={handleChangeLastName} 
-                value={newLastName}
-              />
-            </FormControl>
-            <FormControl>
-              <FormLabel htmlFor="email">Email</FormLabel>
-              <TextField
-                required
-                fullWidth
-                id="email"
-                placeholder="alexander.hamilton@gmail.com"
-                name="email"
-                autoComplete="email"
-                variant="outlined"
-                error={emailError}
-                helperText={emailErrorMessage}
-                color={passwordError ? 'error' : 'primary'}
-                onChange={handleChangeEmail} 
-                value={newEmail}
-            />
-            </FormControl>
-            <FormControl>
-                <FormLabel htmlFor="password">Create password</FormLabel>
-                <TextField
-                    required
-                    fullWidth
-                    name="password"
-                    placeholder="••••••"
-                    type={showPassword ? 'text' : 'password'} // Toggle the type of input
-                    id="password"
-                    autoComplete="new-password"
-                    variant="outlined"
-                    error={passwordError}
-                    helperText={passwordErrorMessage}
-                    color={passwordError ? 'error' : 'primary'}
-                    onChange={handleChangePassword} 
-                    value={newPassword}
-                    InputProps={{
-                        endAdornment: (
-                            <InputAdornment position="end" >
-                            <IconButton
-                                aria-label="toggle password visibility"
-                                onClick={handleClickShowPassword}
-                                onMouseDown={handleMouseDownPassword}
-                                edge="end"
-                                sx={{
-                                    height: '100%',
-                                    marginRight: '0.025rem',
-                                }}
-                            >
-                                {showPassword ? <VisibilityOff sx={{ fontSize: 18 }} /> : <Visibility sx={{ fontSize: 18 }} />}
-                            </IconButton>
-                            </InputAdornment>
-                        ),
-                    }}
-                />
-            </FormControl>
-            <FormControl>
-                <FormLabel htmlFor="phone">Phone number</FormLabel>
-                <TextField
-                    required
-                    fullWidth
-                    name="phone"
-                    placeholder="(123) 456-7890"
-                    type="tel"
-                    id="phone"
-                    autoComplete="tel"
-                    variant="outlined"
-                    // error={phoneError}
-                    // helperText={phoneErrorMessage}
-                    // color={phoneError ? 'error' : 'primary'}
-                    onChange={handleChangeNumber} 
-                    value={newNumber}
-                />
-                </FormControl>
-            <FormControlLabel
-              control={<Checkbox value="allowExtraEmails" color="primary" />}
-              label="I want to receive updates via email."
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              onClick={validateInputs}
-            >
-              Sign up
-            </Button>
-            <Typography sx={{ textAlign: 'center' }}>
-              Already have an account?{' '}
-              <span>
-                <Link
-                  href="/login"
-                  variant="body2"
-                  sx={{ alignSelf: 'center' }}
-                >
-                  Sign in
-                </Link>
-              </span>
-            </Typography>
-          </Box>
-          {/* <Divider>
+        </Box>
+        {/* <Divider>
             <Typography sx={{ color: 'text.secondary' }}>or</Typography>
           </Divider>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
@@ -351,9 +356,9 @@ function handleSubmit(e) {
               Sign up with Facebook
             </Button>
           </Box> */}
-        </Card>
+      </Card>
       {/* </SignUpContainer> */}
-    {/* </AppTheme> */}
-    </>
+      {/* </AppTheme> */}
+    </Box>
   );
 }
