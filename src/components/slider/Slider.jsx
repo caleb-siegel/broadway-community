@@ -14,8 +14,12 @@ import {
   A11y,
 } from "swiper/modules";
 
-const Slider = ({ shows, refreshIndividualData }) => {
-  const [localShows, setLocalShows] = useState(shows);
+const Slider = ({
+  shows,
+  refreshIndividualData,
+  individualLoading,
+  loadingId,
+}) => {
   //   const generateWhatsAppLink = (show) => {
   //     const message = `${show.event_info[0]?.name}: $${show.event_info[0]?.price}
   // ${show.event_info[0]?.formatted_date}
@@ -87,23 +91,40 @@ const Slider = ({ shows, refreshIndividualData }) => {
                                 </a> */}
                   </h3>
                   <p className="slider__description-price">
-                    ${show.event_info[0]?.price}
+                    {" "}
+                    {individualLoading && show.id === loadingId
+                      ? "..."
+                      : `$${show.event_info[0]?.price}`}
                   </p>
                   {/* <p className="slider__description-theater">
                     {show.venue?.name}
                   </p> */}
                   <p className="slider__description-date">
-                    {show.event_info[0]?.formatted_date}
+                    {" "}
+                    {individualLoading && show.id === loadingId
+                      ? "..."
+                      : show.event_info[0]?.formatted_date}
                   </p>
 
                   <a
-                    href={show.event_info[0]?.link}
+                    href={
+                      individualLoading && show.id === loadingId
+                        ? "..."
+                        : show.event_info[0]?.link
+                    }
                     className="slider__button"
                     target="_blank"
                     rel="noopener noreferrer"
                   >
-                    Buy Now{" "}
-                    <i className="bx bx-right-arrow-alt slider__button-icon"></i>
+                    {individualLoading && show.id === loadingId ? (
+                      "Loading"
+                    ) : (
+                      <>
+                        Buy Now{" "}
+                        <i className="bx bx-right-arrow-alt slider__button-icon"></i>
+                      </>
+                    )}
+                    {/* <i className="bx bx-right-arrow-alt slider__button-icon"></i> */}
                   </a>
                 </SwiperSlide>
               )

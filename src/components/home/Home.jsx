@@ -110,8 +110,12 @@ function Home() {
     );
   });
 
+  const [individualLoading, setIndividualLoading] = useState(false);
+  const [loadingId, setLoadingId] = useState(null);
   const refreshIndividualData = (id) => {
     console.log("fetch is running");
+    setIndividualLoading(true);
+    setLoadingId(id);
     fetch(
       `https://broadwaycommunity-backend.vercel.app/api/fetch_ticket/${id}`,
       {
@@ -144,6 +148,8 @@ function Home() {
                 }
           ),
         }));
+        setIndividualLoading(false);
+        setLoadingId(null);
       })
       .catch((error) => {
         console.error("Error refreshing individual show data:", error);
@@ -189,6 +195,8 @@ function Home() {
                 <Slider
                   shows={filteredShows}
                   refreshIndividualData={refreshIndividualData}
+                  individualLoading={individualLoading}
+                  loadingId={loadingId}
                 />
               </>
             ) : (
