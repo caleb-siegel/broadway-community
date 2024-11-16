@@ -31,9 +31,12 @@ function Home() {
   const refreshData = () => {
     console.log("fetch is running");
     setLoading(true);
-    fetch(`https://broadwaycommunity-backend.vercel.app/api/fetch_tickets`, {
-      method: "POST",
-    })
+    fetch(
+      `https://broadwaycommunity-backend.vercel.app/api/fetch_tickets/${category}`,
+      {
+        method: "POST",
+      }
+    )
       .then((response) => response.json())
       .then(() => {
         setCategory(category);
@@ -171,8 +174,8 @@ function Home() {
             </h1>
             <p className="home__description">
               Find the cheapest available ticket on Stubhub for each event
-              listed below. Note that each ticket will cost an additional ~30%
-              for Stubhub's fee.
+              listed below. Note that each ticket will cost an{" "}
+              <strong>additional ~30% for Stubhub's fee.</strong>
             </p>
 
             <div className="home__filters">
