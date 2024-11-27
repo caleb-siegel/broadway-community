@@ -1,13 +1,16 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import App from './App.jsx'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import App from "./App.jsx";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { ThemeProvider } from '@emotion/react';
-import { createTheme } from '@mui/material';
-import Error from './components/Error.jsx';
-import Home from './components/home/Home.jsx';
-import SignInSide from './components/login/SignInSide.jsx';
-import SignUp from './components/login/SignUp';
+import { ThemeProvider } from "@emotion/react";
+import { createTheme } from "@mui/material";
+import Error from "./components/Error.jsx";
+import Home from "./components/home/Home.jsx";
+import SignInSide from "./components/login/SignInSide.jsx";
+import SignUp from "./components/login/SignUp";
+import Preferences from "./components/preferences/Preferences.jsx";
+import Event from "./components/event/Event.jsx";
+import Date from "./components/date/Date.jsx";
 
 const router = createBrowserRouter([
   {
@@ -17,7 +20,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home />
+        element: <Home />,
       },
       {
         path: "login",
@@ -27,17 +30,29 @@ const router = createBrowserRouter([
         path: "signup",
         element: <SignUp />,
       },
-    //   {
-    //     path: "recipes/:id",
-    //     element: <IndividualRecipe />,
-    //   },
-    //   {
-    //     path: "user/:id",
-    //     element: <ProfilePage />,
-    //   }
-    ]
-  }
-])
+      {
+        path: "preferences",
+        element: <Preferences />,
+      },
+      {
+        path: "event/:id",
+        element: <Event />,
+      },
+      {
+        path: "date",
+        element: <Date />,
+      },
+      //   {
+      //     path: "recipes/:id",
+      //     element: <IndividualRecipe />,
+      //   },
+      //   {
+      //     path: "user/:id",
+      //     element: <ProfilePage />,
+      //   }
+    ],
+  },
+]);
 
 const theme = createTheme({
   palette: {
@@ -48,7 +63,7 @@ const theme = createTheme({
       // contrastText: "#",
     },
     secondary: {
-      main: '#156064'
+      main: "#156064",
     },
     // error: {
     //   main: '#'
@@ -57,13 +72,13 @@ const theme = createTheme({
     //   main: '#'
     // },
     info: {
-      main: '#F8E16C'
+      main: "#F8E16C",
     },
     success: {
-      main: '#FFC2B4'
+      main: "#FFC2B4",
     },
     background: {
-      main: '#FB8F67'
+      main: "#FB8F67",
     },
     // text: {
     //   main: '#'
@@ -73,22 +88,22 @@ const theme = createTheme({
     h1: {
       fontSize: "3rem",
       fontWeight: 600,
-      color: '#156064'
+      color: "#156064",
     },
     h2: {
       fontSize: "1.75rem",
       fontWeight: 600,
-      color: '#156064'
+      color: "#156064",
     },
     h3: {
       fontSize: "1.5rem",
       fontWeight: 600,
-      color: '#156064'
-    }
+      color: "#156064",
+    },
   },
-})
+});
 
-ReactDOM.createRoot(document.getElementById('root')).render(
+ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
       <RouterProvider router={router} />

@@ -6,8 +6,11 @@ import Search from "../search/Search";
 import ShowSkeleton from "./ShowSkeleton";
 import Filter from "../filter/Filter";
 import Categories from "../categories/Categories";
+import { useOutletContext } from "react-router-dom";
 
 function Home() {
+  const { backendUrl } = useOutletContext();
+  
   const [loading, setLoading] = useState(true);
   const [shows, setShows] = useState([]);
 
@@ -19,7 +22,7 @@ function Home() {
 
   useEffect(() => {
     fetch(
-      `https://broadwaycommunity-backend.vercel.app/api/categories/${category}`
+      `${backendUrl}/api/categories/${category}`
     )
       .then((response) => response.json())
       .then((data) => {
@@ -32,19 +35,25 @@ function Home() {
     console.log("fetch is running");
     setLoading(true);
     fetch(
-      `https://broadwaycommunity-backend.vercel.app/api/fetch_tickets/${category}`,
+      `${backendUrl}/api/fetch_tickets/${category}`,
       {
         method: "POST",
       }
     )
+    .then((response) => response.json())
+    .then(() => {
+      fetch(`https://broadwaycommunity-backend.vercel.app/api/categories/${category}`)
       .then((response) => response.json())
-      .then(() => {
-        setCategory(category);
-      })
-      .catch((error) => {
-        console.error("Error refreshing data:", error);
+      .then((data) => {
+        console.log(data)
+        setShows(data);
         setLoading(false);
       });
+    })
+    .catch((error) => {
+      console.error("Error refreshing data:", error);
+      setLoading(false);
+    });
   };
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -120,7 +129,7 @@ function Home() {
     setIndividualLoading(true);
     setLoadingId(id);
     fetch(
-      `https://broadwaycommunity-backend.vercel.app/api/fetch_ticket/${id}`,
+      `${backendUrl}/api/fetch_ticket/${id}`,
       {
         method: "POST",
       }
@@ -128,7 +137,6 @@ function Home() {
       .then((response) => response.json())
       .then((updatedShowArray) => {
         const updatedShow = updatedShowArray[0];
-        console.log(shows);
         console.log(updatedShow);
         setShows((prevShows) => ({
           ...prevShows,
@@ -142,8 +150,7 @@ function Home() {
                   id: updatedShow.event.id,
                   image: updatedShow.event.image,
                   lottery_url: updatedShow.event.lottery_url,
-                  // name: updatedShow.event.name,
-                  name: "test successful",
+                  name: updatedShow.event.name,
                   show_duration: updatedShow.event.show_duration,
                   stubhub_category_id: updatedShow.event.stubhub_category_id,
                   venue: updatedShow.event.venue,

@@ -5,21 +5,10 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/pagination";
-import {
-  Mousewheel,
-  FreeMode,
-  Navigation,
-  Pagination,
-  Scrollbar,
-  A11y,
-} from "swiper/modules";
+import { Mousewheel, FreeMode, Navigation, Pagination, Scrollbar, A11y, } from "swiper/modules"; 
+import { useOutletContext } from "react-router-dom";
 
-const Slider = ({
-  shows,
-  refreshIndividualData,
-  individualLoading,
-  loadingId,
-}) => {
+const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, }) => {
   //   const generateWhatsAppLink = (show) => {
   //     const message = `${show.event_info[0]?.name}: $${show.event_info[0]?.price}
   // ${show.event_info[0]?.formatted_date}
@@ -28,6 +17,23 @@ const Slider = ({
   //     // Encode the message for WhatsApp URL
   //     return `https://wa.me/?text=${encodeURIComponent(message)}`;
   //     };
+
+  const { backendUrl } = useOutletContext();
+
+  const [todaytixPrice, setTodaytixPrice] = useState(null)
+  const [compareLoading, setCompareLoading] = useState(false)
+  const [compareId, setCompareId] = useState(0)
+  const fetchTodayTix = (id) => {
+        console.log("hi")
+        setCompareId(id)
+        setCompareLoading(true)
+        fetch(`${backendUrl}/api/fetch_todaytix/${id}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setTodaytixPrice(data["today_tix_price"]);
+          setCompareLoading(false)
+        })
+    }
 
   return (
     <section className="slider container section" id="slider">
@@ -73,12 +79,11 @@ const Slider = ({
 
                   <h3 className="slider__name">
                     {show.event_info[0]?.name}
-                    <i className={show.image}></i>
+                    {/* <i className={show.image}></i> */}
                     <button
                       className="slider__refresh-button"
                       onClick={() => refreshIndividualData(show.id)}
                     >
-                      {" "}
                       <i className="bx bx-refresh home__refresh-button-icon"></i>
                     </button>
                     {/* <a
@@ -106,6 +111,28 @@ const Slider = ({
                       : show.event_info[0]?.formatted_date}
                   </p>
 
+                  {/* <p className="slider__description-location">
+                    {" "}
+                    {individualLoading && show.id === loadingId
+                      ? "..."
+                      : `${show.event_info[0]?.location} ${show.event_info[0]?.row}`}
+                  </p>
+
+                  <p className="slider__description-quantity">
+                    {" "}
+                    {individualLoading && show.id === loadingId
+                      ? "..."
+                      : `${show.event_info[0]?.quantity} seats`}
+                  </p>
+
+                  <p className="slider__description-quantity">
+                    {" "}
+                    {individualLoading && show.id === loadingId
+                      ? "..."
+                      : `${show.event_info[0]?.note}`}
+                  </p>
+                  <br/> */}
+
                   <a
                     href={
                       individualLoading && show.id === loadingId
@@ -126,6 +153,21 @@ const Slider = ({
                     )}
                     {/* <i className="bx bx-right-arrow-alt slider__button-icon"></i> */}
                   </a>
+                  <br/>
+                  <br/>
+                  <button onClick={() => fetchTodayTix(show.id)} >Price Compare</button>
+                  <br/>
+                  {(compareId === show.id) ?
+                  (!compareLoading ? 
+                    todaytixPrice && 
+                      <>
+                      <div>Stubhub w/ estimated fees: ${Math.floor(show.event_info[0]?.price * 1.32)}</div>
+                      <div>TodayTix price: ${todaytixPrice}</div>
+                      </>
+
+                  : "Loading")
+                  : ""
+                  }
                 </SwiperSlide>
               )
             );

@@ -1,27 +1,27 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Stack from '@mui/material/Stack';
-import Typography from '@mui/material/Typography';
+import * as React from "react";
+import Box from "@mui/material/Box";
+import Stack from "@mui/material/Stack";
+import Typography from "@mui/material/Typography";
 
-import AutoFixHighRoundedIcon from '@mui/icons-material/AutoFixHighRounded';
-import ConstructionRoundedIcon from '@mui/icons-material/ConstructionRounded';
-import SettingsSuggestRoundedIcon from '@mui/icons-material/SettingsSuggestRounded';
-import ThumbUpAltRoundedIcon from '@mui/icons-material/ThumbUpAltRounded';
+import AutoFixHighRoundedIcon from "@mui/icons-material/AutoFixHighRounded";
+import ConstructionRoundedIcon from "@mui/icons-material/ConstructionRounded";
+import SettingsSuggestRoundedIcon from "@mui/icons-material/SettingsSuggestRounded";
+import ThumbUpAltRoundedIcon from "@mui/icons-material/ThumbUpAltRounded";
 
-import { SitemarkIcon } from './CustomIcons';
+import { SitemarkIcon } from "./CustomIcons";
 
 const items = [
   {
-    icon: <SettingsSuggestRoundedIcon sx={{ color: 'text.secondary' }} />,
-    title: 'Find great deals',
+    icon: <SettingsSuggestRoundedIcon sx={{ color: "text.secondary" }} />,
+    title: "Making Broadway Accessible",
     description:
-      'Find great deals on Stubhub for tonight or specific shows at any point.',
+      "As a young professional with a love of Broadway Theater, I tried to find ways to make seeing shows more affordable. I quickly noticed that Stubhub tickets get cheaper as the show gets closer, so I made this site to pass this info on to you.",
   },
   {
-    icon: <ConstructionRoundedIcon sx={{ color: 'text.secondary' }} />,
-    title: 'Set preferences',
+    icon: <ConstructionRoundedIcon sx={{ color: "text.secondary" }} />,
+    title: "Set preferences",
     description:
-      'Create an account and save preferences based on category or event to be notified when your event is selling at, or below, that price.',
+      "No need to monitor this site constantly. Just create an account and set show (i.e. Hamilton) or category (i.e. all of Broadway) preferences to be notified when there are tickets available at your desired price.",
   },
   // {
   //   icon: <ThumbUpAltRoundedIcon sx={{ color: 'text.secondary' }} />,
@@ -40,21 +40,26 @@ const items = [
 export default function Content() {
   return (
     <Stack
-      sx={{ flexDirection: 'column', alignSelf: 'center', gap: 4, maxWidth: 450 }}
+      sx={{
+        flexDirection: "column",
+        alignSelf: "center",
+        gap: 4,
+        maxWidth: 450,
+      }}
     >
-      <Box sx={{ display: { xs: 'none', md: 'flex' } }}>
+      <Box sx={{ display: { xs: "none", md: "flex" } }}>
         {/* <SitemarkIcon /> */}
-        <img style={{ height: 30, width: 30, }} src="/theater.png"></img>
-        <p style={{ margin: 5, }}>Broadway Community</p>
+        <img style={{ height: 30, width: 30 }} src="/theater.png"></img>
+        <p style={{ margin: 5 }}>Broadway Community</p>
       </Box>
       {items.map((item, index) => (
         <Stack key={index} direction="row" sx={{ gap: 2 }}>
           {item.icon}
           <div>
-            <Typography gutterBottom sx={{ fontWeight: 'medium' }}>
+            <Typography gutterBottom sx={{ fontWeight: "medium" }}>
               {item.title}
             </Typography>
-            <Typography variant="body2" sx={{ color: 'text.secondary' }}>
+            <Typography variant="body2" sx={{ color: "text.secondary" }}>
               {item.description}
             </Typography>
           </div>

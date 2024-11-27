@@ -5,6 +5,7 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   server: {
+    // https: true,
     proxy: {
       '/api/oauth2/token': {
         target: 'https://account.stubhub.com',
