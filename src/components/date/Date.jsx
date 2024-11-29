@@ -20,13 +20,11 @@ function Date() {
 
   const handleStartDateChange = (event) => {
     setStartDate(event.target.value);
-    console.log(event.target.value)
     // handleActive({ ...active, startDate: event.target.value });
   };
 
   const handleEndDateChange = (event) => {
     setEndDate(event.target.value);
-    console.log(event.target.value)
     // handleActive({ ...active, endDate: event.target.value });
   };
 
@@ -66,7 +64,6 @@ function Date() {
         setShows(data.sort(
             (a, b) => a?.event_info[0]?.price - b?.event_info[0]?.price
         ));
-        console.log(data)
         setLoading(false);
     })
     .catch((error) => {
@@ -81,26 +78,21 @@ function Date() {
     event.preventDefault();
     setSearchTerm(event.target.value);
   };
-//   let filteredShows = []
-//   if (shows) {
-//     let filteredShows = shows;
-//     if (shows?.length > 1) {
-//         setShows(shows?.sort(
-//             (a, b) => a?.event_info[0]?.price - b?.event_info[0]?.price
-//         ));
-//     }
-    // console.log(`filteredshows is ${filteredShows} and its type is ${typeof filteredShows}`)
-    // filteredShows?.filter((show) => {
-    //     return (
-    //     show &&
-    //     show.name &&
-    //     (show.event_info[0]?.name
-    //         ?.toLowerCase()
-    //         .includes(searchTerm.toLowerCase()) ||
-    //         show.name.toLowerCase().includes(searchTerm.toLowerCase()))
-    //     );
-    // });
-//   }
+  let filteredShows = [shows]
+  if (shows) {
+    
+    
+    filteredShows = filteredShows?.filter((show) => {
+        return (
+        show &&
+        show.name &&
+        (show.event_info[0]?.name
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+            show.name.toLowerCase().includes(searchTerm.toLowerCase()))
+        );
+    });
+  }
   
   const [individualLoading, setIndividualLoading] = useState(false);
   const [loadingId, setLoadingId] = useState(null);

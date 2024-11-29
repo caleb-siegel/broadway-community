@@ -65,28 +65,29 @@ const Card = styled(MuiCard)(({ theme }) => ({
 // }));
 
 export default function SignUp(props) {
-  const [emailError, setEmailError] = React.useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = React.useState("");
-  const [passwordError, setPasswordError] = React.useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState("");
-  const [nameError, setNameError] = React.useState(false);
-  const [nameErrorMessage, setNameErrorMessage] = React.useState("");
+  const [nameError, setNameError] = useState(false);
+  const [nameErrorMessage, setNameErrorMessage] = useState("");
+  const [emailError, setEmailError] = useState(false);
+  const [emailErrorMessage, setEmailErrorMessage] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState(false);
+  const [confirmPasswordErrorMessage, setConfirmPasswordErrorMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [newEmail, setNewEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [newConfirmPassword, setNewConfirmPassword] = useState("");
   const [newFirstName, setNewFirstName] = useState("");
   const [newLastName, setNewLastName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const { attemptLogin } = useOutletContext();
 
   const validateInputs = () => {
-    const email = document.getElementById("email");
-    const password = document.getElementById("password");
-    const name = document.getElementById("name");
-
     let isValid = true;
 
+    // Email validation
     if (!newEmail || !/\S+@\S+\.\S+/.test(newEmail)) {
       setEmailError(true);
       setEmailErrorMessage("Please enter a valid email address.");
@@ -96,6 +97,7 @@ export default function SignUp(props) {
       setEmailErrorMessage("");
     }
 
+    // Password validation
     if (!newPassword || newPassword.length < 6) {
       setPasswordError(true);
       setPasswordErrorMessage("Password must be at least 6 characters long.");
@@ -105,260 +107,185 @@ export default function SignUp(props) {
       setPasswordErrorMessage("");
     }
 
+    // Confirm password validation
+    if (newPassword !== newConfirmPassword) {
+      setConfirmPasswordError(true);
+      setConfirmPasswordErrorMessage("Passwords do not match.");
+      isValid = false;
+    } else {
+      setConfirmPasswordError(false);
+      setConfirmPasswordErrorMessage("");
+    }
+
+    // Name validations
     if (!newFirstName || newFirstName.length < 1) {
       setNameError(true);
       setNameErrorMessage("First name is required.");
       isValid = false;
-    } else {
-      setNameError(false);
-      setNameErrorMessage("");
     }
 
     if (!newLastName || newLastName.length < 1) {
       setNameError(true);
       setNameErrorMessage("Last name is required.");
       isValid = false;
-    } else {
-      setNameError(false);
-      setNameErrorMessage("");
     }
 
     return isValid;
   };
 
-  //   const handleSubmit = (event) => {
-  //     if (nameError || emailError || passwordError) {
-  //       event.preventDefault();
-  //       return;
-  //     }
-  //     const data = new FormData(event.currentTarget);
-  //     console.log({
-  //       name: data.get('name'),
-  //       lastName: data.get('lastName'),
-  //       email: data.get('email'),
-  //       password: data.get('password'),
-  //     });
-  //   };
-
-  const handleChangeEmail = (e) => setNewEmail(e.target.value);
-  const handleChangePassword = (e) => setNewPassword(e.target.value);
-  const handleChangeFirstName = (e) => setNewFirstName(e.target.value);
-  const handleChangeLastName = (e) => setNewLastName(e.target.value);
-  const handleChangeNumber = (e) => setNewNumber(e.target.value);
-
-  const handleClickShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-
   function handleSubmit(e) {
     e.preventDefault();
-    const userData = {
-      email: newEmail,
-      password_hash: newPassword,
-      first_name: newFirstName,
-      last_name: newLastName,
-      phone_number: newNumber,
-    };
-    fetch("https://broadwaycommunity-backend.vercel.app/api/user", {
-      method: "POST",
-      headers: {
-        "Content-Type": "Application/JSON",
-      },
-      body: JSON.stringify(userData),
-    })
-      .then((response) => response.json())
-      .then((newUser) => {
-        setNewEmail("");
-        setNewPassword("");
-        setNewFirstName("");
-        setNewLastName("");
-        setNewNumber("");
-        attemptLogin({ email: newEmail, password: newPassword });
-      });
+    if (validateInputs()) {
+      const userData = {
+        email: newEmail,
+        password_hash: newPassword,
+        first_name: newFirstName,
+        last_name: newLastName,
+        phone_number: newNumber,
+      };
+      fetch("https://broadwaycommunity-backend.vercel.app/api/user", {
+        method: "POST",
+        headers: { "Content-Type": "Application/JSON" },
+        body: JSON.stringify(userData),
+      })
+        .then((response) => response.json())
+        .then((newUser) => {
+          setNewEmail("");
+          setNewPassword("");
+          setNewConfirmPassword("");
+          setNewFirstName("");
+          setNewLastName("");
+          setNewNumber("");
+          attemptLogin({ email: newEmail, password: newPassword });
+        });
+    }
   }
 
   return (
     <Box
-      sx={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Card
-        variant="outlined"
-        sx={{ width: { xs: "90%", sm: "50%" }, marginTop: "75px" }}
-      >
-        {/* <SitemarkIcon /> */}
-        <Typography
-          component="h1"
-          variant="h4"
-          sx={{ width: "100%", fontSize: "clamp(2rem, 10vw, 2.15rem)" }}
-        >
-          Sign up
-        </Typography>
-        <Box
-          component="form"
-          onSubmit={handleSubmit}
-          sx={{ display: "flex", flexDirection: "column", gap: 2 }} // can add in width: '100%' but not sure if does anything
-        >
-          <FormControl>
-            <FormLabel htmlFor="name">First name</FormLabel>
-            <TextField
-              autoComplete="firstname"
-              name="firstname"
-              required
-              fullWidth
-              id="firstname"
-              placeholder="Alexander"
-              error={nameError}
-              helperText={nameErrorMessage}
-              color={nameError ? "error" : "primary"}
-              onChange={handleChangeFirstName}
-              value={newFirstName}
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel htmlFor="name">Last name</FormLabel>
-            <TextField
-              autoComplete="lastname"
-              name="lastname"
-              required
-              fullWidth
-              id="lastname"
-              placeholder="Hamilton"
-              error={nameError}
-              helperText={nameErrorMessage}
-              color={nameError ? "error" : "primary"}
-              onChange={handleChangeLastName}
-              value={newLastName}
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel htmlFor="email">Email</FormLabel>
-            <TextField
-              required
-              fullWidth
-              id="email"
-              placeholder="alexander.hamilton@gmail.com"
-              name="email"
-              autoComplete="email"
-              variant="outlined"
-              error={emailError}
-              helperText={emailErrorMessage}
-              color={passwordError ? "error" : "primary"}
-              onChange={handleChangeEmail}
-              value={newEmail}
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel htmlFor="password">Create password</FormLabel>
-            <TextField
-              required
-              fullWidth
-              name="password"
-              placeholder="••••••"
-              type={showPassword ? "text" : "password"} // Toggle the type of input
-              id="password"
-              autoComplete="new-password"
-              variant="outlined"
-              error={passwordError}
-              helperText={passwordErrorMessage}
-              color={passwordError ? "error" : "primary"}
-              onChange={handleChangePassword}
-              value={newPassword}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      aria-label="toggle password visibility"
-                      onClick={handleClickShowPassword}
-                      onMouseDown={handleMouseDownPassword}
-                      edge="end"
-                      sx={{
-                        height: "100%",
-                        marginRight: "0.025rem",
-                      }}
-                    >
-                      {showPassword ? (
-                        <VisibilityOff sx={{ fontSize: 18 }} />
-                      ) : (
-                        <Visibility sx={{ fontSize: 18 }} />
-                      )}
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </FormControl>
-          <FormControl>
-            <FormLabel htmlFor="phone">Phone number</FormLabel>
-            <TextField
-              required
-              fullWidth
-              name="phone"
-              placeholder="(123) 456-7890"
-              type="tel"
-              id="phone"
-              autoComplete="tel"
-              variant="outlined"
-              // error={phoneError}
-              // helperText={phoneErrorMessage}
-              // color={phoneError ? 'error' : 'primary'}
-              onChange={handleChangeNumber}
-              value={newNumber}
-            />
-          </FormControl>
-          <FormControlLabel
-            control={<Checkbox value="allowExtraEmails" color="primary" />}
-            label="I want to receive updates via email."
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            onClick={validateInputs}
-          >
-            Sign up
-          </Button>
-          <Typography sx={{ textAlign: "center" }}>
-            Already have an account?{" "}
-            <span>
-              <Link href="/login" variant="body2" sx={{ alignSelf: "center" }}>
-                Sign in
-              </Link>
-            </span>
-          </Typography>
-        </Box>
-        {/* <Divider>
-            <Typography sx={{ color: 'text.secondary' }}>or</Typography>
-          </Divider>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-            <Button
-              fullWidth
-              variant="outlined"
-              onClick={() => alert('Sign up with Google')}
-              startIcon={<GoogleIcon />}
-            >
-              Sign up with Google
-            </Button>
-            <Button
-              fullWidth
-              variant="outlined"
-              onClick={() => alert('Sign up with Facebook')}
-              startIcon={<FacebookIcon />}
-            >
-              Sign up with Facebook
-            </Button>
-          </Box> */}
-      </Card>
-      {/* </SignUpContainer> */}
-      {/* </AppTheme> */}
-    </Box>
+     sx={{
+       display: "flex",
+       flexDirection: "column",
+       justifyContent: "center",
+       alignItems: "center",
+     }}
+   >
+     <Card
+       variant="outlined"
+       sx={{ 
+         width: { xs: "90%", sm: "400px" }, 
+         marginTop: "75px",
+         p: 3,
+         borderRadius: "12px", // Set your desired border radius here
+       }}
+     >
+       <Typography
+         component="h1"
+         variant="h4"
+         sx={{ 
+           width: "100%", 
+           fontSize: "clamp(1.5rem, 10vw, 2rem)", 
+           textAlign: "center",
+           mb: 2 
+         }}
+       >
+         Sign up
+       </Typography>
+       <Box
+         component="form"
+         onSubmit={handleSubmit}
+         sx={{ display: "flex", flexDirection: "column", gap: 2 }}
+       >
+         <TextField
+           label="First name*"
+           fullWidth
+           placeholder="Alexander"
+           value={newFirstName}
+           onChange={(e) => setNewFirstName(e.target.value)}
+           error={nameError}
+           helperText={nameErrorMessage}
+         />
+         <TextField
+           label="Last name*"
+           fullWidth
+           placeholder="Hamilton"
+           value={newLastName}
+           onChange={(e) => setNewLastName(e.target.value)}
+           error={nameError}
+           helperText={nameErrorMessage}
+         />
+         <TextField
+           label="Email*"
+           fullWidth
+           placeholder="alexander.hamilton@gmail.com"
+           value={newEmail}
+           onChange={(e) => setNewEmail(e.target.value)}
+           error={emailError}
+           helperText={emailErrorMessage}
+         />
+         <TextField
+           label="Phone number"
+           fullWidth
+           placeholder="(123) 456-7890"
+           value={newNumber}
+           onChange={(e) => setNewNumber(e.target.value)}
+         />
+         <TextField
+           label="Password*"
+           type={showPassword ? "text" : "password"}
+           fullWidth
+           value={newPassword}
+           onChange={(e) => setNewPassword(e.target.value)}
+           error={passwordError}
+           helperText={passwordErrorMessage}
+           InputProps={{
+             endAdornment: (
+               <InputAdornment position="end">
+                 <IconButton onClick={() => setShowPassword(!showPassword)}>
+                   {showPassword ? <VisibilityOff /> : <Visibility />}
+                 </IconButton>
+               </InputAdornment>
+             ),
+           }}
+         />
+         <TextField
+           label="Confirm Password*"
+           type={showConfirmPassword ? "text" : "password"}
+           fullWidth
+           value={newConfirmPassword}
+           onChange={(e) => setNewConfirmPassword(e.target.value)}
+           error={confirmPasswordError}
+           helperText={confirmPasswordErrorMessage}
+           InputProps={{
+             endAdornment: (
+               <InputAdornment position="end">
+                 <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                   {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                 </IconButton>
+               </InputAdornment>
+             ),
+           }}
+         />
+         {/* <FormControlLabel
+           control={<Checkbox value="allowExtraEmails" color="primary" />}
+           label="I want to receive updates via email."
+         /> */}
+         <Button
+           type="submit"
+           fullWidth
+           variant="contained"
+           sx={{ mt: 1 }}
+         >
+           Sign up
+         </Button>
+         <Typography sx={{ textAlign: "center", mt: 1 }}>
+           Already have an account?{" "}
+           <Link href="/login" variant="body2">
+             Sign in
+           </Link>
+         </Typography>
+       </Box>
+     </Card>
+   </Box>
   );
 }
