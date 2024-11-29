@@ -49,10 +49,11 @@
     font-size: var(--smaller-font-size);
     border-radius: 2rem;
     padding: 0.1rem 0.4rem;
-    color: var(--title-color);
+    color: var(--container-color);
     outline: none; 
     margin-left: 13rem;
-    white-space: nowrap
+    white-space: nowrap;
+    background-color: var(--title-color);
 }
 
 .date__refresh-button:hover {
@@ -60,6 +61,7 @@
     /* color: var(--title-color); */
     box-shadow: 2px 4px 6px rgba(0, 0, 0, 0.1);
     transition: 0.3s;
+    background-color: var(--title-color-dark);
 }
 
 .date__refresh-button-icon {

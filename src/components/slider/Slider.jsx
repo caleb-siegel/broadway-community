@@ -5,6 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/pagination";
+import "swiper/css/navigation";
 import { Mousewheel, FreeMode, Navigation, Pagination, Scrollbar, A11y, } from "swiper/modules"; 
 import { useOutletContext } from "react-router-dom";
 
@@ -42,7 +43,7 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, })
 
       <Swiper
         className="slider__container"
-        modules={[Mousewheel, FreeMode, Pagination]}
+        modules={[Mousewheel, FreeMode, Pagination, Navigation]}
         spaceBetween={24}
         slidesPerView={2}
         // autoHeight={false}
@@ -51,6 +52,10 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, })
         grabCursor={true}
         centeredSlides={true}
         mousewheel={true}
+        navigation={{
+          nextEl: '.swiper-button-next',
+          prevEl: '.swiper-button-prev',
+        }}
         breakpoints={{
           350: {
             slidesPerView: 1.5,
@@ -172,6 +177,8 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, })
               )
             );
           })}
+        <div className="swiper-button-next"></div>
+        <div className="swiper-button-prev"></div>
       </Swiper>
     </section>
   );

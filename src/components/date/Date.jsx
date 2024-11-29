@@ -163,11 +163,7 @@ function Date() {
                   searchTerm={searchTerm}
                   handleSearchTerm={handleSearchTerm}
                 />
-                <button className="date__refresh-button" onClick={refreshData}>
-                  {" "}
-                  <i class="bx bx-refresh date__refresh-button-icon"></i>{" "}
-                  See Prices
-                </button>
+                <button className="date__refresh-button" onClick={refreshData}>See Prices</button>
               </div>
                 <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
                     <TextField

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Container, Typography, Box, Button, TextField, Dialog, DialogContent, DialogTitle, IconButton, Paper, MenuItem, Grid, ToggleButtonGroup, ToggleButton, InputAdornment, FormControl, Select } from "@mui/material";
-import { Email, Sms, NotificationsActive, AttachMoney, Refresh, Add, Edit, Delete, Close, Check } from "@mui/icons-material";
+import { Email, Sms, NotificationsActive, Refresh, Add, Edit, Delete, Close, Check } from "@mui/icons-material";
 import { useOutletContext } from "react-router-dom";
 import PreferenceForm from "./PreferenceForm";
 
@@ -176,7 +176,8 @@ const PreferencesPage = () => {
   }
 
   return (
-    <Box sx={{ minHeight: "100vh", bgcolor: "white", py: 4, marginTop: "75px" }}>
+    <>
+    <Box sx={{ minHeight: "100vh", marginTop: "75px" }}>
       {user ? (
       <Container maxWidth="lg">
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2, }} >
@@ -427,30 +428,15 @@ const PreferencesPage = () => {
         </Dialog>
       </Container>      
       ) : (
-        <Container maxWidth="sm" sx={{ textAlign: 'center' }}>
+        <Container maxWidth="sm" sx={{ textAlign: 'center', }}>
           <Typography variant="h4" sx={{ mb: 3, fontWeight: 500 }}>
             Sign in to create and view your saved notifications
           </Typography>
-          <Button
-            variant="contained"
-            href="/login"
-            sx={{
-              bgcolor: "black",
-              color: "white",
-              py: 2,
-              px: 4,
-              borderRadius: 4,
-              fontSize: "1.1rem",
-              "&:hover": {
-                bgcolor: "rgb(45, 45, 45)",
-              },
-            }}
-          >
-            Sign In
-          </Button>
+          <Button variant="contained" href="/login">Sign In</Button>
         </Container>
       )}
     </Box>
+    </>
   );
 };
 

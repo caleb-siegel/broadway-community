@@ -27,7 +27,7 @@ const Categories = ({ category, handleSetCategory }) => {
           NY Football
         </option>
         <option className="categories__option" value="basketball">
-          Basketball
+          NY Basketball
         </option>
       </select>
     </div>
