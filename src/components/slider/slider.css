@@ -15,8 +15,8 @@
   flex-direction: column;
   justify-content: space-between;
   box-sizing: border-box;
-
   align-items: stretch;
+  position: relative;
 }
 
 .slider__img {
@@ -29,6 +29,23 @@
   font-size: var(--h3-font-size);
   font-weight: var(--font-medium);
   margin-bottom: var(--mb-0-5);
+}
+
+.slider__price-flag {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  background-color: #4CAF50; /* A green color to indicate a good deal */
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 1rem;
+  font-size: var(--smaller-font-size);
+  font-weight: var(--font-medium);
+  z-index: 10;
+}
+
+.slider__price-flag-secondary {
+  font-size: var(--smallest-font-size);
 }
 
 .slider__description-price {

@@ -77,9 +77,26 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, })
             return (
               show.event_info[0] && (
                 <SwiperSlide className="slider__card" key={show.id}>
-                  {!(show.category_id === 1) && (
-                    <p className="slider__description-subheader">{show.name}</p>
+                  {/* {(show.event_info[0]?.price < show.event_info[0]?.average_lowest_price) && (
+                    <div className="slider__price-flag">
+                      <span className="slider__price-flag-text">
+                        {`${Math.ceil(((show.event_info[0]?.price / show.event_info[0]?.average_lowest_price) - 1) * -100)}% Below Avg`}
+                      </span>
+                    </div>
+                  )} */}
+
+                  {(show.event_info[0]?.price < show.event_info[0]?.average_lowest_price) && (
+                    <div className="slider__price-flag">
+                      <div className="slider__price-flag-content">
+                        <div className="slider__price-flag-main">{`${Math.ceil(((show.event_info[0]?.price / show.event_info[0]?.average_lowest_price) - 1) * -100)}%`} <span className="slider__price-flag-secondary">Below Avg</span></div>
+                        
+                      </div>
+                    </div>
                   )}
+                  
+                  
+                    <div className="slider__description-subheader">{show.category_id === 1 ? "" : show.name}</div>
+                  
                   {/* <img src={show.image} alt="" className="slider__img" /> */}
 
                   <h3 className="slider__name">
