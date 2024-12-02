@@ -3,6 +3,8 @@ import { Container, Typography, Box, Button, TextField, Dialog, DialogContent, D
 import { Email, Sms, NotificationsActive, Refresh, Add, Edit, Delete, Close, Check } from "@mui/icons-material";
 import { useOutletContext } from "react-router-dom";
 import PreferenceForm from "./PreferenceForm";
+import "./preferences.css";
+
 
 const PreferencesPage = () => {
 
@@ -176,8 +178,8 @@ const PreferencesPage = () => {
   }
 
   return (
-    <>
-    <Box sx={{ minHeight: "100vh", marginTop: "75px" }}>
+    <> 
+    <Box sx={{ minHeight: "100vh", paddingTop: { xs: '50px',  md: '75px' }, }}>
       {user ? (
       <Container maxWidth="lg">
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2, }} >
@@ -201,9 +203,9 @@ const PreferencesPage = () => {
           <Typography variant="h4" sx={{ mb: 3, fontWeight: 500 }}>
             Current Preferences
           </Typography>
-          <Grid container spacing={2}>
+          <Grid container spacing={2} sx={{ flexDirection: { xs: 'column', md: 'row'} }}>
             {/* Left side: event preferences */}
-            <Grid item xs={6}>
+            <Grid item xs={12} md={6}>
             <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 500 }}>
               Events
             </Typography>
@@ -282,7 +284,7 @@ const PreferencesPage = () => {
             </Grid>
 
             {/* Right side: category preferences */}
-            <Grid item xs={6}>
+            <Grid item xs={12} md={6}>
               <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 500 }}>
                 Categories
               </Typography>
@@ -291,7 +293,7 @@ const PreferencesPage = () => {
                   key={pref.id}
                   elevation={0}
                   sx={{
-                    p: 3,
+                    p: 1,
                     border: "2px solid",
                     borderColor: "grey.200",
                     borderRadius: 4,

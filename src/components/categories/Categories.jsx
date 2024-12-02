@@ -14,8 +14,8 @@ const Categories = ({ category, handleSetCategory }) => {
         <option className="categories__option" value="broadway">
           Broadway
         </option>
-        <option className="categories__option" value="taylor_swift">
-          Taylor Swift
+        <option className="categories__option" value="concerts">
+          Concerts
         </option>
         <option className="categories__option" value="yankees">
           Yankees
