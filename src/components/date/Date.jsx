@@ -152,7 +152,7 @@ function Date() {
               />
             </h1>
             <p className="date__description">
-              Find the cheapest available ticket on Stubhub for each event
+              Choose a date range and click "See Prices" to find the cheapest available ticket on Stubhub for each event
               listed below. Note that each ticket will cost an{" "}
               <strong>additional ~30% for Stubhub's fee.</strong>
             </p>

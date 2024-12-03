@@ -80,7 +80,7 @@ const PreferenceForm = ({ onClose, initialData = null, handleSubmit, trackingTyp
             <Box>
                 <Typography variant="h6" gutterBottom> What to Track </Typography>
                 <ToggleButtonGroup value={trackingType} exclusive onChange={(e, value) => value && handleTrackingTypeChange(value)} fullWidth sx={{ mb: 2 }} >
-                    <ToggleButton value="event" sx={{ py: 2 }}> Specific Shows </ToggleButton>
+                    <ToggleButton value="event" sx={{ py: 2 }}> Events </ToggleButton>
                     <ToggleButton value="category" sx={{ py: 2 }}> Categories </ToggleButton>
                 </ToggleButtonGroup>
 

@@ -5,11 +5,17 @@ import { useOutletContext } from "react-router-dom";
 import PreferenceForm from "./PreferenceForm";
 import "./preferences.css";
 
-
 const PreferencesPage = () => {
 
   const { user } = useOutletContext();
   const { backendUrl } = useOutletContext();
+
+  // useEffect(() => {
+  //   if (user) {
+  //     setEventPreferences(user.event_preferences || []);
+  //     setCategoryPreferences(user.category_preferences || []);
+  //   }
+  // }, [user]);
 
   const [eventPreferences, setEventPreferences] = useState(user?.event_preferences || []);
   const [categoryPreferences, setCategoryPreferences] = useState(user?.category_preferences || []);
@@ -179,19 +185,19 @@ const PreferencesPage = () => {
 
   return (
     <> 
-    <Box sx={{ minHeight: "100vh", paddingTop: { xs: '50px',  md: '75px' }, }}>
+    <Box sx={{ minHeight: "100vh", paddingTop: { xs: '50px', sm: '75px' }, }}>
       {user ? (
       <Container maxWidth="lg">
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2, }} >
           <Typography variant="h2" sx={{ fontWeight: 500 }}>
             Preferences
           </Typography>
-          <FormControl sx={{ minWidth: 180 }}>
+          {/* <FormControl sx={{ minWidth: 180 }}>
             <Select value={showType} onChange={(e) => setShowType(e.target.value)} >
               <MenuItem value="Broadway">Broadway</MenuItem>
               <MenuItem value="Off-Broadway">Off-Broadway</MenuItem>
             </Select>
-          </FormControl>
+          </FormControl> */}
         </Box>
 
         <Typography variant="h6" color="text.secondary" sx={{ mb: 4 }}>
@@ -381,6 +387,7 @@ const PreferencesPage = () => {
             "&:hover": {
               bgcolor: "rgb(45, 45, 45)",
             },
+            marginBottom: "2rem"
           }}
         >
           Add New Preference

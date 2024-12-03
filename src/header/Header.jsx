@@ -130,7 +130,7 @@ const Header = ({ user, logout }) => {
                 >
                   <i className="uil uil-user nav__icon"></i> Logout
                 </a>
-                <span>Welcome, {user.first_name}</span>
+                <span>Hi, {user.first_name}</span>
               </li>
             )}
 

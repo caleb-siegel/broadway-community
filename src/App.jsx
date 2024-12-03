@@ -4,33 +4,44 @@ import { Outlet } from "react-router-dom";
 import { Analytics } from "@vercel/analytics/react";
 import { useNavigate } from "react-router-dom";
 import Header from "./header/Header";
+import LoadingSpinner from "./Loading";
 
 function App() {
   const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-  // const backendUrl = "https://broadwaycommunity-backend.vercel.app"
-  const backendUrl = "http://127.0.0.1:5000"
+
+  const backendUrl = "https://broadwaycommunity-backend.vercel.app"
+  // const backendUrl = "http://127.0.0.1:5000"
 
 
   useEffect(() => {
-    fetch(`${backendUrl}/api/check_session`, {
-      credentials: "include",
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => {
+    // Function to check session
+    const checkSession = async () => {
+      try {
+        const res = await fetch(`${backendUrl}/api/check_session`, {
+          credentials: "include",
+          headers: {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+          },
+        });
+
         if (res.ok) {
-          return res.json();
+          const userData = await res.json();
+          setUser(userData);
+        } else {
+          setUser(null);
         }
-        throw new Error("Session check failed");
-      })
-      .then((user) => setUser(user))
-      .catch((error) => {
+      } catch (error) {
         console.error("Session check error:", error);
         setUser(null);
-      });
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    checkSession();
   }, []);
 
   function attemptLogin(userInfo) {
@@ -51,8 +62,10 @@ function App() {
       })
       .then((data) => {
         setUser(data);
-        console.log(data);
-        navigate("/preferences");
+        console.log(("User info:", data))
+        // user && console.log("User info:", user);
+        // user && navigate("/preferences");
+        navigate("/");
       })
       .catch((e) => {
         alert("incorrect email or password");
@@ -60,15 +73,29 @@ function App() {
       });
   }
 
+  // useEffect(() => {
+  //   if (user) {
+  //     console.log("User info after login:", user);
+  //     // navigate("/preferences");
+  //   }
+  // }, [user]);
+
   function logout() {
     fetch(`${backendUrl}/api/logout`, {
       method: "DELETE",
       credentials: "include",
     }).then((res) => {
       if (res.ok) {
+        console.log("deleted")
         setUser(null);
       }
     });
+  }
+
+  if (isLoading) {
+    return (
+      <LoadingSpinner />
+    );
   }
 
   return (

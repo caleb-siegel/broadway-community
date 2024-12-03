@@ -87,7 +87,7 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, })
                   )}
                   
                   
-                    <div className="slider__description-subheader">{show.category_id === 1 ? "" : show.name}</div>
+                    <div className="slider__description-subheader">{(show.event_info[0]?.name === show.name) || (show.category_id === 1) ? <span>&nbsp;</span> : show.name}</div>
                   
                   {/* <img src={show.image} alt="" className="slider__img" /> */}
 

@@ -42,7 +42,7 @@ function Home() {
     )
     .then((response) => response.json())
     .then(() => {
-      fetch(`https://broadwaycommunity-backend.vercel.app/api/categories/${category}`)
+      fetch(`${backendUrl}/api/categories/${category}`)
       .then((response) => response.json())
       .then((data) => {
         console.log(data)
