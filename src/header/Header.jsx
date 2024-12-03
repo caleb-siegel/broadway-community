@@ -82,7 +82,7 @@ const Header = ({ user, logout }) => {
                     : "nav__link"
                 }
               >
-                <i className="uil uil-estate nav__icon"></i> Preferences
+                <i className="uil uil-star nav__icon"></i> Preferences
               </a>
             </li>
 
@@ -97,7 +97,7 @@ const Header = ({ user, logout }) => {
                     : "nav__link"
                 }
               >
-                <i className="uil uil-estate nav__icon"></i> Date
+                <i className="uil uil-calender nav__icon"></i> Date
               </a>
             </li>
 
