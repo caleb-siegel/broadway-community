@@ -114,9 +114,9 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, })
                       ? "..."
                       : `$${show.event_info[0]?.price}`}
                   </p>
-                  {/* <p className="slider__description-theater">
-                    {show.venue?.name}
-                  </p> */}
+                  {(show.category_id !== 1) ? 
+                    <p className="slider__description-theater">{show.venue?.name}</p>
+                  : ""}
                   <p className="slider__description-date">
                     {" "}
                     {individualLoading && show.id === loadingId
