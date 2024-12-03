@@ -81,7 +81,6 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, })
                     <div className="slider__price-flag">
                       <div className="slider__price-flag-content">
                         <div className="slider__price-flag-main">{`${Math.ceil(((show.event_info[0]?.price / show.event_info[0]?.average_lowest_price) - 1) * -100)}%`} <span className="slider__price-flag-secondary">Below Avg</span></div>
-                        
                       </div>
                     </div>
                   )}
@@ -169,7 +168,7 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, })
                   </a>
                   <br/>
                   <br/>
-                  <button className="slider__price-compare" onClick={() => fetchTodayTix(show.id)} >Price Compare</button>
+                  {(show.category_id === 1) ? <button className="slider__price-compare" onClick={() => fetchTodayTix(show.id)} >Price Compare</button> : ""}
                   <br/>
                   {(compareId === show.id) ?
                   (!compareLoading ? 
