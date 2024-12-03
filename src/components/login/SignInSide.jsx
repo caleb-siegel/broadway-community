@@ -12,19 +12,19 @@ export default function SignInSide() {
   const defaultTheme = createTheme({ palette: { mode } });
   const SignInSideTheme = createTheme(getSignInSideTheme(mode));
   // This code only runs on the client side, to determine the system color preference
-  React.useEffect(() => {
-    // Check if there is a preferred mode in localStorage
-    const savedMode = localStorage.getItem("themeMode");
-    if (savedMode) {
-      setMode(savedMode);
-    } else {
-      // If no preference is found, it uses system preference
-      const systemPrefersDark = window.matchMedia(
-        "(prefers-color-scheme: dark)"
-      ).matches;
-      setMode(systemPrefersDark ? "dark" : "light");
-    }
-  }, []);
+  // React.useEffect(() => {
+  //   // Check if there is a preferred mode in localStorage
+  //   const savedMode = localStorage.getItem("themeMode");
+  //   if (savedMode) {
+  //     setMode(savedMode);
+  //   } else {
+  //     // If no preference is found, it uses system preference
+  //     const systemPrefersDark = window.matchMedia(
+  //       "(prefers-color-scheme: dark)"
+  //     ).matches;
+  //     setMode(systemPrefersDark ? "dark" : "light");
+  //   }
+  // }, []);
 
   return (
     <ThemeProvider theme={showCustomTheme ? SignInSideTheme : defaultTheme}>
