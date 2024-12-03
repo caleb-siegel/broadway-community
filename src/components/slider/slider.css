@@ -96,6 +96,10 @@
   color: var(--text-color);
 }
 
+.slider__price-compare {
+  color: var(--title-color-dark)
+}
+
 /*=============== BREAKPOINTS ===============*/
 /* For large devices */
 @media screen and (max-width: 992px) {
@@ -123,6 +127,10 @@
 @media screen and (max-width: 576px) {
   .slider__card {
     margin-bottom: var(--mb-3);
+  }
+
+  .slider__comparisons {
+    font-size: var(--smallest-font-size);
   }
 }
 

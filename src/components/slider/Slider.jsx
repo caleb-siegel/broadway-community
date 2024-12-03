@@ -169,14 +169,14 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, })
                   </a>
                   <br/>
                   <br/>
-                  <button onClick={() => fetchTodayTix(show.id)} >Price Compare</button>
+                  <button className="slider__price-compare" onClick={() => fetchTodayTix(show.id)} >Price Compare</button>
                   <br/>
                   {(compareId === show.id) ?
                   (!compareLoading ? 
                     todaytixPrice && 
                       <>
-                      <div>Stubhub w/ estimated fees: ${Math.floor(show.event_info[0]?.price * 1.32)}</div>
-                      <div>TodayTix price: ${todaytixPrice}</div>
+                      <div className="slider__comparisons">Stubhub w/ estimated fees: ${Math.floor(show.event_info[0]?.price * 1.32)}</div>
+                      <div className="slider__comparisons">TodayTix price: ${todaytixPrice}</div>
                       </>
 
                   : "Loading")
