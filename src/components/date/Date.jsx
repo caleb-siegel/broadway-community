@@ -159,10 +159,10 @@ function Date() {
 
             <div className="date__filters">
               <div className="date__top-filters">
-                <Search
+                {/* <Search
                   searchTerm={searchTerm}
                   handleSearchTerm={handleSearchTerm}
-                />
+                /> */}
                 <button className="date__refresh-button" onClick={refreshData}>See Prices</button>
               </div>
                 <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
