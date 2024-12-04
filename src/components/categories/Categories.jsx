@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import "./categories.css";
+import { useOutletContext } from "react-router-dom";
 
 const Categories = ({ category, handleSetCategory }) => {
-  
+  const { backendUrl } = useOutletContext();
   const [categoryOptions, setCategoryOptions] = useState([]);
   useEffect(() => {
     fetch(
