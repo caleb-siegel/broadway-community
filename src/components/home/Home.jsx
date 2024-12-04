@@ -14,7 +14,7 @@ function Home() {
   const [loading, setLoading] = useState(true);
   const [shows, setShows] = useState([]);
 
-  const [category, setCategory] = useState("broadway");
+  const [category, setCategory] = useState("Broadway");
   const handleSetCategory = (event) => {
     setCategory(event.target.value);
     setLoading(true);

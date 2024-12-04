@@ -11,22 +11,22 @@ const Categories = ({ category, handleSetCategory }) => {
         value={category}
         onChange={(event) => handleSetCategory(event)}
       >
-        <option className="categories__option" value="broadway">
+        <option className="categories__option" value="Broadway">
           Broadway
         </option>
-        <option className="categories__option" value="concerts">
+        <option className="categories__option" value="Concerts">
           Concerts
         </option>
-        <option className="categories__option" value="yankees">
+        <option className="categories__option" value="Yankees">
           Yankees
         </option>
-        <option className="categories__option" value="world_cup_2026">
+        <option className="categories__option" value="World Cup">
           World Cup
         </option>
-        <option className="categories__option" value="football">
+        <option className="categories__option" value="Football">
           NY Football
         </option>
-        <option className="categories__option" value="basketball">
+        <option className="categories__option" value="Basketball">
           NY Basketball
         </option>
       </select>
