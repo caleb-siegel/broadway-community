@@ -173,6 +173,17 @@ function Home() {
       });
   };
 
+  const [categoryOptions, setCategoryOptions] = useState([]);
+  useEffect(() => {
+      fetch(
+        `${backendUrl}/api/category_names`
+      )
+        .then((response) => response.json())
+        .then((data) => {
+          setCategoryOptions(data);
+        });
+    }, []);
+
   return (
     <section className="home section" id="home">
       <div className="home__container container grid">
@@ -184,6 +195,7 @@ function Home() {
               <Categories
                 category={category}
                 handleSetCategory={handleSetCategory}
+                categoryOptions={categoryOptions}
               />
             </h1>
             <p className="home__description">
