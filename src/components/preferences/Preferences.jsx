@@ -201,7 +201,7 @@ const PreferencesPage = () => {
         </Box>
 
         <Typography variant="h6" color="text.secondary" sx={{ mb: 4 }}>
-          Manage your notification preferences for Broadway shows and events.
+          Set notification preferences to receive alerts whenever tickets are selling below your max price. Manage your preferences here.
         </Typography>
 
         {/* Current Preferences */}
