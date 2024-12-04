@@ -80,14 +80,21 @@ function Home() {
   if (active === "all") {
     filteredShows = shows.event;
   } else if (active === "today") {
-    const today = new Date().toISOString().split("T")[0];
+    const now = new Date();
+    // Convert current time to Eastern Time
+    const utcOffset = now.getTimezoneOffset(); // Local timezone offset in minutes
+    const etOffset = -5 * 60; // Eastern Time offset in minutes (Standard Time; adjust to -4 * 60 for Daylight Saving Time)
+    const etTime = new Date(now.getTime() + (etOffset - utcOffset) * 60 * 1000);
+
+    const todayET = etTime.toISOString().split("T")[0];
+
     filteredShows = filteredShows?.filter((show) => {
       const showDate = show?.event_info[0]?.event_date;
       if (!showDate) {
         console.error("Invalid date:", showDate);
         return false;
       }
-      return showDate === today;
+      return showDate === todayET;
     });
   } else if (active === "7days") {
     const today = new Date();
