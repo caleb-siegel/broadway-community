@@ -4,11 +4,13 @@ import { Container, Typography } from "@mui/material";
 
 function Error() {
   return (
-    <Container style={{ marginTop: "100px" }}>
+    <Container >
       <Header />
-      <Typography variant="h1">
-        The page you are looking for doesn't exist. Please try again.
-      </Typography>
+      <Container sx={{ paddingTop: { xs: '50px', sm: '75px' }, }}>
+        <Typography variant="h1">
+          The page you are looking for doesn't exist. Please try again.
+        </Typography>
+      </Container>
       {/* <h1>The page you are looking for doesn't exist. Please try again.</h1> */}
     </Container>
   );

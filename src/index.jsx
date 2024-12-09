@@ -11,6 +11,7 @@ import SignUp from "./components/login/SignUp";
 import Preferences from "./components/preferences/Preferences.jsx";
 import Event from "./components/event/Event.jsx";
 import Date from "./components/date/Date.jsx";
+import Enterprise from "./components/enterprise/Enterprise.jsx";
 
 const router = createBrowserRouter([
   {
@@ -41,6 +42,10 @@ const router = createBrowserRouter([
       {
         path: "date",
         element: <Date />,
+      },
+      {
+        path: "enterprise",
+        element: <Enterprise />,
       },
       //   {
       //     path: "recipes/:id",
