@@ -28,7 +28,7 @@ function Date() {
     // handleActive({ ...active, endDate: event.target.value });
   };
 
-  const [category, setCategory] = useState("broadway");
+  const [category, setCategory] = useState("Broadway");
   const handleSetCategory = (event) => {
     setCategory(event.target.value);
     setLoading(true);
