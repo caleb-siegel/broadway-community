@@ -74,7 +74,7 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, })
       >
         {shows &&
           shows
-          .filter((show) => new Date(show?.sortable_date?.replace(' ', 'T')) > new Date())
+          // .filter((show) => new Date(show?.sortable_date?.replace(' ', 'T')) > new Date())
           .map((show) => {
             return (
               show.event_info[0] && (
