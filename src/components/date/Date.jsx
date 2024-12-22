@@ -165,7 +165,7 @@ function Date() {
                 /> */}
                 <button className="date__refresh-button" onClick={refreshData}>See Prices</button>
               </div>
-                <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                <Box sx={{ display: "flex", gap: 2, alignItems: "center", marginTop: "1rem", justifyContent: "center" }}>
                     <TextField
                         label="Start Date"
                         type="date"
