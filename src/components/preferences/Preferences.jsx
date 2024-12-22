@@ -72,7 +72,6 @@ const PreferencesPage = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-
     const preferenceData = {
         user_id: user.id,
         [trackingType === "event" ? "event_name" : "category_name"]: selectedItem,
@@ -81,9 +80,7 @@ const PreferencesPage = () => {
         send_sms: smsBool,
         send_push: pushBool,
     };
-
     const endpoint = (trackingType === "event") ? "api/event_preferences" : "api/category_preferences";
-
     fetch(`${backendUrl}/${endpoint}`, {
         method: "POST",
         headers: {
@@ -187,7 +184,7 @@ const PreferencesPage = () => {
     <> 
     <Box sx={{ minHeight: "100vh", paddingTop: { xs: '50px', sm: '75px' }, }}>
       {user ? (
-      <Container maxWidth="lg">
+      <Container>
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2, }} >
           <Typography variant="h2" sx={{ fontWeight: 500 }}>
             Preferences
@@ -227,7 +224,7 @@ const PreferencesPage = () => {
                     display: "flex",
                     justifyContent: "space-between",
                     alignItems: "center",
-                    mb: 1, // Add some space between items
+                    mb: 1,
                   }}
                 >
                   <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
