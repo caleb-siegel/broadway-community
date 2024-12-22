@@ -73,7 +73,9 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, })
         pagination={{ clickable: true }}
       >
         {shows &&
-          shows.map((show) => {
+          shows
+          .filter((show) => new Date(show.sortable_date) > new Date()) // Filter shows with a future date
+          .map((show) => {
             return (
               show.event_info[0] && (
                 <SwiperSlide className="slider__card" key={show.id}>
