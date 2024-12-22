@@ -13,7 +13,7 @@ const Enterprise = () => {
         <div>Enterprise</div>
         <div>Enterprise</div>
         <div>Enterprise</div>
-        <div>Enterprise</div>
+        <div>Hi Avery</div>
         </>
     )
 }

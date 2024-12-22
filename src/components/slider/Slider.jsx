@@ -78,7 +78,6 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, })
           .map((show) => {
             return (
               show.event_info[0] && (
-                console.log(show.sortable_date)
                 <SwiperSlide className="slider__card" key={show.id}>
                   {(show.event_info[0]?.price < show.event_info[0]?.average_lowest_price) && (
                     <div className="slider__price-flag">

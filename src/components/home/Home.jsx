@@ -6,6 +6,7 @@ import Search from "../search/Search";
 import ShowSkeleton from "./ShowSkeleton";
 import Filter from "../filter/Filter";
 import Categories from "../categories/Categories";
+import List from "../list/List";
 import { useOutletContext } from "react-router-dom";
 
 function Home() {
@@ -210,6 +211,12 @@ function Home() {
             {!loading ? (
               <>
                 <Slider
+                  shows={filteredShows}
+                  refreshIndividualData={refreshIndividualData}
+                  individualLoading={individualLoading}
+                  loadingId={loadingId}
+                />
+                <List 
                   shows={filteredShows}
                   refreshIndividualData={refreshIndividualData}
                   individualLoading={individualLoading}
