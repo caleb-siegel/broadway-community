@@ -184,7 +184,7 @@ const PreferencesPage = () => {
     <> 
     <Box sx={{ minHeight: "100vh", paddingTop: { xs: '50px', sm: '75px' }, }}>
       {user ? (
-      <Container>
+      <Container maxWidth="lg">
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2, }} >
           <Typography variant="h2" sx={{ fontWeight: 500 }}>
             Preferences
