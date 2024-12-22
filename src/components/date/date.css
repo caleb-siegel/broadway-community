@@ -51,7 +51,6 @@
     padding: 0.1rem 0.4rem;
     color: var(--container-color);
     outline: none; 
-    margin-left: 13rem;
     white-space: nowrap;
     background-color: var(--title-color);
 }
@@ -100,10 +99,6 @@
         grid-column: 1/3;
         margin-left: 5rem;
         margin-right: 5rem;
-    }
-
-    .date__refresh-button {
-        margin-left: 12rem;
     }
 }
 
