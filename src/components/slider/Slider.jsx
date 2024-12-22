@@ -74,10 +74,11 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, })
       >
         {shows &&
           shows
-          .filter((show) => new Date(show.sortable_date) > new Date()) // Filter shows with a future date
+          // .filter((show) => new Date(show.sortable_date) > new Date()) // Filter shows with a future date
           .map((show) => {
             return (
               show.event_info[0] && (
+                console.log(show.sortable_date)
                 <SwiperSlide className="slider__card" key={show.id}>
                   {(show.event_info[0]?.price < show.event_info[0]?.average_lowest_price) && (
                     <div className="slider__price-flag">
