@@ -31,10 +31,6 @@
     margin-right: 3rem;
 }
 
-.date__filters {
-    display: flex;
-}
-
 .date__top-filters {
     display: flex;
     align-items: center;
