@@ -216,12 +216,12 @@ function Home() {
                   individualLoading={individualLoading}
                   loadingId={loadingId}
                 />
-                <List 
+                {/* <List 
                   shows={filteredShows}
                   refreshIndividualData={refreshIndividualData}
                   individualLoading={individualLoading}
                   loadingId={loadingId}
-                />
+                /> */}
               </>
             ) : (
               <ShowSkeleton />
