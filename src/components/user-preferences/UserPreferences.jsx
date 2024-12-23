@@ -4,7 +4,8 @@ import { Container, Typography, Box, Button, TextField, Dialog, DialogContent, D
 
 const UserPreferences = () => {
     const { backendUrl } = useOutletContext();
-    
+    const { user } = useOutletContext();
+
     const [userPreferences, setUserPreferences] = useState([]);
     useEffect(() => {
         fetch(
@@ -32,79 +33,82 @@ const UserPreferences = () => {
             <div>userpreferences</div>
             <div>userpreferences</div>
             <div>userpreferences</div>
-            <Grid container spacing={2} sx={{ flexDirection: { xs: 'column', md: 'row'} }}>
-            <Grid item xs={12} md={6}>
-            <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 500 }}>
-              Events
-            </Typography>
-              {userPreferences?.map((pref) => (
-                <Paper
-                  key={pref.id}
-                  elevation={0}
-                  sx={{
-                    p: 1,
-                    border: "2px solid",
-                    borderColor: "grey.200",
-                    borderRadius: 4,
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    mb: 1,
-                  }}
-                >
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                    <Box>
-                      <Typography variant="h6" sx={{ mb: 0.5 }}>
-                        {`${pref.user.first_name} ${pref.user.last_name} - ${pref.event.name}`}
-                      </Typography>
-                      <Typography color="text.secondary">
-                        Max Price:{" "}
-                        <Box component="span" sx={{ fontWeight: 500 }}>
-                            ${pref.price}
+            {user.id == 8 ?
+                <Grid container spacing={2} sx={{ flexDirection: { xs: 'column', md: 'row'} }}>
+                <Grid item xs={12} md={6}>
+                <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 500 }}>
+                Events
+                </Typography>
+                {userPreferences?.map((pref) => (
+                    <Paper
+                    key={pref.id}
+                    elevation={0}
+                    sx={{
+                        p: 1,
+                        border: "2px solid",
+                        borderColor: "grey.200",
+                        borderRadius: 4,
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        mb: 1,
+                    }}
+                    >
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                        <Box>
+                        <Typography variant="h6" sx={{ mb: 0.5 }}>
+                            {`${pref.user.first_name} ${pref.user.last_name} - ${pref.event.name}`}
+                        </Typography>
+                        <Typography color="text.secondary">
+                            Max Price:{" "}
+                            <Box component="span" sx={{ fontWeight: 500 }}>
+                                ${pref.price}
+                            </Box>
+                        </Typography>
                         </Box>
-                      </Typography>
                     </Box>
-                  </Box>
-                </Paper>
-              ))}
-            </Grid>
-            <Grid item xs={12} md={6}>
-            <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 500 }}>
-              Categories
-            </Typography>
-              {userCategoryPreferences?.map((pref) => (
-                <Paper
-                  key={pref.id}
-                  elevation={0}
-                  sx={{
-                    p: 1,
-                    border: "2px solid",
-                    borderColor: "grey.200",
-                    borderRadius: 4,
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    mb: 1,
-                  }}
-                >
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                    <Box>
-                      <Typography variant="h6" sx={{ mb: 0.5 }}>
-                        {`${pref.user.first_name} ${pref.user.last_name} - ${pref.category.name}`}
-                      </Typography>
-                      <Typography color="text.secondary">
-                        Max Price:{" "}
-                        <Box component="span" sx={{ fontWeight: 500 }}>
-                            ${pref.price}
+                    </Paper>
+                ))}
+                </Grid>
+                <Grid item xs={12} md={6}>
+                <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 500 }}>
+                Categories
+                </Typography>
+                {userCategoryPreferences?.map((pref) => (
+                    <Paper
+                    key={pref.id}
+                    elevation={0}
+                    sx={{
+                        p: 1,
+                        border: "2px solid",
+                        borderColor: "grey.200",
+                        borderRadius: 4,
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        mb: 1,
+                    }}
+                    >
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                        <Box>
+                        <Typography variant="h6" sx={{ mb: 0.5 }}>
+                            {`${pref.user.first_name} ${pref.user.last_name} - ${pref.category.name}`}
+                        </Typography>
+                        <Typography color="text.secondary">
+                            Max Price:{" "}
+                            <Box component="span" sx={{ fontWeight: 500 }}>
+                                ${pref.price}
+                            </Box>
+                        </Typography>
                         </Box>
-                      </Typography>
                     </Box>
-                  </Box>
-                </Paper>
-              ))}
-            </Grid>
-            
-            </Grid>
+                    </Paper>
+                ))}
+                </Grid>
+                </Grid>
+            :
+                <div>You don't have access</div>
+            }
         </div>
     )
 }
