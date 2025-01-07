@@ -18,6 +18,8 @@ import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
 
 import { useOutletContext } from "react-router-dom";
 import { useGoogleLogin } from '@react-oauth/google';
+import { useOutletContext } from "react-router-dom";
+
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -47,6 +49,9 @@ export default function SignInCard() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const { attemptLogin } = useOutletContext();
+
+  const { backendUrl } = useOutletContext();
+  
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -116,7 +121,7 @@ export default function SignInCard() {
       console.log('Access token:', tokenResponse.access_token);
 
       // Send the token to your backend for verification
-      const response = await fetch('https://your-backend-url.com/auth/google', {
+      const response = await fetch(`${backendUrl}/auth/google`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token: tokenResponse.access_token }),
@@ -128,6 +133,7 @@ export default function SignInCard() {
     onError: () => {
       console.error('Login Failed');
     },
+    redirectUri: "https://broadwaycommunity.vercel.app/alerts",
   });
 
   return (
