@@ -35,76 +35,76 @@ const UserAlerts = () => {
             <div>useralerts</div>
             {user.id == 8 ?
                 <Grid container spacing={2} sx={{ flexDirection: { xs: 'column', md: 'row'} }}>
-                <Grid item xs={12} md={6}>
-                <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 500 }}>
-                Events
-                </Typography>
-                {userAlerts?.map((alert) => (
-                    <Paper
-                    key={alert.id}
-                    elevation={0}
-                    sx={{
-                        p: 1,
-                        border: "2px solid",
-                        borderColor: "grey.200",
-                        borderRadius: 4,
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        mb: 1,
-                    }}
-                    >
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                        <Box>
-                        <Typography variant="h6" sx={{ mb: 0.5 }}>
-                            {`${alert.user.first_name} ${alert.user.last_name} - ${alert.event.name}`}
+                    <Grid item xs={12} md={6}>
+                        <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 500 }}>
+                            Events
                         </Typography>
-                        <Typography color="text.secondary">
-                            Max Price:{" "}
-                            <Box component="span" sx={{ fontWeight: 500 }}>
-                                ${alert.price}
+                        {userAlerts?.map((alert) => (
+                            <Paper
+                                key={alert.id}
+                                elevation={0}
+                                sx={{
+                                    p: 1,
+                                    border: "2px solid",
+                                    borderColor: "grey.200",
+                                    borderRadius: 4,
+                                    display: "flex",
+                                    justifyContent: "space-between",
+                                    alignItems: "center",
+                                    mb: 1,
+                                }}
+                            >
+                                <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                                    <Box>
+                                    <Typography variant="h6" sx={{ mb: 0.5 }}>
+                                        {`${alert.user.first_name} ${alert.user.last_name} - ${alert.event.name}`}
+                                    </Typography>
+                                    <Typography color="text.secondary">
+                                        Max Price:{" "}
+                                        <Box component="span" sx={{ fontWeight: 500 }}>
+                                            ${alert.price}
+                                        </Box>
+                                    </Typography>
+                                    </Box>
+                                </Box>
+                            </Paper>
+                        ))}
+                        </Grid>
+                    <Grid item xs={12} md={6}>
+                        <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 500 }}>
+                        Categories
+                        </Typography>
+                        {userCategoryAlerts?.map((alert) => (
+                            <Paper
+                            key={alert.id}
+                            elevation={0}
+                            sx={{
+                                p: 1,
+                                border: "2px solid",
+                                borderColor: "grey.200",
+                                borderRadius: 4,
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                mb: 1,
+                            }}
+                            >
+                            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                                <Box>
+                                <Typography variant="h6" sx={{ mb: 0.5 }}>
+                                    {`${alert.user.first_name} ${alert.user.last_name} - ${alert.category.name}`}
+                                </Typography>
+                                <Typography color="text.secondary">
+                                    Max Price:{" "}
+                                    <Box component="span" sx={{ fontWeight: 500 }}>
+                                        ${alert.price}
+                                    </Box>
+                                </Typography>
+                                </Box>
                             </Box>
-                        </Typography>
-                        </Box>
-                    </Box>
-                    </Paper>
-                ))}
-                </Grid>
-                <Grid item xs={12} md={6}>
-                <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 500 }}>
-                Categories
-                </Typography>
-                {userCategoryAlerts?.map((alert) => (
-                    <Paper
-                    key={alert.id}
-                    elevation={0}
-                    sx={{
-                        p: 1,
-                        border: "2px solid",
-                        borderColor: "grey.200",
-                        borderRadius: 4,
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        mb: 1,
-                    }}
-                    >
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                        <Box>
-                        <Typography variant="h6" sx={{ mb: 0.5 }}>
-                            {`${alert.user.first_name} ${alert.user.last_name} - ${alert.category.name}`}
-                        </Typography>
-                        <Typography color="text.secondary">
-                            Max Price:{" "}
-                            <Box component="span" sx={{ fontWeight: 500 }}>
-                                ${alert.price}
-                            </Box>
-                        </Typography>
-                        </Box>
-                    </Box>
-                    </Paper>
-                ))}
-                </Grid>
+                            </Paper>
+                        ))}
+                    </Grid>
                 </Grid>
             :
                 <div>You don't have access</div>

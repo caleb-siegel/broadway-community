@@ -17,6 +17,7 @@ import ForgotPassword from './ForgotPassword';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
 
 import { useOutletContext } from "react-router-dom";
+import { useGoogleLogin } from '@react-oauth/google';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -109,6 +110,25 @@ export default function SignInCard() {
 
     return isValid;
   };
+
+  const login = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      console.log('Access token:', tokenResponse.access_token);
+
+      // Send the token to your backend for verification
+      const response = await fetch('https://your-backend-url.com/auth/google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: tokenResponse.access_token }),
+      });
+
+      const data = await response.json();
+      console.log('Backend response:', data);
+    },
+    onError: () => {
+      console.error('Login Failed');
+    },
+  });
 
   return (
     <Card variant="outlined">
@@ -217,25 +237,25 @@ export default function SignInCard() {
           </span>
         </Typography>
       </Box>
-      {/* <Divider>or</Divider>
+      <Divider>or</Divider>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Button
           fullWidth
           variant="outlined"
-          onClick={() => alert('Sign in with Google')}
+          onClick={login}
           startIcon={<GoogleIcon />}
         >
           Sign in with Google
         </Button>
-        <Button
+        {/* <Button
           fullWidth
           variant="outlined"
           onClick={() => alert('Sign in with Facebook')}
           startIcon={<FacebookIcon />}
         >
           Sign in with Facebook
-        </Button>
-      </Box> */}
+        </Button> */}
+      </Box>
     </Card>
   );
 }
