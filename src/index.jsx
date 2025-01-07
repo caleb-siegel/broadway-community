@@ -12,7 +12,7 @@ import Alerts from "./components/alerts/Alerts.jsx";
 import Event from "./components/event/Event.jsx";
 import Date from "./components/date/Date.jsx";
 import Enterprise from "./components/enterprise/Enterprise.jsx";
-import UserPreferences from "./components/user-preferences/UserPreferences.jsx";
+import UserAlerts from "./components/user-alerts/UserAlerts.jsx";
 
 const router = createBrowserRouter([
   {
@@ -49,8 +49,8 @@ const router = createBrowserRouter([
         element: <Enterprise />,
       },
       {
-        path: "user-preferences",
-        element: <UserPreferences />,
+        path: "user-alerts",
+        element: <UserAlerts />,
       },
       //   {
       //     path: "recipes/:id",
