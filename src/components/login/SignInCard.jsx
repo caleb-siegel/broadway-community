@@ -115,13 +115,13 @@ export default function SignInCard() {
 
   const login = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
-      console.log('Access token:', tokenResponse.access_token);
+      console.log('ID token:', tokenResponse.id_token);
 
       // Send the token to your backend for verification
       const response = await fetch(`${backendUrl}/auth/google`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: tokenResponse.access_token }),
+        body: JSON.stringify({ token: tokenResponse.id_token }),
       });
 
       const data = await response.json();
@@ -131,6 +131,7 @@ export default function SignInCard() {
       console.error('Login Failed');
     },
     redirectUri: "https://broadwaycommunity.vercel.app/alerts",
+    scope: "openid email profile", // Ensure OpenID scope is included
   });
 
   return (
