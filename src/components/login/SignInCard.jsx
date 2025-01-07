@@ -18,8 +18,6 @@ import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
 
 import { useOutletContext } from "react-router-dom";
 import { useGoogleLogin } from '@react-oauth/google';
-import { useOutletContext } from "react-router-dom";
-
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -49,7 +47,6 @@ export default function SignInCard() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const { attemptLogin } = useOutletContext();
-
   const { backendUrl } = useOutletContext();
   
 
