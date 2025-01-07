@@ -2,25 +2,25 @@ import React, { useState, useEffect } from "react";
 import { Container, Typography, Box, Button, TextField, Dialog, DialogContent, DialogTitle, IconButton, Paper, MenuItem, Grid, ToggleButtonGroup, ToggleButton, InputAdornment, FormControl, Select } from "@mui/material";
 import { Email, Sms, NotificationsActive, Refresh, Add, Edit, Delete, Close, Check } from "@mui/icons-material";
 import { useOutletContext } from "react-router-dom";
-import PreferenceForm from "./PreferenceForm";
-import "./preferences.css";
+import AlertForm from "./AlertForm";
+import "./alerts.css";
 
-const PreferencesPage = () => {
+const AlertsPage = () => {
 
   const { user } = useOutletContext();
   const { backendUrl } = useOutletContext();
 
   // useEffect(() => {
   //   if (user) {
-  //     setEventPreferences(user.event_preferences || []);
-  //     setCategoryPreferences(user.category_preferences || []);
+  //     setEventAlerts(user.alerts || []);
+  //     setCategoryAlerts(user.category_alerts || []);
   //   }
   // }, [user]);
 
-  const [eventPreferences, setEventPreferences] = useState(user?.event_preferences || []);
-  const [categoryPreferences, setCategoryPreferences] = useState(user?.category_preferences || []);
+  const [eventAlerts, setEventAlerts] = useState(user?.event_alerts || []);
+  const [categoryAlerts, setCategoryAlerts] = useState(user?.category_alerts || []);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingPreference, setEditingPreference] = useState(null);
+  const [editingAlert, setEditingAlert] = useState(null);
   const [showType, setShowType] = useState("Broadway");
   const [trackingType, setTrackingType] = useState("");
   const [selectedItem, setSelectedItem] = useState("");
@@ -31,14 +31,14 @@ const PreferencesPage = () => {
   const [options, setOptions] = useState([]);
   const [updatedId, setUpdatedId] = useState({})
 
-  const handleEdit = (preference) => {
-    setEditingPreference(preference);
-    setPriceThreshold(preference?.price);
+  const handleEdit = (alert) => {
+    setEditingAlert(alert);
+    setPriceThreshold(alert?.price);
     // setIsDialogOpen(true);
   };
 
   const handlePatch = (id, type) => {
-    fetch(`${backendUrl}/api/${type}_preferences/${id}`, {
+    fetch(`${backendUrl}/api/${type}_alerts/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -53,7 +53,7 @@ const PreferencesPage = () => {
       console.log("edited")
       setUpdatedId({"id": id, "price": priceThreshold})
       setPriceThreshold(0)
-      setEditingPreference(null);
+      setEditingAlert(null);
     })
   }
 
@@ -72,7 +72,7 @@ const PreferencesPage = () => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    const preferenceData = {
+    const alertData = {
         user_id: user.id,
         [trackingType === "event" ? "event_name" : "category_name"]: selectedItem,
         price: priceThreshold,
@@ -80,48 +80,48 @@ const PreferencesPage = () => {
         send_sms: smsBool,
         send_push: pushBool,
     };
-    const endpoint = (trackingType === "event") ? "api/event_preferences" : "api/category_preferences";
+    const endpoint = (trackingType === "event") ? "api/event_alerts" : "api/category_alerts";
     fetch(`${backendUrl}/${endpoint}`, {
         method: "POST",
         headers: {
             "Content-Type": "Application/JSON",
         },
-        body: JSON.stringify(preferenceData),
+        body: JSON.stringify(alertData),
     })
     .then((response) => response.json())
-    .then((newPreferenceData) => {
+    .then((newAlertData) => {
         setSelectedItem();
         setPriceThreshold();
         if (trackingType === "event") {
-          setEventPreferences((prevPreferences) => [
-            ...(prevPreferences || []), // Spread existing array
-            newPreferenceData,          // Append new data
+          setEventAlerts((prevAlerts) => [
+            ...(prevAlerts || []), // Spread existing array
+            newAlertData,          // Append new data
           ]);
         } else {
-          setCategoryPreferences((prevPreferences) => [
-              ...(prevPreferences || []), // Spread existing array
-              newPreferenceData,          // Append new data
+          setCategoryAlerts((prevAlerts) => [
+              ...(prevAlerts || []), // Spread existing array
+              newAlertData,          // Append new data
           ]);
         }
     });
   };
 
-  const handleDeletePreference = (event, id, type) => {
+  const handleDeleteAlert = (event, id, type) => {
     event.preventDefault();
     const confirmed = window.confirm(
         "Are you sure you want to delete this item?"
     );
-    console.log(`${backendUrl}/api/${type}_preferences/${id}`)
+    console.log(`${backendUrl}/api/${type}_alerts/${id}`)
     if (confirmed) {
-      fetch(`${backendUrl}/api/${type}_preferences/${id}`, {
+      fetch(`${backendUrl}/api/${type}_alerts/${id}`, {
           method: "DELETE",
       })
       .then((data) => {
         console.log("delete successful")
         if (type === "event") {
-          setEventPreferences(eventPreferences.filter((p) => p.id !== id));
+          setEventAlerts(eventAlerts.filter((a) => a.id !== id));
         } else {
-          setCategoryPreferences(categoryPreferences.filter((p) => p.id !== id));
+          setCategoryAlerts(categoryAlerts.filter((a) => a.id !== id));
         };
       });
     };
@@ -187,7 +187,7 @@ const PreferencesPage = () => {
       <Container maxWidth="lg">
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2, }} >
           <Typography variant="h2" sx={{ fontWeight: 500 }}>
-            Preferences
+            Alerts
           </Typography>
           {/* <FormControl sx={{ minWidth: 180 }}>
             <Select value={showType} onChange={(e) => setShowType(e.target.value)} >
@@ -198,23 +198,23 @@ const PreferencesPage = () => {
         </Box>
 
         <Typography variant="h6" color="text.secondary" sx={{ mb: 4 }}>
-          Set notification preferences to receive alerts whenever tickets are selling below your max price. Manage your preferences here.
+          Set alerts to receive emails whenever tickets are selling below your max price. Manage your alerts here.
         </Typography>
 
-        {/* Current Preferences */}
+        {/* Current Alerts */}
         <Box sx={{ mb: 4 }}>
           <Typography variant="h4" sx={{ mb: 3, fontWeight: 500 }}>
-            Current Preferences
+            Current Alerts
           </Typography>
           <Grid container spacing={2} sx={{ flexDirection: { xs: 'column', md: 'row'} }}>
-            {/* Left side: event preferences */}
+            {/* Left side: event alerts */}
             <Grid item xs={12} md={6}>
             <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 500 }}>
               Events
             </Typography>
-              {eventPreferences?.map((pref) => (
+              {eventAlerts?.map((alert) => (
                 <Paper
-                  key={pref.id}
+                  key={alert.id}
                   elevation={0}
                   sx={{
                     p: 1,
@@ -233,13 +233,13 @@ const PreferencesPage = () => {
                     </Box>
                     <Box>
                       <Typography variant="h6" sx={{ mb: 0.5 }}>
-                        {pref.event.name}
+                        {alert.event.name}
                       </Typography>
                       <Typography color="text.secondary">
                         Max Price:{" "}
-                        {editingPreference === pref ? (
+                        {editingAlert === alert ? (
                           <TextField
-                            // defaultValue={pref.price} 
+                            // defaultValue={alert.price} 
                             onChange={(event) => handlePriceThreshold(event)} // Handle changes
                             variant="outlined" // Use a compact variant
                             type="number"
@@ -260,24 +260,24 @@ const PreferencesPage = () => {
                           />
                         ) : (
                           <Box component="span" sx={{ fontWeight: 500 }}>
-                            ${(updatedId && (updatedId.id === pref.id)) ? updatedId.price : pref.price}
+                            ${(updatedId && (updatedId.id === alert.id)) ? updatedId.price : alert.price}
                           </Box>
                         )}
                       </Typography>
                     </Box>
                   </Box>
-                  {editingPreference === pref ? 
+                  {editingAlert === alert ? 
                     <Box sx={{ display: "flex", gap: 1, border: '1px solid grey', borderRadius: 10 }}>
-                      <IconButton onClick={() => handlePatch(pref.id, "event")}>
+                      <IconButton onClick={() => handlePatch(alert.id, "event")}>
                         <Check />
                       </IconButton>
                     </Box>
                   : 
                     <Box sx={{ display: "flex", gap: 1 }}>
-                      <IconButton onClick={() => handleEdit(pref)}>
+                      <IconButton onClick={() => handleEdit(alert)}>
                         <Edit />
                       </IconButton>
-                      <IconButton onClick={(e) => handleDeletePreference(e, pref.id, pref.event ? "event" : "category")}>
+                      <IconButton onClick={(e) => handleDeleteAlert(e, alert.id, alert.event ? "event" : "category")}>
                         <Delete />
                       </IconButton>
                     </Box>
@@ -286,14 +286,14 @@ const PreferencesPage = () => {
               ))}
             </Grid>
 
-            {/* Right side: category preferences */}
+            {/* Right side: category alerts */}
             <Grid item xs={12} md={6}>
               <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 500 }}>
                 Categories
               </Typography>
-              {categoryPreferences?.map((pref) => (
+              {categoryAlerts?.map((alert) => (
                 <Paper
-                  key={pref.id}
+                  key={alert.id}
                   elevation={0}
                   sx={{
                     p: 1,
@@ -312,13 +312,13 @@ const PreferencesPage = () => {
                     </Box>
                     <Box>
                       <Typography variant="h6" sx={{ mb: 0.5 }}>
-                        {pref.category.name}
+                        {alert.category.name}
                       </Typography>
                       <Typography color="text.secondary">
                         Max Price:{" "}
-                        {editingPreference === pref ? (
+                        {editingAlert === alert ? (
                           <TextField
-                            defaultValue={pref.price} // Default value for editing
+                            defaultValue={alert.price} // Default value for editing
                             onChange={(event) => handlePriceThreshold(event)} // Handle changes
                             variant="outlined" // Use a compact variant
                             type="number"
@@ -338,24 +338,24 @@ const PreferencesPage = () => {
                           />
                         ) : (
                           <Box component="span" sx={{ fontWeight: 500 }}>
-                            ${(updatedId && (updatedId.id === pref.id)) ? updatedId.price : pref.price}
+                            ${(updatedId && (updatedId.id === alert.id)) ? updatedId.price : alert.price}
                           </Box>
                         )}
                       </Typography>
                     </Box>
                   </Box>
-                  {editingPreference === pref ? 
+                  {editingAlert === alert ? 
                     <Box sx={{ display: "flex", gap: 1, border: '1px solid grey', borderRadius: 10 }}>
-                      <IconButton onClick={() => handlePatch(pref.id, "category")}>
+                      <IconButton onClick={() => handlePatch(alert.id, "category")}>
                         <Check />
                       </IconButton>
                     </Box>
                   : 
                     <Box sx={{ display: "flex", gap: 1 }}>
-                      <IconButton onClick={() => handleEdit(pref)}>
+                      <IconButton onClick={() => handleEdit(alert)}>
                         <Edit />
                       </IconButton>
-                      <IconButton onClick={(e) => handleDeletePreference(e, pref.id, pref.event ? "event" : "category")}>
+                      <IconButton onClick={(e) => handleDeleteAlert(e, alert.id, alert.event ? "event" : "category")}>
                         <Delete />
                       </IconButton>
                     </Box>
@@ -366,13 +366,13 @@ const PreferencesPage = () => {
           </Grid>
         </Box>
 
-        {/* Add New Preference */}
+        {/* Add New Alert */}
         <Button
           variant="contained"
           fullWidth
           startIcon={<Add />}
           onClick={() => {
-            setEditingPreference(null);
+            setEditingAlert(null);
             setIsDialogOpen(true);
           }}
           sx={{
@@ -387,10 +387,10 @@ const PreferencesPage = () => {
             marginBottom: "2rem"
           }}
         >
-          Add New Preference
+          Add New Alert
         </Button>
 
-        {/* Preference Dialog */}
+        {/* Alert Dialog */}
         <Dialog
           open={isDialogOpen}
           onClose={() => setIsDialogOpen(false)}
@@ -405,16 +405,16 @@ const PreferencesPage = () => {
             }}
           >
             <Typography variant="h4">
-              Add New Preference
+              Add New Alert
             </Typography>
             <IconButton onClick={() => setIsDialogOpen(false)}>
               <Close />
             </IconButton>
           </DialogTitle>
           <DialogContent>
-            <PreferenceForm
+            <AlertForm
               onClose={() => setIsDialogOpen(false)}
-              initialData={editingPreference}
+              initialData={editingAlert}
               handleSubmit={handleSubmit}
               trackingType={trackingType}
               selectedItem={selectedItem}
@@ -446,4 +446,4 @@ const PreferencesPage = () => {
   );
 };
 
-export default PreferencesPage;
+export default AlertsPage;
