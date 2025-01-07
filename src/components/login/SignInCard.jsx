@@ -241,7 +241,7 @@ export default function SignInCard() {
           </span>
         </Typography>
       </Box>
-      {/* <Divider>or</Divider>
+      <Divider>or</Divider>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Button
           fullWidth
@@ -251,15 +251,15 @@ export default function SignInCard() {
         >
           Sign in with Google
         </Button>
-        <Button
+      {/*   <Button
           fullWidth
           variant="outlined"
           onClick={() => alert('Sign in with Facebook')}
           startIcon={<FacebookIcon />}
         >
           Sign in with Facebook
-        </Button>
-      </Box> */}
+        </Button> */}
+      </Box>
     </Card>
   );
 }
