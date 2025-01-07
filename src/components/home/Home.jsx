@@ -154,7 +154,7 @@ function Home() {
               : {
                   ...show,
                   event_info: [updatedShow],
-                  event_preferences: updatedShow.event.event_preferences,
+                  event_alerts: updatedShow.event.event_alerts,
                   id: updatedShow.event.id,
                   image: updatedShow.event.image,
                   lottery_url: updatedShow.event.lottery_url,

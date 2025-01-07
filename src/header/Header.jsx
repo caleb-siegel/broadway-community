@@ -73,16 +73,16 @@ const Header = ({ user, logout }) => {
 
             <li className="nav__item">
               <a
-                href="/preferences"
-                value="#preferences"
+                href="/alerts"
+                value="#alerts"
                 onClick={(e) => handleActiveNav(e)}
                 className={
-                  activeNav === "#preferences"
+                  activeNav === "#alerts"
                     ? "nav__link active-link"
                     : "nav__link"
                 }
               >
-                <i className="uil uil-star nav__icon"></i> Preferences
+                <i className="uil uil-star nav__icon"></i> Alerts
               </a>
             </li>
 

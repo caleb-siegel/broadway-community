@@ -8,7 +8,7 @@ import Error from "./components/Error.jsx";
 import Home from "./components/home/Home.jsx";
 import SignInSide from "./components/login/SignInSide.jsx";
 import SignUp from "./components/login/SignUp";
-import Preferences from "./components/preferences/Preferences.jsx";
+import Alerts from "./components/alerts/Alerts.jsx";
 import Event from "./components/event/Event.jsx";
 import Date from "./components/date/Date.jsx";
 import Enterprise from "./components/enterprise/Enterprise.jsx";
@@ -33,8 +33,8 @@ const router = createBrowserRouter([
         element: <SignUp />,
       },
       {
-        path: "preferences",
-        element: <Preferences />,
+        path: "alerts",
+        element: <Alerts />,
       },
       {
         path: "event/:id",

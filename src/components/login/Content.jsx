@@ -19,9 +19,9 @@ const items = [
   },
   {
     icon: <ConstructionRoundedIcon sx={{ color: "text.secondary" }} />,
-    title: "Set preferences",
+    title: "Set Alerts",
     description:
-      "No need to monitor this site constantly. Just create an account and set show (i.e. Hamilton) or category (i.e. all of Broadway) preferences to be notified when there are tickets available at your desired price.",
+      "No need to monitor this site constantly. Just create an account and set show (i.e. Hamilton) or category (i.e. all of Broadway) alerts to be notified when there are tickets available at your desired price.",
   },
   // {
   //   icon: <ThumbUpAltRoundedIcon sx={{ color: 'text.secondary' }} />,

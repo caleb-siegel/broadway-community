@@ -65,7 +65,7 @@ function App() {
         console.log(("User info:", data))
         // user && console.log("User info:", user);
         // user && navigate("/preferences");
-        navigate("/preferences");
+        navigate("/alerts");
       })
       .catch((e) => {
         alert("incorrect email or password");
