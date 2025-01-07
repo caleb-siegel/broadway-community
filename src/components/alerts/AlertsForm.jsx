@@ -3,7 +3,7 @@ import { Typography, Box, Button, TextField, IconButton, ToggleButtonGroup, Togg
 import { Email, Sms, NotificationsActive } from "@mui/icons-material";
 import { useOutletContext } from "react-router-dom";
 
-const PreferenceForm = ({ onClose, initialData = null, handleSubmit, trackingType, selectedItem, emailBool, smsBool, pushBool, priceThreshold, handleTrackingTypeChange, setOptions, options, handleSearchChange, searchValue, handleSelectedItem, handlePriceThreshold }) => {
+const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, selectedItem, emailBool, smsBool, pushBool, priceThreshold, handleTrackingTypeChange, setOptions, options, handleSearchChange, searchValue, handleSelectedItem, handlePriceThreshold }) => {
     const { user } = useOutletContext();
 
     const [notificationMethod, setNotificationMethod] = useState(initialData?.notificationMethod || "email");    
@@ -108,10 +108,10 @@ const PreferenceForm = ({ onClose, initialData = null, handleSubmit, trackingTyp
     
             {/* Save Button */}
             <Button variant="contained" fullWidth onClick={onClose} type="submit" sx={{ bgcolor: "black", color: "white", py: 2, borderRadius: 4, fontSize: "1.1rem", "&:hover": { bgcolor: "rgb(45, 45, 45)", }, }} >
-                Save Preference"
+                Save Alert"
             </Button>
         </Box>
         );
     };
 
-export default PreferenceForm
+export default AlertForm
