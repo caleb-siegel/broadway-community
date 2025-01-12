@@ -109,8 +109,9 @@ function App() {
         console.log('Login successful:', data);
         
         // Handle successful login (e.g., redirect or update UI)
-        setUser(data);
-        navigate("/alerts");
+        setUser(data.user, () => {
+          navigate("/alerts");
+        });
 
       } catch (error) {
         console.error('Error during login:', error);
@@ -123,13 +124,6 @@ function App() {
     flow: 'implicit',
     scope: 'email profile',
   });
-
-  // useEffect(() => {
-  //   if (user) {
-  //     console.log("User info after login:", user);
-  //     // navigate("/preferences");
-  //   }
-  // }, [user]);
 
   function logout() {
     fetch(`${backendUrl}/api/logout`, {
