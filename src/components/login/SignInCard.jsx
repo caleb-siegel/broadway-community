@@ -131,7 +131,7 @@ export default function SignInCard() {
       console.error('Login Failed');
     },
     redirectUri: "https://broadwaycommunity.vercel.app",
-    scope: "email profile", // Ensure OpenID scope is included
+    scope: "openid email profile", // Ensure OpenID scope is included
   });
 
   return (
