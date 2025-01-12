@@ -114,24 +114,38 @@ export default function SignInCard() {
   };
 
   const login = useGoogleLogin({
-    onSuccess: async (tokenResponse) => {
-      console.log('ID token:', tokenResponse.id_token);
-
-      // Send the token to your backend for verification
-      const response = await fetch(`${backendUrl}/api/auth/google`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: tokenResponse.id_token }),
-      });
-
-      const data = await response.json();
-      console.log('Backend response:', data);
+    onSuccess: async (codeResponse) => {
+      try {
+        // Get user info from Google
+        const response = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+          headers: {
+            Authorization: `Bearer ${codeResponse.access_token}`,
+          },
+        });
+        console.log(`access token: ${codeResponse.access_token}`)
+        const userInfo = await response.json();
+        
+        // Send the user info to your backend
+        const backendResponse = await fetch(`${backendUrl}/api/auth/google`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ 
+            token: codeResponse.access_token,
+            userInfo: userInfo
+          }),
+        });
+  
+        const data = await backendResponse.json();
+        console.log('Backend response:', data);
+      } catch (error) {
+        console.error('Error:', error);
+      }
     },
     onError: () => {
       console.error('Login Failed');
     },
-    redirectUri: "https://broadwaycommunity.vercel.app",
-    scope: "openid email profile", // Ensure OpenID scope is included
+    flow: 'implicit', // Add this
+    scope: 'email profile',
   });
 
   return (
