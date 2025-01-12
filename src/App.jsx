@@ -15,6 +15,12 @@ function App() {
   const backendUrl = "https://broadwaycommunity-backend.vercel.app"
   // const backendUrl = "http://127.0.0.1:5000"
 
+  useEffect(() => {
+    if (user) {
+      navigate("/alerts");
+    }
+  }, [user, navigate]); // Runs when `user` changes
+
 
   useEffect(() => {
     // Function to check session
