@@ -130,8 +130,8 @@ export default function SignInCard() {
     onError: () => {
       console.error('Login Failed');
     },
-    redirectUri: "https://broadwaycommunity.vercel.app/alerts",
-    scope: "openid email profile", // Ensure OpenID scope is included
+    redirectUri: "https://broadwaycommunity.vercel.app",
+    scope: "email profile", // Ensure OpenID scope is included
   });
 
   return (
