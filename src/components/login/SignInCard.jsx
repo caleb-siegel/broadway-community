@@ -17,7 +17,6 @@ import ForgotPassword from './ForgotPassword';
 import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
 
 import { useOutletContext } from "react-router-dom";
-import { useGoogleLogin } from '@react-oauth/google';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -47,7 +46,7 @@ export default function SignInCard() {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const { attemptLogin } = useOutletContext();
-  const { backendUrl } = useOutletContext();
+  const { googleLogin } = useOutletContext();
   
 
   const handleClickOpen = () => {
@@ -112,54 +111,6 @@ export default function SignInCard() {
 
     return isValid;
   };
-
-  const login = useGoogleLogin({
-    onSuccess: async (codeResponse) => {
-      try {
-        // Get user info from Google
-        const userResponse = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-          headers: {
-            'Authorization': `Bearer ${codeResponse.access_token}`,
-          },
-        });
-        
-        if (!userResponse.ok) {
-          throw new Error('Failed to get user info from Google');
-        }
-        
-        const userInfo = await userResponse.json();
-        
-        // Send to your backend
-        const backendResponse = await fetch(`${backendUrl}/api/auth/google`, {
-          method: 'POST',
-          credentials: 'include',  // Important for cookies
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${codeResponse.access_token}`,
-          },
-          body: JSON.stringify({ userInfo })
-        });
-        
-        if (!backendResponse.ok) {
-          throw new Error('Backend authentication failed');
-        }
-  
-        const data = await backendResponse.json();
-        console.log('Login successful:', data);
-        
-        // Handle successful login (e.g., redirect or update UI)
-        
-      } catch (error) {
-        console.error('Error during login:', error);
-        // Handle error (e.g., show error message to user)
-      }
-    },
-    onError: (error) => {
-      console.error('Google Login Failed:', error);
-    },
-    flow: 'implicit',
-    scope: 'email profile',
-  });
 
   return (
     <Card variant="outlined">
@@ -273,19 +224,19 @@ export default function SignInCard() {
         <Button
           fullWidth
           variant="outlined"
-          onClick={login}
+          onClick={googleLogin}
           startIcon={<GoogleIcon />}
         >
           Sign in with Google
         </Button>
-        <Button
+        {/* <Button
           fullWidth
           variant="outlined"
           onClick={() => alert('Sign in with Facebook')}
           startIcon={<FacebookIcon />}
         >
           Sign in with Facebook
-        </Button>
+        </Button> */}
       </Box>
     </Card>
   );
