@@ -11,7 +11,6 @@ const Event = () => {
         .then((response) => response.json())
         .then((data) => setEvent(data));
     }, []);
-    console.log(event)
 
     const [todaytixPrice, setTodaytixPrice] = useState(0)
     useEffect(() => {
@@ -21,7 +20,6 @@ const Event = () => {
     }, []);
 
     // const fetchTodayTix = () => {
-    //     console.log("hi")
     //     fetch(`https://broadwaycommunity-backend.vercel.app/api/fetch_todaytix/${id}`)
     //     .then((response) => response.json())
     //     .then((data) => setTodaytixPrice(data));

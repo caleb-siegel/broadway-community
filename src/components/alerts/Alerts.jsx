@@ -50,7 +50,6 @@ const AlertsPage = () => {
     })
     .then((response) => response.json())
     .then((data) => {
-      console.log("edited")
       setUpdatedId({"id": id, "price": priceThreshold})
       setPriceThreshold(0)
       setEditingAlert(null);
@@ -111,13 +110,11 @@ const AlertsPage = () => {
     const confirmed = window.confirm(
         "Are you sure you want to delete this item?"
     );
-    console.log(`${backendUrl}/api/${type}_alerts/${id}`)
     if (confirmed) {
       fetch(`${backendUrl}/api/${type}_alerts/${id}`, {
           method: "DELETE",
       })
       .then((data) => {
-        console.log("delete successful")
         if (type === "event") {
           setEventAlerts(eventAlerts.filter((a) => a.id !== id));
         } else {

@@ -69,9 +69,6 @@ function App() {
       })
       .then((data) => {
         setUser(data);
-        console.log(("User info:", data))
-        // user && console.log("User info:", user);
-        // user && navigate("/preferences");
         navigate("/alerts");
       })
       .catch((e) => {
@@ -112,7 +109,6 @@ function App() {
         }
   
         const data = await backendResponse.json();
-        console.log('Login successful:', data);
         
         // Handle successful login (e.g., redirect or update UI)
         setUser(data.user, () => {
@@ -137,7 +133,6 @@ function App() {
       credentials: "include",
     }).then((res) => {
       if (res.ok) {
-        console.log("deleted")
         setUser(null);
       }
     });

@@ -108,7 +108,7 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
     
             {/* Save Button */}
             <Button variant="contained" fullWidth onClick={onClose} type="submit" sx={{ bgcolor: "black", color: "white", py: 2, borderRadius: 4, fontSize: "1.1rem", "&:hover": { bgcolor: "rgb(45, 45, 45)", }, }} >
-                Save Alert"
+                Save Alert
             </Button>
         </Box>
         );

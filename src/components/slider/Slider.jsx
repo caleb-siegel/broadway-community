@@ -25,7 +25,6 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, })
   const [compareLoading, setCompareLoading] = useState(false)
   const [compareId, setCompareId] = useState(0)
   const fetchTodayTix = (id) => {
-        console.log("hi")
         setCompareId(id)
         setCompareLoading(true)
         fetch(`${backendUrl}/api/fetch_todaytix/${id}`)
