@@ -379,19 +379,33 @@ function AddEvent() {
                                                 const existing = existingEvents[category.id] || {};
                                                 const isFullyTracked = existing.specific && existing.any;
                                                 
-                                                return (
+                                                const card = (
                                                     <Card 
-                                                        key={category.id}
-                                                        className={`category-card ${selectedStubhubCategories.includes(category.id) ? 'selected-category' : ''}`}
-                                                        onClick={() => handleStubhubCategoryToggle(category.id)}
+                                                        className={`category-card ${selectedStubhubCategories.includes(category.id) ? 'selected-category' : ''} ${isFullyTracked ? 'disabled-card' : ''}`}
+                                                        onClick={() => !isFullyTracked && handleStubhubCategoryToggle(category.id)}
                                                         sx={{ 
-                                                            cursor: 'pointer'
+                                                            opacity: isFullyTracked ? 0.5 : 1,
+                                                            cursor: isFullyTracked ? 'not-allowed' : 'pointer'
                                                         }}
                                                     >
                                                         <CardContent>
                                                             <Typography>{category.name}</Typography>
                                                         </CardContent>
                                                     </Card>
+                                                );
+
+                                                return isFullyTracked ? (
+                                                    <Tooltip 
+                                                        key={category.id}
+                                                        title="This event is already being tracked with both venue options"
+                                                        arrow
+                                                    >
+                                                        <span>{card}</span>
+                                                    </Tooltip>
+                                                ) : (
+                                                    <React.Fragment key={category.id}>
+                                                        {card}
+                                                    </React.Fragment>
                                                 );
                                             })}
                                         </Box>
@@ -429,7 +443,7 @@ function AddEvent() {
                                                 return isDisabled ? (
                                                     <Tooltip 
                                                         key={venueType}
-                                                        title="This is already being tracked"
+                                                        title="This venue option is already being tracked"
                                                         arrow
                                                     >
                                                         <span>{card}</span>
