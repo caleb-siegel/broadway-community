@@ -46,7 +46,6 @@ function Date() {
 //   }, [category]);
 
   const refreshData = () => {
-    console.log("fetch is running");
     setLoading(true);
     fetch(
       `${backendUrl}/api/fetch_tickets_dates/${category}`,
@@ -97,7 +96,6 @@ function Date() {
   const [individualLoading, setIndividualLoading] = useState(false);
   const [loadingId, setLoadingId] = useState(null);
   const refreshIndividualData = (id) => {
-//     console.log("fetch is running");
 //     setIndividualLoading(true);
 //     setLoadingId(id);
 //     fetch(
@@ -109,7 +107,6 @@ function Date() {
 //       .then((response) => response.json())
 //       .then((updatedShowArray) => {
 //         const updatedShow = updatedShowArray[0];
-//         console.log(updatedShow);
 //         setShows((prevShows) => ({
 //           ...prevShows,
 //           event: prevShows.event.map((show) =>

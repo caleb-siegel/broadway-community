@@ -33,7 +33,6 @@ function Home() {
   }, [category]);
 
   const refreshData = () => {
-    console.log("fetch is running");
     setLoading(true);
     fetch(
       `${backendUrl}/api/fetch_tickets/${category}`,
@@ -46,7 +45,6 @@ function Home() {
       fetch(`${backendUrl}/api/categories/${category}`)
       .then((response) => response.json())
       .then((data) => {
-        console.log(data)
         setShows(data);
         setLoading(false);
       });
@@ -133,7 +131,6 @@ function Home() {
   const [individualLoading, setIndividualLoading] = useState(false);
   const [loadingId, setLoadingId] = useState(null);
   const refreshIndividualData = (id) => {
-    console.log("fetch is running");
     setIndividualLoading(true);
     setLoadingId(id);
     fetch(
@@ -145,7 +142,6 @@ function Home() {
       .then((response) => response.json())
       .then((updatedShowArray) => {
         const updatedShow = updatedShowArray[0];
-        console.log(updatedShow);
         setShows((prevShows) => ({
           ...prevShows,
           event: prevShows.event.map((show) =>
