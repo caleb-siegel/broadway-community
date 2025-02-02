@@ -14,6 +14,7 @@ import Date from "./components/date/Date.jsx";
 import Enterprise from "./components/enterprise/Enterprise.jsx";
 import UserAlerts from "./components/user-alerts/UserAlerts.jsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import AddEvent from "./components/add-event/AddEvent.jsx";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ const router = createBrowserRouter([
       {
         path: "user-alerts",
         element: <UserAlerts />,
+      },
+      {
+        path: "add-event",
+        element: <AddEvent />,
       },
       //   {
       //     path: "recipes/:id",

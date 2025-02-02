@@ -101,6 +101,21 @@ const Header = ({ user, logout }) => {
               </a>
             </li>
 
+            <li className="nav__item">
+              <a
+                href="/add-event"
+                value="#add-event"
+                onClick={(e) => handleActiveNav(e)}
+                className={
+                  activeNav === "#add-event"
+                    ? "nav__link active-link"
+                    : "nav__link"
+                }
+              >
+                <i className="uil uil-plus-circle nav__icon"></i> Add Event
+              </a>
+            </li>
+
             {!user ? (
               <li className="nav__item">
                 <a

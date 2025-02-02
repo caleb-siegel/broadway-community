@@ -1,0 +1,170 @@
+.add-event-page {
+    max-width: 800px;
+    margin: 75px auto;
+}
+
+.add-event-header {
+    margin-bottom: 24px;
+    margin-top: 45px;
+}
+
+.add-event-form-container {
+    padding: 24px;
+    background-color: white;
+    border-radius: 16px;
+}
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+.input-description {
+    color: #666;
+    margin-bottom: 12px;
+    line-height: 1.4;
+}
+
+.fetch-button {
+    margin-top: 8px !important;
+    border-radius: 20px !important;
+    width: 200px !important;
+    background-color: #156064 !important;
+}
+
+.category-card {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 45px !important;
+    padding: 0 12px;
+    border: 1px solid #e0e0e0;
+    background-color: #fff;
+    display: inline-block;
+    width: fit-content;
+}
+
+.category-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border-color: var(--title-color);
+}
+
+.category-card.selected-category {
+    border: 1px solid var(--title-color);
+    background-color: rgba(21, 96, 100, 0.05);
+}
+
+.category-card .MuiCardContent-root {
+    padding: 6px !important;
+    display: inline-block;
+}
+
+.category-card .MuiTypography-root {
+    font-size: 0.9rem;
+    color: #444;
+    white-space: nowrap;
+}
+
+.category-card.disabled-card, .venue-card.disabled-card {
+    pointer-events: none;
+    border-color: #ddd;
+}
+
+.category-card.disabled-card:hover, .venue-card.disabled-card:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.venue-card {
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border-radius: 45px !important;
+    padding: 0 12px;
+    border: 1px solid #e0e0e0;
+    background-color: #fff;
+    display: inline-block;
+    width: fit-content;
+}
+
+.venue-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border-color: var(--title-color);
+}
+
+.venue-card.selected-category {
+    border: 1px solid var(--title-color);
+    background-color: rgba(21, 96, 100, 0.05);
+}
+
+.venue-card .MuiCardContent-root {
+    padding: 6px !important;
+    display: inline-block;
+}
+
+.venue-card .MuiTypography-root {
+    font-size: 0.9rem;
+    color: #444;
+    white-space: nowrap;
+}
+
+.venue-options {
+    margin-top: 24px;
+}
+
+.venue-options .input-description {
+    margin-bottom: 8px;
+}
+
+.submit-button {
+    margin-top: 24px !important;
+    border-radius: 20px !important;
+    width: 200px !important;
+    background-color: #156064 !important;
+}
+
+.submit-button-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.alert-message {
+    margin-top: 16px;
+    border-radius: 8px;
+}
+
+@media (max-width: 600px) {
+    .add-event-page {
+        padding: 16px;
+        margin: auto;
+    }
+
+    .add-event-form-container {
+        padding: 16px;
+    }
+}
+
+.category-select {
+    background-color: white;
+    border-radius: 8px;
+}
+
+.category-select .MuiOutlinedInput-root {
+    border-radius: 8px;
+}
+
+.category-select .MuiOutlinedInput-notchedOutline {
+    border-color: rgba(0, 0, 0, 0.23);
+}
+
+.category-select .MuiSelect-select {
+    padding: 14px;
+}
+
+.category-select .MuiInputLabel-outlined {
+    transform: translate(14px, 16px) scale(1);
+}
+
+.category-select .MuiInputLabel-outlined.MuiInputLabel-shrink {
+    transform: translate(14px, -6px) scale(0.75);
+} 
