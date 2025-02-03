@@ -19,6 +19,7 @@ import {
     Tooltip
 } from '@mui/material';
 import './addEvent.css';
+import { useOutletContext } from "react-router-dom";
 
 function AddEvent() {
     const [stubhubLink, setStubhubLink] = useState('');
@@ -33,7 +34,9 @@ function AddEvent() {
     const [venueInfo, setVenueInfo] = useState(null);
     const [existingEvents, setExistingEvents] = useState({});  // Track which categories are already being tracked
     
-    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://127.0.0.1:5000';
+
+    
+    const { backendUrl } = useOutletContext();
 
     useEffect(() => {
         fetch(`${backendUrl}/api/category_names`)
