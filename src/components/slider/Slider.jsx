@@ -132,7 +132,7 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, })
                       : show.event_info[0]?.formatted_date}
                   </p>
 
-                  <p className="slider__description-location">
+                  {/* <p className="slider__description-location">
                     {" "}
                     {individualLoading && show.id === loadingId
                       ? "..."
@@ -152,7 +152,7 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, })
                       ? "..."
                       : `${show.event_info[0]?.note}`}
                   </p>
-                  <br/>
+                  <br/> */}
 
                   <a
                     href={
