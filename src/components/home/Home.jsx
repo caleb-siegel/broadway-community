@@ -8,6 +8,7 @@ import Filter from "../filter/Filter";
 import Categories from "../categories/Categories";
 import List from "../list/List";
 import { useOutletContext } from "react-router-dom";
+import { toast } from 'react-toastify';
 
 function Home() {
   const { backendUrl } = useOutletContext();
@@ -52,6 +53,7 @@ function Home() {
     .catch((error) => {
       console.error("Error refreshing data:", error);
       setLoading(false);
+      toast.error('Failed to refresh data. Please try again.');
     });
   };
 
@@ -167,6 +169,9 @@ function Home() {
       })
       .catch((error) => {
         console.error("Error refreshing individual show data:", error);
+        setIndividualLoading(false);
+        setLoadingId(null);
+        toast.error('Failed to update show data. Please try again.');
       });
   };
 

@@ -6,6 +6,8 @@ import { useNavigate } from "react-router-dom";
 import Header from "./header/Header";
 import LoadingSpinner from "./Loading";
 import { useGoogleLogin } from '@react-oauth/google';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const [user, setUser] = useState(null);
@@ -150,6 +152,7 @@ function App() {
         <Header logout={logout} user={user} />
         <Outlet context={{ user, attemptLogin, logout, backendUrl, googleLogin }} />
         <Analytics />
+        <ToastContainer position="top-right" autoClose={4000} />
       </main>
     </>
   );
