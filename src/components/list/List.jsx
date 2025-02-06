@@ -15,9 +15,7 @@ const formatDiscountText = (discount) => {
 };
 
 const formatUpdatedTime = (timestamp) => {
-  // The backend sends timestamps in ET already, so we just need to format it
   const date = new Date(timestamp);
-  
   const options = {
     weekday: 'short',
     month: 'short',
@@ -26,7 +24,6 @@ const formatUpdatedTime = (timestamp) => {
     minute: '2-digit',
     hour12: true
   };
-
   return date.toLocaleString('en-US', options) + ' ET';
 };
 
