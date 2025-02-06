@@ -15,9 +15,8 @@ const formatDiscountText = (discount) => {
 };
 
 const formatUpdatedTime = (timestamp) => {
-  // Convert the timestamp to ET (America/New_York)
+  // The backend sends timestamps in ET already, so we just need to format it
   const date = new Date(timestamp);
-  const etDate = new Date(date.toLocaleString('en-US', { timeZone: 'America/New_York' }));
   
   const options = {
     weekday: 'short',
@@ -28,7 +27,7 @@ const formatUpdatedTime = (timestamp) => {
     hour12: true
   };
 
-  return etDate.toLocaleString('en-US', options) + ' ET';
+  return date.toLocaleString('en-US', options) + ' ET';
 };
 
 const List = ({ shows, refreshIndividualData, individualLoading, loadingId, showFees }) => {
