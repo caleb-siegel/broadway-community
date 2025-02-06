@@ -9,7 +9,7 @@ import "swiper/css/navigation";
 import { Mousewheel, FreeMode, Navigation, Pagination, Scrollbar, A11y, } from "swiper/modules"; 
 import { useOutletContext } from "react-router-dom";
 
-const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, }) => {
+const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, showFees }) => {
   //   const generateWhatsAppLink = (show) => {
   //     const message = `${show.event_info[0]?.name}: $${show.event_info[0]?.price}
   // ${show.event_info[0]?.formatted_date}
@@ -44,12 +44,12 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, })
         className="slider__container"
         modules={[Mousewheel, FreeMode, Pagination, Navigation]}
         spaceBetween={24}
-        slidesPerView={2}
+        slidesPerView={3}
         // autoHeight={false}
         freeMode={true}
         // loop={true}
         grabCursor={true}
-        centeredSlides={true}
+        // centeredSlides={true}
         mousewheel={true}
         navigation={{
           nextEl: '.swiper-button-next',
@@ -57,15 +57,15 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, })
         }}
         breakpoints={{
           350: {
-            slidesPerView: 1.5,
+            slidesPerView: 1.25,
             spaceBetween: 24,
           },
           576: {
-            slidesPerView: 1.5,
+            slidesPerView: 1.25,
             spaceBetween: 24,
           },
           768: {
-            slidesPerView: 2,
+            slidesPerView: 2.5,
             spaceBetween: 48,
           },
         }}
@@ -73,16 +73,27 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, })
       >
         {shows &&
           shows
-          // .filter((show) => new Date(show?.sortable_date?.replace(' ', 'T')) > new Date())
           .filter((show) => !show.closed)
+          .filter((show) => {
+            const discount = show.event_info[0]?.price && show.event_info[0]?.average_lowest_price ? 
+              ((show.event_info[0]?.price / show.event_info[0]?.average_lowest_price) - 1) * -100 : 0;
+            return discount > 14;
+          })
           .map((show) => {
+            const discount = show.event_info[0]?.price && show.event_info[0]?.average_lowest_price ? 
+              Math.ceil(((show.event_info[0]?.price / show.event_info[0]?.average_lowest_price) - 1) * -100) : 0;
+
+            const displayPrice = showFees ? 
+              Math.floor(show.event_info[0]?.price * 1.32) : 
+              show.event_info[0]?.price;
+
             return (
               show.event_info[0] && (
                 <SwiperSlide className="slider__card" key={show.id}>
                   {(show.event_info[0]?.price < show.event_info[0]?.average_lowest_price) && (
                     <div className="slider__price-flag">
                       <div className="slider__price-flag-content">
-                        <div className="slider__price-flag-main">{`${Math.ceil(((show.event_info[0]?.price / show.event_info[0]?.average_lowest_price) - 1) * -100)}%`} <span className="slider__price-flag-secondary">Below Avg</span></div>
+                        <div className="slider__price-flag-main">{`${discount}%`} <span className="slider__price-flag-secondary">Below Avg</span></div>
                         {/* <button
                           className="slider__refresh-button"
                           onClick={() => refreshIndividualData(show.id)}
@@ -96,7 +107,7 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, })
                   
                     <div className="slider__description-subheader">{(show.event_info[0]?.name === show.name) || (show.category_id === 1) ? <span>&nbsp;</span> : show.name}</div>
                   
-                  {/* <img src={show.image} alt="" className="slider__img" /> */}
+                  <img src={show.image} alt="" className="slider__img" />
 
                   <h3 className="slider__name">
                     {show.event_info[0]?.name}
@@ -120,7 +131,7 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, })
                     {" "}
                     {individualLoading && show.id === loadingId
                       ? "..."
-                      : `$${show.event_info[0]?.price}`}
+                      : `${showFees ? '~' : ''}$${displayPrice}`}
                   </p>
                   {(show.category_id !== 1) ? 
                     <p className="slider__description-theater">{show.venue?.name}</p>
@@ -151,8 +162,8 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, })
                     {individualLoading && show.id === loadingId
                       ? "..."
                       : `${show.event_info[0]?.note}`}
-                  </p>
-                  <br/> */}
+                  </p> */}
+                  <br/>
 
                   <a
                     href={

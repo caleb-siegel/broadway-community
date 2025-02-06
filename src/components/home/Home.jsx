@@ -82,11 +82,9 @@ function Home() {
     filteredShows = shows.event;
   } else if (active === "today") {
     const now = new Date();
-    // Convert current time to Eastern Time
-    const utcOffset = now.getTimezoneOffset(); // Local timezone offset in minutes
-    const etOffset = -5 * 60; // Eastern Time offset in minutes (Standard Time; adjust to -4 * 60 for Daylight Saving Time)
+    const utcOffset = now.getTimezoneOffset();
+    const etOffset = -5 * 60;
     const etTime = new Date(now.getTime() + (etOffset - utcOffset) * 60 * 1000);
-
     const todayET = etTime.toISOString().split("T")[0];
 
     filteredShows = filteredShows?.filter((show) => {
@@ -132,6 +130,7 @@ function Home() {
 
   const [individualLoading, setIndividualLoading] = useState(false);
   const [loadingId, setLoadingId] = useState(null);
+  
   const refreshIndividualData = (id) => {
     setIndividualLoading(true);
     setLoadingId(id);
@@ -175,6 +174,8 @@ function Home() {
       });
   };
 
+  const [showFees, setShowFees] = useState(true);
+
   return (
     <section className="home section" id="home">
       <div className="home__container container grid">
@@ -190,39 +191,60 @@ function Home() {
             </h1>
             <p className="home__description">
               Find the cheapest available ticket on Stubhub for each event
-              listed below. Note that each ticket will cost an{" "}
-              <strong>additional ~30% for Stubhub's fee.</strong>
-            </p>
-
-            <div className="home__filters">
-              <div className="home__top-filters">
-                <Search
-                  searchTerm={searchTerm}
-                  handleSearchTerm={handleSearchTerm}
+              listed below. Estimated fees are included but you can toggle to remove the fees for a more accurate price.{" "}
+              <span className="home__fee-control">
+                <button 
+                  className={`home__fee-toggle ${showFees ? 'active' : ''}`}
+                  onClick={() => setShowFees(!showFees)}
+                  aria-label={showFees ? 'Hide fees' : 'Show fees'}
                 />
-                <button className="home__refresh-button" onClick={refreshData}>
-                  {" "}
-                  <i class="bx bx-refresh home__refresh-button-icon"></i>{" "}
-                  Refresh Data
-                </button>
-              </div>
-              <Filter active={active} handleActive={handleActive} />
-            </div>
+                <span className="home__fee-label">{showFees ? 'With Fees' : 'Before Fees'}</span>
+              </span>
+            </p>
 
             {!loading ? (
               <>
+                <h2 className="home__featured-title">Featured Deals</h2>
                 <Slider
                   shows={filteredShows}
                   refreshIndividualData={refreshIndividualData}
                   individualLoading={individualLoading}
                   loadingId={loadingId}
+                  showFees={showFees}
                 />
-                {/* <List 
-                  shows={filteredShows}
-                  refreshIndividualData={refreshIndividualData}
-                  individualLoading={individualLoading}
-                  loadingId={loadingId}
-                /> */}
+
+                <div className="home__controls">
+                  <div className="home__filters">
+                    <div className="home__top-filters">
+                      <Search
+                        searchTerm={searchTerm}
+                        handleSearchTerm={handleSearchTerm}
+                      />
+                      <button className="home__refresh-button" onClick={refreshData}>
+                        {" "}
+                        <i className="bx bx-refresh home__refresh-button-icon"></i>{" "}
+                        Refresh Data
+                      </button>
+                    </div>
+                    <Filter active={active} handleActive={handleActive} />
+                    {/* <DateFilter 
+                      backendUrl={backendUrl}
+                      category={category}
+                      onShowsUpdate={setShows}
+                      setLoading={setLoading}
+                    /> */}
+                  </div>
+                </div>
+
+                <div className="home__list-container">
+                  <List 
+                    shows={filteredShows}
+                    refreshIndividualData={refreshIndividualData}
+                    individualLoading={individualLoading}
+                    loadingId={loadingId}
+                    showFees={showFees}
+                  />
+                </div>
               </>
             ) : (
               <ShowSkeleton />
