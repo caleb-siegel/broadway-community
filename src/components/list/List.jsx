@@ -16,6 +16,9 @@ const formatDiscountText = (discount) => {
 
 const formatUpdatedTime = (timestamp) => {
   const date = new Date(timestamp);
+  // Subtract 5 hours to convert to ET
+  date.setHours(date.getHours() - 5);
+  
   const options = {
     weekday: 'short',
     month: 'short',
