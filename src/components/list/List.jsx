@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./list.css";
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 
 const getDiscountClass = (discount) => {
   if (discount <= 0) return 'list__discount-chip--negative';
@@ -17,7 +17,7 @@ const formatDiscountText = (discount) => {
 const formatUpdatedTime = (timestamp) => {
   const date = new Date(timestamp);
   // Subtract 5 hours to convert to ET
-  date.setHours(date.getHours() - 5);
+  // date.setHours(date.getHours() - 5);
   
   const options = {
     weekday: 'short',
@@ -32,6 +32,7 @@ const formatUpdatedTime = (timestamp) => {
 
 const List = ({ shows, refreshIndividualData, individualLoading, loadingId, showFees }) => {
   const { backendUrl } = useOutletContext();
+  const navigate = useNavigate();
 
   const [todaytixPrice, setTodaytixPrice] = useState(null);
   const [compareLoading, setCompareLoading] = useState(false);
@@ -55,7 +56,8 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId, show
     });
   };
 
-  const handleRefresh = async (id) => {
+  const handleRefresh = async (e, id) => {
+    e.stopPropagation();
     refreshIndividualData(id);
     setUpdatedTimes({
       ...updatedTimes,
@@ -63,7 +65,8 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId, show
     });
   };
 
-  const fetchTodayTix = (id) => {
+  const fetchTodayTix = (e, id) => {
+    e.stopPropagation();
     setCompareId(id === compareId ? 0 : id);
     setCompareLoading(true);
     fetch(`${backendUrl}/api/fetch_todaytix/${id}`)
@@ -74,8 +77,14 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId, show
       });
   };
 
-  const closeModal = () => {
+  const closeModal = (e) => {
+    e.stopPropagation();
     setCompareId(0);
+  };
+
+  const handleBuyClick = (e, link) => {
+    e.stopPropagation();
+    window.open(link, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -94,6 +103,7 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId, show
             <div 
               key={show.id} 
               className="list__item"
+              onClick={() => navigate(`/event/${show.id}`)}
             >
               {show.category_id === 1 && (
                 <div className="list__image-container">
@@ -124,7 +134,7 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId, show
                     </div>
                     <button 
                       className={`list__update-btn ${individualLoading && show.id === loadingId ? 'loading' : ''}`}
-                      onClick={() => handleRefresh(show.id)}
+                      onClick={(e) => handleRefresh(e, show.id)}
                       title="Update price"
                       disabled={individualLoading && show.id === loadingId}
                     >
@@ -146,12 +156,12 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId, show
                     <div style={{ position: 'relative' }}>
                       <button 
                         className={`list__action-btn ${compareId === show.id ? 'active' : ''}`}
-                        onClick={() => fetchTodayTix(show.id)}
+                        onClick={(e) => fetchTodayTix(e, show.id)}
                       >
                         Compare Prices
                       </button>
                       {compareId === show.id && (
-                        <div className="list__price-comparison-modal">
+                        <div className="list__price-comparison-modal" onClick={(e) => e.stopPropagation()}>
                           <button onClick={closeModal} className="list__modal-close">
                             <i className='bx bx-x'></i>
                           </button>
@@ -176,15 +186,13 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId, show
                 </div>
               </div>
 
-              <a
-                href={show.event_info[0]?.link}
+              <button
+                onClick={(e) => handleBuyClick(e, show.event_info[0]?.link)}
                 className="list__buy-button"
-                target="_blank"
-                rel="noopener noreferrer"
               >
                 Buy Now{" "}
                 <i className="bx bx-right-arrow-alt slider__button-icon"></i>
-              </a>
+              </button>
 
               <div className="list__updated-at">
                 Updated {formatUpdatedTime(updatedTimes[show.id] || show.event_info[0]?.updated_at)}

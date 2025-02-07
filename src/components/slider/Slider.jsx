@@ -7,7 +7,7 @@ import "swiper/css/free-mode";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Mousewheel, FreeMode, Navigation, Pagination, Scrollbar, A11y, } from "swiper/modules"; 
-import { useOutletContext } from "react-router-dom";
+import { useOutletContext, useNavigate } from "react-router-dom";
 
 const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, showFees }) => {
   //   const generateWhatsAppLink = (show) => {
@@ -20,20 +20,32 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, sh
   //     };
 
   const { backendUrl } = useOutletContext();
+  const navigate = useNavigate();
 
   const [todaytixPrice, setTodaytixPrice] = useState(null)
   const [compareLoading, setCompareLoading] = useState(false)
   const [compareId, setCompareId] = useState(0)
-  const fetchTodayTix = (id) => {
-        setCompareId(id)
-        setCompareLoading(true)
-        fetch(`${backendUrl}/api/fetch_todaytix/${id}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setTodaytixPrice(data["today_tix_price"]);
-          setCompareLoading(false)
-        })
-    }
+  const fetchTodayTix = (e, id) => {
+    e.stopPropagation();
+    setCompareId(id)
+    setCompareLoading(true)
+    fetch(`${backendUrl}/api/fetch_todaytix/${id}`)
+    .then((response) => response.json())
+    .then((data) => {
+      setTodaytixPrice(data["today_tix_price"]);
+      setCompareLoading(false)
+    })
+  }
+
+  const handleRefresh = (e, id) => {
+    e.stopPropagation();
+    refreshIndividualData(id);
+  };
+
+  const handleBuyClick = (e, link) => {
+    e.stopPropagation();
+    window.open(link, '_blank', 'noopener,noreferrer');
+  };
 
   return (
     <section className="slider container section" id="slider">
@@ -89,7 +101,11 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, sh
 
             return (
               show.event_info[0] && (
-                <SwiperSlide className="slider__card" key={show.id}>
+                <SwiperSlide 
+                  className="slider__card" 
+                  key={show.id}
+                  onClick={() => navigate(`/event/${show.id}`)}
+                >
                   {(show.event_info[0]?.price < show.event_info[0]?.average_lowest_price) && (
                     <div className="slider__price-flag">
                       <div className="slider__price-flag-content">
@@ -114,7 +130,7 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, sh
                     {/* <i className={show.image}></i> */}
                     <button
                       className="slider__refresh-button"
-                      onClick={() => refreshIndividualData(show.id)}
+                      onClick={(e) => handleRefresh(e, show.id)}
                     >
                       <i className="bx bx-refresh home__refresh-button-icon"></i>
                     </button>
@@ -165,15 +181,9 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, sh
                   </p> */}
                   <br/>
 
-                  <a
-                    href={
-                      individualLoading && show.id === loadingId
-                        ? "..."
-                        : show.event_info[0]?.link
-                    }
+                  <button
+                    onClick={(e) => handleBuyClick(e, show.event_info[0]?.link)}
                     className="slider__button"
-                    target="_blank"
-                    rel="noopener noreferrer"
                   >
                     {individualLoading && show.id === loadingId ? (
                       "Loading"
@@ -184,10 +194,10 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, sh
                       </>
                     )}
                     {/* <i className="bx bx-right-arrow-alt slider__button-icon"></i> */}
-                  </a>
+                  </button>
                   <br/>
                   <br/>
-                  {(show.category_id === 1) ? <button className="slider__price-compare" onClick={() => fetchTodayTix(show.id)} >Price Compare</button> : ""}
+                  {(show.category_id === 1) ? <button className="slider__price-compare" onClick={(e) => fetchTodayTix(e, show.id)} >Price Compare</button> : ""}
                   <br/>
                   {(compareId === show.id) ?
                   (!compareLoading ? 
