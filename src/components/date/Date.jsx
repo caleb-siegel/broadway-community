@@ -8,6 +8,7 @@ import Filter from "../filter/Filter";
 import Categories from "../categories/Categories";
 import { useOutletContext } from "react-router-dom";
 import { TextField, Box } from "@mui/material";
+import List from "../list/List";
 
 
 function Date() {
@@ -17,15 +18,17 @@ function Date() {
   const [shows, setShows] = useState([]);
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
+  const [error, setError] = useState(null);
+  const [showFees, setShowFees] = useState(true);
 
   const handleStartDateChange = (event) => {
     setStartDate(event.target.value);
-    // handleActive({ ...active, startDate: event.target.value });
+    setError(null);
   };
 
   const handleEndDateChange = (event) => {
     setEndDate(event.target.value);
-    // handleActive({ ...active, endDate: event.target.value });
+    setError(null);
   };
 
   const [category, setCategory] = useState("Broadway");
@@ -46,7 +49,13 @@ function Date() {
 //   }, [category]);
 
   const refreshData = () => {
+    if (!startDate || !endDate) {
+      setError("Please select both start and end dates");
+      return;
+    }
+
     setLoading(true);
+    setError(null);
     fetch(
       `${backendUrl}/api/fetch_tickets_dates/${category}`,
       {
@@ -58,15 +67,44 @@ function Date() {
         }),
       }
     )
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.json();
+    })
     .then((data) => {
-        setShows(data.sort(
-            (a, b) => a?.event_info[0]?.price - b?.event_info[0]?.price
-        ));
+        if (Array.isArray(data)) {
+            // Transform the data to match the expected format
+            const transformedShows = data.map(show => ({
+                ...show,
+                event_info: show.event_info || [],
+                id: show.id,
+                name: show.name,
+                category_id: show.category_id,
+                image: show.image,
+                venue: show.venue
+            }));
+            
+            const sortedShows = transformedShows.sort((a, b) => {
+                const priceA = a?.event_info?.[0]?.price || 0;
+                const priceB = b?.event_info?.[0]?.price || 0;
+                return priceA - priceB;
+            });
+            
+            console.log("Transformed shows:", sortedShows); // Debug log
+            setShows(sortedShows);
+        } else {
+            console.error("Received non-array data:", data);
+            setError("Received invalid data from server");
+            setShows([]);
+        }
         setLoading(false);
     })
     .catch((error) => {
       console.error("Error refreshing data:", error);
+      setError("Failed to fetch show data");
+      setShows([]);
       setLoading(false);
     });
   };
@@ -77,19 +115,16 @@ function Date() {
     event.preventDefault();
     setSearchTerm(event.target.value);
   };
-  let filteredShows = [shows]
-  if (shows) {
-    
-    
-    filteredShows = filteredShows?.filter((show) => {
-        return (
-        show &&
-        show.name &&
-        (show.event_info[0]?.name
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-            show.name.toLowerCase().includes(searchTerm.toLowerCase()))
-        );
+
+  let filteredShows = [];
+  if (shows && Array.isArray(shows)) {
+    filteredShows = shows.filter((show) => {
+      if (!show || !show.event_info || !show.event_info[0]) return false;
+      
+      return (
+        show.event_info[0]?.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        show.name?.toLowerCase().includes(searchTerm.toLowerCase())
+      );
     });
   }
   
@@ -151,7 +186,15 @@ function Date() {
             <p className="date__description">
               Choose a date range and click "See Prices" to find the cheapest available ticket on Stubhub for each event
               listed below in that date range. Note that each ticket will cost an{" "}
-              <strong>additional ~30% for Stubhub's fee.</strong>
+              <strong>additional ~30% for Stubhub's fee.</strong>{" "}
+              <span className="date__fee-control">
+                <button 
+                  className={`date__fee-toggle ${showFees ? 'active' : ''}`}
+                  onClick={() => setShowFees(!showFees)}
+                  aria-label={showFees ? 'Hide fees' : 'Show fees'}
+                />
+                <span className="date__fee-label">{showFees ? 'With Fees' : 'Before Fees'}</span>
+              </span>
             </p>
 
             <div className="date__filters">
@@ -162,38 +205,66 @@ function Date() {
                 /> */}
                 <button className="date__refresh-button" onClick={refreshData}>See Prices</button>
               </div>
-                <Box sx={{ display: "flex", gap: 2, alignItems: "center", marginTop: "1rem", justifyContent: "center" }}>
-                    <TextField
-                        label="Start Date"
-                        type="date"
-                        value={startDate}
-                        onChange={handleStartDateChange}
-                        InputLabelProps={{
-                        shrink: true,
-                        }}
-                    />
-                    <TextField
-                        label="End Date"
-                        type="date"
-                        value={endDate}
-                        onChange={handleEndDateChange}
-                        InputLabelProps={{
-                        shrink: true,
-                        }}
-                    />
+              <Box sx={{ display: "flex", gap: 2, alignItems: "center", marginTop: "1rem", justifyContent: "center", flexDirection: "column" }}>
+                <Box sx={{ display: "flex", gap: 2, alignItems: "center" }}>
+                  <TextField
+                    label="Start Date"
+                    type="date"
+                    value={startDate}
+                    onChange={handleStartDateChange}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    error={!!error && !startDate}
+                  />
+                  <TextField
+                    label="End Date"
+                    type="date"
+                    value={endDate}
+                    onChange={handleEndDateChange}
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    error={!!error && !endDate}
+                  />
                 </Box>
+                {error && (
+                  <Box sx={{ color: 'error.main', mt: 1 }}>
+                    {error}
+                  </Box>
+                )}
+              </Box>
             </div>
 
             {!loading ? (
               <>
+                {shows.length > 0 ? (
+                  <>
+                    {/* <h2 className="date__featured-title">Featured Deals</h2>
                     <Slider
-                    shows={shows}
-                    refreshIndividualData={refreshIndividualData}
-                    individualLoading={individualLoading}
-                    loadingId={loadingId}
-                    />
-                
-            </>
+                      shows={shows}
+                      refreshIndividualData={refreshIndividualData}
+                      individualLoading={individualLoading}
+                      loadingId={loadingId}
+                      showFees={showFees}
+                    /> */}
+
+                    <div className="date__list-container">
+                      <List 
+                        shows={shows}
+                        refreshIndividualData={refreshIndividualData}
+                        individualLoading={individualLoading}
+                        loadingId={loadingId}
+                        showFees={showFees}
+                      />
+                    </div>
+                  </>
+                ) : (
+                  <Box sx={{ textAlign: 'center', mt: 4 }}>
+                    {error ? null : "Select dates and click 'See Prices' to view available shows"}
+                  </Box>
+                )}
+              </>
             ) : (
               <ShowSkeleton />
             )}

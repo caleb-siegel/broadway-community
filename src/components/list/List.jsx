@@ -3,31 +3,48 @@ import "./list.css";
 import { useOutletContext, useNavigate } from "react-router-dom";
 
 const getDiscountClass = (discount) => {
-  if (discount <= 0) return 'list__discount-chip--negative';
-  if (discount <= 10) return 'list__discount-chip--low';
-  if (discount <= 40) return 'list__discount-chip--medium';
+  if (discount >= 15) return 'list__discount-chip--negative';
+  if (discount >= 0) return null;  // Don't show chip for small increases
+  if (discount >= -25) return 'list__discount-chip--low';
+  if (discount >= -50) return 'list__discount-chip--medium';
   return 'list__discount-chip--high';
 };
 
 const formatDiscountText = (discount) => {
   const absDiscount = Math.abs(discount);
-  return `${absDiscount}% ${discount < 0 ? 'Above' : 'Below'} Avg`;
+  return `${Math.round(absDiscount)}% ${discount > 0 ? 'Above' : 'Below'} Avg`;
 };
 
 const formatUpdatedTime = (timestamp) => {
-  const date = new Date(timestamp);
-  // Subtract 5 hours to convert to ET
-  // date.setHours(date.getHours() - 5);
+  if (!timestamp) return 'Never';
   
-  const options = {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true
-  };
-  return date.toLocaleString('en-US', options) + ' ET';
+  try {
+    // If the timestamp already includes "ET", it's from our backend
+    if (typeof timestamp === 'string' && timestamp.includes('ET')) {
+      return timestamp;
+    }
+
+    // For ISO timestamps (from new Date().toISOString())
+    const date = new Date(timestamp);
+    if (isNaN(date.getTime())) {
+      return 'Invalid Date';
+    }
+
+    // Convert to ET
+    const options = {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+      hour12: true,
+      timeZone: 'America/New_York'
+    };
+    return date.toLocaleString('en-US', options) + ' ET';
+  } catch (error) {
+    console.error('Error formatting date:', error);
+    return 'Invalid Date';
+  }
 };
 
 const List = ({ shows, refreshIndividualData, individualLoading, loadingId, showFees }) => {
@@ -93,11 +110,13 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId, show
         .filter((show) => !show.closed)
         .map((show) => {
           const discount = show.event_info[0]?.price && show.event_info[0]?.average_lowest_price ? 
-            Math.ceil(((show.event_info[0]?.price / show.event_info[0]?.average_lowest_price) - 1) * -100) : 0;
+            ((show.event_info[0]?.price - show.event_info[0]?.average_lowest_price) / show.event_info[0]?.average_lowest_price) * 100 : null;
 
           const displayPrice = showFees ? 
             Math.floor(show.event_info[0]?.price * 1.32) : 
             show.event_info[0]?.price;
+
+          const discountClass = getDiscountClass(discount);
 
           return show.event_info[0] && (
             <div 
@@ -147,8 +166,8 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId, show
                 </div>
 
                 <div className="list__actions-section">
-                  {discount !== 0 && (
-                    <div className={`list__discount-chip ${getDiscountClass(discount)}`}>
+                  {discountClass && (
+                    <div className={`list__discount-chip ${discountClass}`}>
                       {formatDiscountText(discount)}
                     </div>
                   )}
