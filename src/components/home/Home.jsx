@@ -83,7 +83,7 @@ function Home() {
   } else if (active === "today") {
     const now = new Date();
     const utcOffset = now.getTimezoneOffset();
-    const etOffset = -5 * 60;
+    const etOffset = -4 * 60;
     const etTime = new Date(now.getTime() + (etOffset - utcOffset) * 60 * 1000);
     const todayET = etTime.toISOString().split("T")[0];
 
