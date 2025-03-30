@@ -11,7 +11,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function App() {
   const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   const backendUrl = "https://broadwaycommunity-backend.vercel.app"
@@ -45,8 +45,8 @@ function App() {
       } catch (error) {
         console.error("Session check error:", error);
         setUser(null);
-      } finally {
-        setIsLoading(false);
+      // } finally {
+      //   setIsLoading(false);
       }
     };
 
@@ -140,11 +140,11 @@ function App() {
     });
   }
 
-  if (isLoading) {
-    return (
-      <LoadingSpinner />
-    );
-  }
+  // if (isLoading) {
+  //   return (
+  //     <LoadingSpinner />
+  //   );
+  // }
 
   return (
     <>
