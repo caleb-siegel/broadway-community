@@ -43,7 +43,7 @@ function Home() {
     )
     .then((response) => response.json())
     .then(() => {
-      fetch(`${backendUrl}/api/categories/${category}`)
+    fetch(`${backendUrl}/api/categories/${category}`)
       .then((response) => response.json())
       .then((data) => {
         setShows(data);
@@ -226,7 +226,7 @@ function Home() {
                         Refresh Data
                       </button>
                     </div>
-                    <Filter active={active} handleActive={handleActive} />
+                    {/* <Filter active={active} handleActive={handleActive} /> */}
                     {/* <DateFilter 
                       backendUrl={backendUrl}
                       category={category}
