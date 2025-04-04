@@ -1,0 +1,25 @@
+.filter__container {
+    background: #fff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 1.5rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    width: 100%;
+}
+
+.filter__sort {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+    width: auto;
+    min-width: 200px;
+}
+
+@media (max-width: 768px) {
+    .filter__sort {
+        justify-content: stretch;
+        width: 100%;
+    }
+}
