@@ -19,7 +19,6 @@ function Date() {
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
   const [error, setError] = useState(null);
-  const [showFees, setShowFees] = useState(true);
 
   const handleStartDateChange = (event) => {
     setStartDate(event.target.value);
@@ -185,16 +184,7 @@ function Date() {
             </h1>
             <p className="date__description">
               Choose a date range and click "See Prices" to find the cheapest available ticket on Stubhub for each event
-              listed below in that date range. Note that each ticket will cost an{" "}
-              <strong>additional ~30% for Stubhub's fee.</strong>{" "}
-              <span className="date__fee-control">
-                <button 
-                  className={`date__fee-toggle ${showFees ? 'active' : ''}`}
-                  onClick={() => setShowFees(!showFees)}
-                  aria-label={showFees ? 'Hide fees' : 'Show fees'}
-                />
-                <span className="date__fee-label">{showFees ? 'With Fees' : 'Before Fees'}</span>
-              </span>
+              listed below in that date range.
             </p>
 
             <div className="date__filters">
@@ -246,7 +236,6 @@ function Date() {
                       refreshIndividualData={refreshIndividualData}
                       individualLoading={individualLoading}
                       loadingId={loadingId}
-                      showFees={showFees}
                     /> */}
 
                     <div className="date__list-container">
@@ -255,7 +244,6 @@ function Date() {
                         refreshIndividualData={refreshIndividualData}
                         individualLoading={individualLoading}
                         loadingId={loadingId}
-                        showFees={showFees}
                       />
                     </div>
                   </>

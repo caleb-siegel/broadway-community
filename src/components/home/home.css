@@ -123,63 +123,6 @@
     padding-left: 0.75rem;
 }
 
-.home__fee-control {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-left: 0.5rem;
-    vertical-align: middle;
-}
-
-.home__fee-label {
-    font-size: var(--small-font-size);
-    color: var(--title-color);
-    font-weight: 500;
-}
-
-.home__fee-explanation {
-    font-size: var(--smaller-font-size);
-    color: var(--text-color-light);
-    margin-top: 0.5rem;
-    max-width: 600px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.home__fee-toggle {
-    position: relative;
-    width: 46px;
-    height: 24px;
-    background: #e4e4e7;
-    border-radius: 24px;
-    border: none;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    vertical-align: middle;
-}
-
-.home__fee-toggle::before {
-    content: '';
-    position: absolute;
-    left: 2px;
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    background: white;
-    transition: all 0.3s ease;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-.home__fee-toggle.active {
-    background: var(--title-color);
-}
-
-.home__fee-toggle.active::before {
-    transform: translateX(22px);
-}
-
 /*=============== BREAKPOINTS ===============*/
 /* For large devices */
 @media screen and (max-width: 992px) {
@@ -266,33 +209,6 @@
 
     .home__filters {
         gap: 0.5rem;
-    }
-
-    .home__fee-control {
-        margin-left: 0.25rem;
-    }
-
-    .home__fee-toggle {
-        width: 36px;
-        height: 20px;
-    }
-
-    .home__fee-toggle::before {
-        width: 16px;
-        height: 16px;
-    }
-
-    .home__fee-toggle.active::before {
-        transform: translateX(16px);
-    }
-
-    .home__fee-label {
-        font-size: var(--smaller-font-size);
-    }
-
-    .home__fee-explanation {
-        font-size: var(--smaller-font-size);
-        margin: 0.5rem 1rem;
     }
 }
 

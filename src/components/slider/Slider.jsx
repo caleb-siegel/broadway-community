@@ -9,7 +9,20 @@ import "swiper/css/navigation";
 import { Mousewheel, FreeMode, Navigation, Pagination, Scrollbar, A11y, } from "swiper/modules"; 
 import { useOutletContext, useNavigate } from "react-router-dom";
 
-const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, showFees }) => {
+const getDiscountClass = (discount) => {
+  if (discount >= 15) return 'slider__price-flag--negative';
+  if (discount >= 0) return null;  // Don't show chip for small increases
+  if (discount >= -25) return 'slider__price-flag--low';
+  if (discount >= -50) return 'slider__price-flag--medium';
+  return 'slider__price-flag--high';
+};
+
+const formatDiscountText = (discount) => {
+  const absDiscount = Math.abs(discount);
+  return `${Math.round(absDiscount)}% ${discount > 0 ? 'Above' : 'Below'} Avg`;
+};
+
+const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId }) => {
   //   const generateWhatsAppLink = (show) => {
   //     const message = `${show.event_info[0]?.name}: $${show.event_info[0]?.price}
   // ${show.event_info[0]?.formatted_date}
@@ -86,18 +99,13 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, sh
         {shows &&
           shows
           .filter((show) => !show.closed)
-          .filter((show) => {
-            const discount = show.event_info[0]?.price && show.event_info[0]?.average_lowest_price ? 
-              ((show.event_info[0]?.price / show.event_info[0]?.average_lowest_price) - 1) * -100 : 0;
-            return discount > 14;
-          })
           .map((show) => {
             const discount = show.event_info[0]?.price && show.event_info[0]?.average_lowest_price ? 
-              Math.ceil(((show.event_info[0]?.price / show.event_info[0]?.average_lowest_price) - 1) * -100) : 0;
+              ((show.event_info[0]?.price - show.event_info[0]?.average_lowest_price) / show.event_info[0]?.average_lowest_price) * 100 : null;
 
-            const displayPrice = showFees ? 
-              Math.floor(show.event_info[0]?.price * 1.32) : 
-              show.event_info[0]?.price;
+            const displayPrice = show.event_info[0]?.price;
+
+            const discountClass = getDiscountClass(discount);
 
             return (
               show.event_info[0] && (
@@ -106,16 +114,12 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, sh
                   key={show.id}
                   onClick={() => navigate(`/event/${show.id}`)}
                 >
-                  {(show.event_info[0]?.price < show.event_info[0]?.average_lowest_price) && (
+                  {discountClass && (
                     <div className="slider__price-flag">
                       <div className="slider__price-flag-content">
-                        <div className="slider__price-flag-main">{`${discount}%`} <span className="slider__price-flag-secondary">Below Avg</span></div>
-                        {/* <button
-                          className="slider__refresh-button"
-                          onClick={() => refreshIndividualData(show.id)}
-                        >
-                          <i className="bx bx-bell home__refresh-button-icon"></i>
-                        </button> */}
+                        <div className={`slider__price-flag-main ${discountClass}`}>
+                          {formatDiscountText(discount)}
+                        </div>
                       </div>
                     </div>
                   )}
@@ -147,7 +151,7 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, sh
                     {" "}
                     {individualLoading && show.id === loadingId
                       ? "..."
-                      : `${showFees ? '~' : ''}$${displayPrice}`}
+                      : `$${displayPrice}`}
                   </p>
                   {(show.category_id !== 1) ? 
                     <p className="slider__description-theater">{show.venue?.name}</p>
@@ -203,7 +207,7 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, sh
                   (!compareLoading ? 
                     todaytixPrice && 
                       <>
-                      <div className="slider__comparisons">Stubhub w/ estimated fees: ${Math.floor(show.event_info[0]?.price * 1.32)}</div>
+                      <div className="slider__comparisons">Stubhub: ${show.event_info[0]?.price}</div>
                       <div className="slider__comparisons">TodayTix price: ${todaytixPrice}</div>
                       </>
 

@@ -174,8 +174,6 @@ function Home() {
       });
   };
 
-  const [showFees, setShowFees] = useState(true);
-
   return (
     <section className="home section" id="home">
       <div className="home__container container grid">
@@ -191,15 +189,7 @@ function Home() {
             </h1>
             <p className="home__description">
               Find the cheapest available ticket on Stubhub for each event
-              listed below. Estimated fees are included but you can toggle to remove the fees for a more accurate price.{" "}
-              <span className="home__fee-control">
-                <button 
-                  className={`home__fee-toggle ${showFees ? 'active' : ''}`}
-                  onClick={() => setShowFees(!showFees)}
-                  aria-label={showFees ? 'Hide fees' : 'Show fees'}
-                />
-                <span className="home__fee-label">{showFees ? 'With Fees' : 'Before Fees'}</span>
-              </span>
+              listed below.{" "}
             </p>
 
             {!loading ? (
@@ -210,7 +200,6 @@ function Home() {
                   refreshIndividualData={refreshIndividualData}
                   individualLoading={individualLoading}
                   loadingId={loadingId}
-                  showFees={showFees}
                 />
 
                 <div className="home__controls">
@@ -242,7 +231,6 @@ function Home() {
                     refreshIndividualData={refreshIndividualData}
                     individualLoading={individualLoading}
                     loadingId={loadingId}
-                    showFees={showFees}
                   />
                 </div>
               </>

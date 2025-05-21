@@ -25,7 +25,6 @@ const Event = () => {
   const [event, setEvent] = useState(null);
   const [todaytixPrice, setTodaytixPrice] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [showFees, setShowFees] = useState(true);
 
   useEffect(() => {
     const fetchEventData = async () => {
@@ -74,10 +73,10 @@ const Event = () => {
 
   const priceDiffPercentage = calculatePriceDiff();
 
-  // Calculate price with/without fees
+  // Calculate price
   const getDisplayPrice = () => {
     if (!latestEventInfo?.price) return null;
-    return showFees ? Math.floor(latestEventInfo.price * 1.32) : latestEventInfo.price;
+    return latestEventInfo.price;
   };
 
   const displayPrice = getDisplayPrice();
@@ -134,14 +133,6 @@ const Event = () => {
                   <Typography variant="h2" className="event__section-title">
                     Current Prices
                   </Typography>
-                  <div className="event__fee-control">
-                    <button 
-                      className={`event__fee-toggle ${showFees ? 'active' : ''}`}
-                      onClick={() => setShowFees(!showFees)}
-                      aria-label={showFees ? 'Hide fees' : 'Show fees'}
-                    />
-                    <span className="event__fee-label">{showFees ? 'With Fees' : 'Before Fees'}</span>
-                  </div>
                 </div>
                 
                 <div className="event__prices">

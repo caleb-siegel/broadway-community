@@ -105,50 +105,6 @@
   margin-bottom: 1rem;
 }
 
-.event__fee-control {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.event__fee-toggle {
-  width: 48px;
-  height: 24px;
-  border-radius: 12px;
-  background-color: #e0e0e0;
-  position: relative;
-  cursor: pointer;
-  border: none;
-  padding: 0;
-  transition: background-color 0.3s ease;
-}
-
-.event__fee-toggle::before {
-  content: '';
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background-color: white;
-  top: 2px;
-  left: 2px;
-  transition: transform 0.3s ease;
-}
-
-.event__fee-toggle.active {
-  background-color: #156064;
-}
-
-.event__fee-toggle.active::before {
-  transform: translateX(24px);
-}
-
-.event__fee-label {
-  font-size: 0.875rem;
-  color: #666;
-  min-width: 80px;
-}
-
 .event__section-title {
   font-size: 1.25rem !important;
   color: #156064 !important;

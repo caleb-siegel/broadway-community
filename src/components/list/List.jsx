@@ -49,7 +49,7 @@ const formatUpdatedTime = (timestamp) => {
   }
 };
 
-const List = ({ shows, refreshIndividualData, individualLoading, loadingId, showFees }) => {
+const List = ({ shows, refreshIndividualData, individualLoading, loadingId }) => {
   const { backendUrl } = useOutletContext();
   const navigate = useNavigate();
 
@@ -112,25 +112,25 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId, show
     window.open(link, '_blank', 'noopener,noreferrer');
   };
 
-  // const handleSearch = async (searchParams) => {
-  //   setIsLoading(true);
-  //   try {
-  //     const response = await fetch(`${backendUrl}/api/search`, {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(searchParams),
-  //     });
-  //     const data = await response.json();
-  //     setFilteredShows(data);
-  //   } catch (error) {
-  //     console.error('Error fetching shows:', error);
-  //     // Handle error appropriately
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+  const handleSearch = async (searchParams) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${backendUrl}/api/search`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(searchParams),
+      });
+      const data = await response.json();
+      setFilteredShows(data);
+    } catch (error) {
+      console.error('Error fetching shows:', error);
+      // Handle error appropriately
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSort = (sortBy) => {
     const sorted = [...filteredShows].sort((a, b) => {
@@ -159,7 +159,6 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId, show
           return 0;
       }
     });
-
     setFilteredShows(sorted);
   };
 
@@ -181,9 +180,7 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId, show
                 const discount = show.event_info[0]?.price && show.event_info[0]?.average_lowest_price ? 
                   ((show.event_info[0]?.price - show.event_info[0]?.average_lowest_price) / show.event_info[0]?.average_lowest_price) * 100 : null;
 
-                const displayPrice = showFees ? 
-                  Math.floor(show.event_info[0]?.price * 1.32) : 
-                  show.event_info[0]?.price;
+                const displayPrice = show.event_info[0]?.price;
 
                 const discountClass = getDiscountClass(discount);
 
@@ -217,7 +214,7 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId, show
                             {individualLoading && show.id === loadingId ? (
                               <div className="list__price-loading" />
                             ) : (
-                              `${showFees ? '~' : ''}$${displayPrice}`
+                              `$${displayPrice}`
                             )}
                           </div>
                           <button 
@@ -258,8 +255,8 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId, show
                                 ) : (
                                   <>
                                     <div className="list__price-comparison-row">
-                                      <span>Stubhub w/fees:</span>
-                                      <strong>${Math.floor(show.event_info[0]?.price * 1.32)}</strong>
+                                      <span>Stubhub:</span>
+                                      <strong>${show.event_info[0]?.price}</strong>
                                     </div>
                                     <div className="list__price-comparison-row">
                                       <span>TodayTix price:</span>

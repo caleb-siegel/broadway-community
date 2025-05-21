@@ -81,49 +81,6 @@
     padding: 0 2rem;
 }
 
-.date__fee-control {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-left: 0.5rem;
-}
-
-.date__fee-toggle {
-    width: 40px;
-    height: 20px;
-    background-color: #ccc;
-    border-radius: 20px;
-    position: relative;
-    cursor: pointer;
-    border: none;
-    transition: background-color 0.3s;
-}
-
-.date__fee-toggle::after {
-    content: '';
-    position: absolute;
-    width: 18px;
-    height: 18px;
-    border-radius: 50%;
-    background-color: white;
-    top: 1px;
-    left: 1px;
-    transition: transform 0.3s;
-}
-
-.date__fee-toggle.active {
-    background-color: var(--title-color);
-}
-
-.date__fee-toggle.active::after {
-    transform: translateX(20px);
-}
-
-.date__fee-label {
-    font-size: var(--small-font-size);
-    color: var(--text-color);
-}
-
 /*=============== BREAKPOINTS ===============*/
 /* For large devices */
 @media screen and (max-width: 992px) {
