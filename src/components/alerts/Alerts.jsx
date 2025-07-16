@@ -140,10 +140,11 @@ const AlertsPage = () => {
       )
         .then((response) => response.json())
         .then((data) => {
-          setEventOptions(data);
-          setOptions(data)
+          const sortedData = data.sort((a, b) => a.localeCompare(b)); // Sort alphabetically
+          setEventOptions(sortedData);
+          if (trackingType === "event") setOptions(sortedData);
         });
-    }, []);
+    }, [backendUrl, trackingType]);
 
   const [categoryOptions, setCategoryOptions] = useState([]);
   useEffect(() => {
@@ -152,21 +153,23 @@ const AlertsPage = () => {
       )
         .then((response) => response.json())
         .then((data) => {
-          setCategoryOptions(data);
+          const sortedData = data.sort((a, b) => a.localeCompare(b)); // Sort alphabetically
+          setCategoryOptions(sortedData);
+          if (trackingType === "category") setOptions(sortedData);
         });
-    }, []);
+    }, [backendUrl, trackingType]);
 
   const [searchValue, setSearchValue] = useState("");
-  const handleSearchChange = (event, value) => {
-      // event.preventDefault()
-      setSearchValue(value);
+  const handleSearchChange = (event) => {
+    const value = event.target.value;
+    setSearchValue(value);
 
-      // Dynamically update options based on the tracking type
-      if (trackingType === "event") {
-          setOptions(eventOptions?.filter(option => option?.toLowerCase().includes(value.toLowerCase())));
-      } else {
-          setOptions(categoryOptions?.filter(option => option?.toLowerCase().includes(value.toLowerCase())));
-      }
+    // Dynamically update options based on the tracking type
+    if (trackingType === "event") {
+      setOptions(eventOptions.sort((a, b) => a.localeCompare(b))); // Sort alphabetically
+    } else {
+      setOptions(categoryOptions.sort((a, b) => a.localeCompare(b))); // Sort alphabetically
+    }
   };
 
   const handleSelectedItem = (newValue) => {
@@ -180,7 +183,7 @@ const AlertsPage = () => {
   return (
     <> 
     <Box sx={{ minHeight: "100vh", paddingTop: { xs: '50px', sm: '75px' }, }}>
-      {user ? (
+      {!user ? (
       <Container maxWidth="lg">
         <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2, }} >
           <Typography variant="h2" sx={{ fontWeight: 500 }}>

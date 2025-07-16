@@ -393,6 +393,7 @@ function AddEvent() {
                                                     >
                                                         <CardContent>
                                                             <Typography>{category.name}</Typography>
+                                                            <Typography>{category.id}</Typography>
                                                         </CardContent>
                                                     </Card>
                                                 );

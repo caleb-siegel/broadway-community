@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Typography, Box, Button, TextField, IconButton, ToggleButtonGroup, ToggleButton, InputAdornment, useStepContext, Tooltip, Autocomplete } from "@mui/material";
+import { Typography, Box, Button, TextField, IconButton, ToggleButtonGroup, ToggleButton, InputAdornment, useStepContext, Tooltip, Autocomplete, Checkbox, FormControlLabel } from "@mui/material";
 import { Email, Sms, NotificationsActive } from "@mui/icons-material";
 import { useOutletContext } from "react-router-dom";
 
@@ -27,31 +27,12 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
                     </ToggleButton>
 
                     {/* SMS Button (Greyed Out and Disabled) */}
-                    <Tooltip title="This is not yet available" arrow>
-                        <span style={{ flex: 1 }}>
-                            <ToggleButton
-                                value="sms"
-                                disabled
-                                sx={{
-                                    py: 2,
-                                    flex: 1,
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    color: "text.disabled", // Grey text
-                                    bgcolor: "action.disabledBackground", // Grey background
-                                    "&.Mui-disabled": {
-                                        cursor: "not-allowed", // Change cursor to indicate disabled state
-                                    },
-                                }}
-                            >
-                                <Sms sx={{ mr: 1 }} /> SMS
-                            </ToggleButton>
-                        </span>
-                    </Tooltip>
+                    <ToggleButton value="sms" sx={{ py: 2, flex: 1, display: "flex", alignItems: "center", justifyContent: "center", }} >
+                        <Sms sx={{ mr: 1 }} /> SMS
+                    </ToggleButton>
 
                     {/* Push Button (Greyed Out and Disabled) */}
-                    <Tooltip title="This is not yet available" arrow>
+                    {/* <Tooltip title="This is not yet available" arrow>
                         <span style={{ flex: 1 }}>
                             <ToggleButton
                                 value="push"
@@ -72,7 +53,7 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
                                 <NotificationsActive sx={{ mr: 1 }} /> Push
                             </ToggleButton>
                         </span>
-                    </Tooltip>
+                    </Tooltip> */}
                 </ToggleButtonGroup>
             </Box>
     
@@ -105,6 +86,14 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
                 <Typography variant="h6" gutterBottom> Price Threshold </Typography>
                 <TextField fullWidth type="number" placeholder="Enter maximum price" value={priceThreshold} onChange={(e) => handlePriceThreshold(e)} InputProps={{ startAdornment: ( <InputAdornment position="start">$</InputAdornment> ), }} sx={{ "& .MuiOutlinedInput-root": { borderRadius: 4, fontSize: "1.1rem", "& fieldset": { borderWidth: 2, }, }, }} />
             </Box>
+
+            {notificationMethod === "sms" &&
+                <FormControlLabel
+                control={<Checkbox defaultChecked />}
+                label="Text me with price alerts"
+                labelPlacement="end" // Label on the right of the checkbox
+                />
+            }
     
             {/* Save Button */}
             <Button variant="contained" fullWidth onClick={onClose} type="submit" sx={{ bgcolor: "black", color: "white", py: 2, borderRadius: 4, fontSize: "1.1rem", "&:hover": { bgcolor: "rgb(45, 45, 45)", }, }} >

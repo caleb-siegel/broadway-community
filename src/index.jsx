@@ -15,6 +15,7 @@ import Enterprise from "./components/enterprise/Enterprise.jsx";
 import UserAlerts from "./components/user-alerts/UserAlerts.jsx";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import AddEvent from "./components/add-event/AddEvent.jsx";
+import Venue from "./components/venue/Venue.jsx";
 
 const router = createBrowserRouter([
   {
@@ -57,6 +58,10 @@ const router = createBrowserRouter([
       {
         path: "add-event",
         element: <AddEvent />,
+      },
+      {
+        path: "venue",
+        element: <Venue />,
       },
       //   {
       //     path: "recipes/:id",

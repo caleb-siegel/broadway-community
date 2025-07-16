@@ -8,21 +8,21 @@ import LoadingSpinner from "./Loading";
 import { useGoogleLogin } from '@react-oauth/google';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { PushNotifications } from '@capacitor/push-notifications';
 
 function App() {
   const [user, setUser] = useState(null);
   // const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
-  const backendUrl = "https://broadwaycommunity-backend.vercel.app"
-  // const backendUrl = "http://127.0.0.1:5000"
+  // const backendUrl = "https://broadwaycommunity-backend.vercel.app"
+  const backendUrl = "http://127.0.0.1:5000"
 
   useEffect(() => {
     if (user) {
       navigate("/alerts");
     }
   }, [user, navigate]); // Runs when `user` changes
-
 
   useEffect(() => {
     // Function to check session
@@ -45,12 +45,43 @@ function App() {
       } catch (error) {
         console.error("Session check error:", error);
         setUser(null);
-      // } finally {
-      //   setIsLoading(false);
       }
     };
 
     checkSession();
+  }, []);
+
+  useEffect(() => {
+    // Request permission to use push notifications
+    PushNotifications.requestPermissions().then(result => {
+      if (result.receive === 'granted') {
+        // Register with Apple / Google to receive push via APNS/FCM
+        PushNotifications.register();
+      }
+    });
+
+    // On success, you should get a device token
+    PushNotifications.addListener('registration', (token) => {
+      console.log('Push registration success, token: ', token.value);
+      // You would send this token to your backend to store for sending notifications
+    });
+
+    // Handle registration errors
+    PushNotifications.addListener('registrationError', (error) => {
+      console.error('Push registration error: ', error);
+    });
+
+    // Handle incoming notifications
+    PushNotifications.addListener('pushNotificationReceived', (notification) => {
+      console.log('Push received: ', notification);
+      // You can show a toast or update UI here
+    });
+
+    // Handle notification tap
+    PushNotifications.addListener('pushNotificationActionPerformed', (notification) => {
+      console.log('Push action performed: ', notification);
+      // You can navigate or update UI here
+    });
   }, []);
 
   function attemptLogin(userInfo) {
