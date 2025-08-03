@@ -17,66 +17,50 @@ function App() {
   const backendUrl = "https://broadwaycommunity-backend.vercel.app"
   // const backendUrl = "http://127.0.0.1:5000"
 
+  // useEffect(() => {
+  //   if (user) {
+  //     navigate("/alerts");
+  //   }
+  // }, [user, navigate]); // Runs when `user` changes
+
+
   useEffect(() => {
-    if (user) {
-      navigate("/alerts");
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+  
+      // Optional: confirm validity with server
+      // fetch(`${backendUrl}/api/check_session`, {
+      //   credentials: "include",
+      // })
+      //   .then(res => res.ok ? res.json() : Promise.reject())
+      //   .then(validUser => setUser(validUser))
+      //   .catch(() => {
+      //     localStorage.removeItem("user");
+      //     setUser(null);
+      //   });
     }
-  }, [user, navigate]); // Runs when `user` changes
-
-
-  useEffect(() => {
-    // Function to check session
-    const checkSession = async () => {
-      try {
-        const res = await fetch(`${backendUrl}/api/check_session`, {
-          credentials: "include",
-          headers: {
-            "Accept": "application/json",
-            "Content-Type": "application/json",
-          },
-        });
-
-        if (res.ok) {
-          const userData = await res.json();
-          setUser(userData);
-        } else {
-          setUser(null);
-        }
-      } catch (error) {
-        console.error("Session check error:", error);
-        setUser(null);
-      // } finally {
-      //   setIsLoading(false);
-      }
-    };
-
-    checkSession();
   }, []);
 
-  function attemptLogin(userInfo) {
-    fetch(`${backendUrl}/api/login`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
-      },
-      credentials: "include",
-      body: JSON.stringify(userInfo),
-    })
-      .then((res) => {
-        if (res.ok) {
-          return res.json();
-        }
-        throw res;
-      })
-      .then((data) => {
-        setUser(data);
-        navigate("/alerts");
-      })
-      .catch((e) => {
-        alert("incorrect email or password");
-        console.log(e);
+  async function attemptLogin(userInfo) {
+    try {
+      const res = await fetch(`${backendUrl}/api/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(userInfo),
       });
+      if (!res.ok) throw res;
+      const data = await res.json();
+      setUser(data);
+      localStorage.setItem("user", JSON.stringify(data));
+      navigate("/alerts");
+    } catch (e) {
+      alert("Incorrect email or password");
+    }
   }
 
   const googleLogin = useGoogleLogin({
@@ -113,9 +97,9 @@ function App() {
         const data = await backendResponse.json();
         
         // Handle successful login (e.g., redirect or update UI)
-        setUser(data.user, () => {
-          navigate("/alerts");
-        });
+        setUser(data.user);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        navigate("/alerts");
 
       } catch (error) {
         console.error('Error during login:', error);
@@ -135,6 +119,7 @@ function App() {
       credentials: "include",
     }).then((res) => {
       if (res.ok) {
+        localStorage.removeItem("user");
         setUser(null);
       }
     });

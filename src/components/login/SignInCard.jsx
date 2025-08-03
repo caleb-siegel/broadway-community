@@ -7,7 +7,7 @@ import Divider from '@mui/material/Divider';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Link from '@mui/material/Link';
 import Typography from '@mui/material/Typography';
-import { FormControl, Box, FormLabel, TextField, InputAdornment, IconButton } from '@mui/material';
+import { FormControl, Box, FormLabel, TextField, InputAdornment, IconButton, CircularProgress } from '@mui/material';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
@@ -47,7 +47,7 @@ export default function SignInCard() {
   const [showPassword, setShowPassword] = useState(false);
   const { attemptLogin } = useOutletContext();
   const { googleLogin } = useOutletContext();
-  
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -65,9 +65,19 @@ export default function SignInCard() {
   //   const data = new FormData(event.currentTarget);
   // };
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    attemptLogin({ email: email, password: password });
+    setIsLoading(true)
+    if (!validateInputs()) {
+      setIsLoading(false);
+      return;
+    }
+    
+    try {
+      await attemptLogin({ email, password });
+    } finally {
+      setIsLoading(false);
+    }
   }
 
   const handleChangeEmail = (e) => setEmail(e.target.value);
@@ -144,6 +154,7 @@ export default function SignInCard() {
             sx={{ ariaLabel: 'email' }}
             onChange={handleChangeEmail} 
             value={email}
+            disabled={isLoading}
           />
         </FormControl>
         <FormControl>
@@ -174,6 +185,7 @@ export default function SignInCard() {
             color={passwordError ? 'error' : 'primary'}
             onChange={handleChangePassword} 
             value={password}
+            disabled={isLoading}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end" >
@@ -182,6 +194,7 @@ export default function SignInCard() {
                     onClick={handleClickShowPassword}
                     onMouseDown={handleMouseDownPassword}
                     edge="end"
+                    disabled={isLoading}
                     sx={{
                       height: '100%',
                       marginRight: '0.025rem',
@@ -199,8 +212,8 @@ export default function SignInCard() {
           label="Remember me"
         /> */}
         <ForgotPassword open={open} handleClose={handleClose} />
-        <Button type="submit" fullWidth variant="contained" onClick={validateInputs}>
-          Sign in
+        <Button type="submit" fullWidth variant="contained" startIcon={isLoading ? <CircularProgress size={20} color="inherit" /> : null}>
+          {isLoading ? 'Signing in...' : 'Sign in'}
         </Button>
         <Typography sx={{ textAlign: 'center' }}>
           Don&apos;t have an account?{' '}
@@ -222,6 +235,7 @@ export default function SignInCard() {
           variant="outlined"
           onClick={googleLogin}
           startIcon={<GoogleIcon />}
+          disabled={isLoading}
         >
           Sign in with Google
         </Button>
