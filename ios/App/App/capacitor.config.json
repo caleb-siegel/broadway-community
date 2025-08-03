@@ -1,0 +1,8 @@
+{
+	"appId": "com.broadwaycommunity.app",
+	"appName": "broadway-community",
+	"webDir": "dist",
+	"packageClassList": [
+		"PushNotificationsPlugin"
+	]
+}
