@@ -116,6 +116,23 @@ const Header = ({ user, logout }) => {
               </a>
             </li>
 
+            {user?.id === 8 && (
+              <li className="nav__item">
+                <a
+                  href="/user-alerts"
+                  value="#user-alerts"
+                  onClick={(e) => handleActiveNav(e)}
+                  className={
+                    activeNav === "#user-alerts"
+                      ? "nav__link active-link"
+                      : "nav__link"
+                  }
+                >
+                  <i className="uil uil-star nav__icon"></i> User Alerts
+                </a>
+              </li>
+            )}
+
             {!user ? (
               <li className="nav__item">
                 <a

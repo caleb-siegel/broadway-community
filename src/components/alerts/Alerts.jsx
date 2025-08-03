@@ -10,12 +10,12 @@ const AlertsPage = () => {
   const { user } = useOutletContext();
   const { backendUrl } = useOutletContext();
 
-  // useEffect(() => {
-  //   if (user) {
-  //     setEventAlerts(user.alerts || []);
-  //     setCategoryAlerts(user.category_alerts || []);
-  //   }
-  // }, [user]);
+  useEffect(() => {
+    if (user) {
+      setEventAlerts(user.event_alerts || []);
+      setCategoryAlerts(user.category_alerts || []);
+    }
+  }, [user]);
 
   const [eventAlerts, setEventAlerts] = useState(user?.event_alerts || []);
   const [categoryAlerts, setCategoryAlerts] = useState(user?.category_alerts || []);
