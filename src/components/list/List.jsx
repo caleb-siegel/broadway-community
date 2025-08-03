@@ -3,6 +3,12 @@ import "./list.css";
 import { useOutletContext, useNavigate } from "react-router-dom";
 // import Filter from "../filter/Filter";
 import Sort from "../sort/Sort";
+import AlertForm from "../alerts/AlertForm";
+import Dialog from "@mui/material/Dialog";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import { NotificationsActive } from "@mui/icons-material";
+import IconButton from "@mui/material/IconButton";
 
 const getDiscountClass = (discount) => {
   if (discount >= 15) return 'list__discount-chip--negative';
@@ -50,7 +56,7 @@ const formatUpdatedTime = (timestamp) => {
 };
 
 const List = ({ shows, refreshIndividualData, individualLoading, loadingId }) => {
-  const { backendUrl } = useOutletContext();
+  const { backendUrl, user } = useOutletContext();
   const navigate = useNavigate();
 
   const [todaytixPrice, setTodaytixPrice] = useState(null);
@@ -60,6 +66,8 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId }) =>
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [filteredShows, setFilteredShows] = useState(shows);
   const [isLoading, setIsLoading] = useState(false);
+  const [alertOpen, setAlertOpen] = useState(false);
+  const [alertEvent, setAlertEvent] = useState(null);
 
   useEffect(() => {
     setFilteredShows(shows);
@@ -162,6 +170,16 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId }) =>
     setFilteredShows(sorted);
   };
 
+  const handleOpenAlert = (eventObj) => {
+    setAlertEvent(eventObj);
+    setAlertOpen(true);
+  };
+
+  const handleCloseAlert = () => {
+    setAlertOpen(false);
+    setAlertEvent(null);
+  };
+
   return (
     <div className="list__wrapper">
       {/* <Filter onSearch={handleSearch} onSortChange={handleSort} /> */}
@@ -199,6 +217,19 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId }) =>
                     <div className="list__main-section">
                       <h3 className="list__title">
                         {show.event_info[0]?.name}
+                        {user && (
+                          <IconButton
+                            size="small"
+                            sx={{ ml: 1 }}
+                            onClick={e => {
+                              e.stopPropagation();
+                              handleOpenAlert(show.event_info[0]);
+                            }}
+                            title="Create Alert"
+                          >
+                            <NotificationsActive />
+                          </IconButton>
+                        )}
                       </h3>
                       {show.category_id !== 1 && (
                         <div className="list__category-name">
@@ -298,6 +329,42 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId }) =>
           </>
         )}
       </div>
+
+      {/* Alert Dialog */}
+      <Dialog open={alertOpen} onClose={handleCloseAlert} maxWidth="sm" fullWidth>
+        {user ? (
+          <>
+            <Typography variant="h5" sx={{ p: 2, pb: 0 }}>
+              Create Alert for {alertEvent?.name}
+            </Typography>
+            <AlertForm
+              onClose={handleCloseAlert}
+              trackingType="event"
+              selectedItem={alertEvent}
+              // Pass other required props (see your AlertForm usage)
+              handleSubmit={() => {}}
+              emailBool={true}
+              smsBool={false}
+              pushBool={false}
+              priceThreshold={0}
+              handleTrackingTypeChange={() => {}}
+              setOptions={() => {}}
+              options={[alertEvent]}
+              handleSearchChange={() => {}}
+              searchValue={alertEvent?.name || ""}
+              handleSelectedItem={() => {}}
+              handlePriceThreshold={() => {}}
+            />
+          </>
+        ) : (
+          <Box sx={{ p: 4, textAlign: "center" }}>
+            <Typography variant="h6" sx={{ mb: 2 }}>
+              Sign in to create and view your saved notifications
+            </Typography>
+            <Button variant="contained" href="/login">Sign In</Button>
+          </Box>
+        )}
+      </Dialog>
     </div>
   );
 };
