@@ -167,7 +167,7 @@ const AlertsPage = () => {
     // Add the appropriate foreign key based on tracking type
     if (trackingType === "event") {
       // For events, we need to find the event ID by name
-      fetch(`${backendUrl}/api/events/${encodeURIComponent(selectedItem)}`)
+      fetch(`${backendUrl}/api/events/name/${encodeURIComponent(selectedItem)}`)
         .then(response => response.json())
         .then(events => {
           if (events) {
