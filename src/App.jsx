@@ -32,22 +32,22 @@ function App() {
       setUser(parsedUser);
   
       // Check with the backend for the latest data
-      fetch(`${backendUrl}/api/check_session`, {
-        credentials: "include", // important for cookies/session
-      })
-        .then((res) => {
-          if (!res.ok) throw new Error("Session invalid");
-          return res.json();
-        })
-        .then((freshUser) => {
-          setUser(freshUser);
-          localStorage.setItem("user", JSON.stringify(freshUser)); // update local storage
-        })
-        .catch(() => {
-          // Session is no longer valid
-          localStorage.removeItem("user");
-          setUser(null);
-        });
+      // fetch(`${backendUrl}/api/check_session`, {
+      //   credentials: "include", // important for cookies/session
+      // })
+      //   .then((res) => {
+      //     if (!res.ok) throw new Error("Session invalid");
+      //     return res.json();
+      //   })
+      //   .then((freshUser) => {
+      //     setUser(freshUser);
+      //     localStorage.setItem("user", JSON.stringify(freshUser)); // update local storage
+      //   })
+      //   .catch(() => {
+      //     // Session is no longer valid
+      //     localStorage.removeItem("user");
+      //     setUser(null);
+      //   });
     }
   }, [backendUrl]);
 
