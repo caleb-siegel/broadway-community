@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Container, Typography, Box, Button, TextField, Dialog, DialogContent, DialogTitle, IconButton, Paper, MenuItem, Grid, ToggleButtonGroup, ToggleButton, InputAdornment, FormControl, Select } from "@mui/material";
-import { Email, Sms, NotificationsActive, Refresh, Add, Edit, Delete, Close, Check } from "@mui/icons-material";
+import { Container, Typography, Box, Button, TextField, Dialog, DialogContent, DialogTitle, IconButton, Paper, MenuItem, Grid, ToggleButtonGroup, ToggleButton, InputAdornment, FormControl, Select, Tooltip, CircularProgress } from "@mui/material";
+import { Email, Sms, NotificationsActive, Refresh, Add, Edit, Delete, Close, Check, Lock } from "@mui/icons-material";
 import { useOutletContext } from "react-router-dom";
 import AlertForm from "./AlertForm";
 import "./alerts.css";
@@ -22,39 +22,109 @@ const AlertsPage = () => {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingAlert, setEditingAlert] = useState(null);
   const [showType, setShowType] = useState("Broadway");
-  const [trackingType, setTrackingType] = useState("");
+  const [trackingType, setTrackingType] = useState("event");
   const [selectedItem, setSelectedItem] = useState("");
-  const [emailBool, setEmailBool] = useState(true);
-  const [smsBool, setSmsBool] = useState(false);
-  const [pushBool, setPushBool] = useState(false);
+  const [notificationMethod, setNotificationMethod] = useState("email");
   const [priceThreshold, setPriceThreshold] = useState(0);
   const [options, setOptions] = useState([]);
   const [updatedId, setUpdatedId] = useState({})
+  const [categoryObject, setCategoryObject] = useState({})
+  
+  // New editing states
+  const [editingPrice, setEditingPrice] = useState("");
+  const [editingPriceType, setEditingPriceType] = useState("specific"); // "specific" or "percentage"
+  const [editingStartDate, setEditingStartDate] = useState("");
+  const [editingEndDate, setEditingEndDate] = useState("");
+  const [editingShowTime, setEditingShowTime] = useState("");
+  const [loadingAlerts, setLoadingAlerts] = useState(new Set()); // Track which alerts are loading
 
   const handleEdit = (alert) => {
     setEditingAlert(alert);
-    setPriceThreshold(alert?.price);
-    // setIsDialogOpen(true);
+    
+    // Determine price type and set appropriate value
+    if (alert.price_percent) {
+      setEditingPriceType("percentage");
+      setEditingPrice(alert.price_percent.toString());
+    } else if (alert.price_number) {
+      setEditingPriceType("specific");
+      setEditingPrice(alert.price_number.toString());
+    } else {
+      setEditingPriceType("specific");
+      setEditingPrice(alert.price ? alert.price.toString() : "");
+    }
+    
+    setEditingStartDate(alert.start_date || "");
+    setEditingEndDate(alert.end_date || "");
+    setEditingShowTime(alert.show_time || "");
   };
 
   const handlePatch = (id, type) => {
+    // Add alert to loading set
+    setLoadingAlerts(prev => new Set(prev).add(id));
+    
+    const updateData = {
+      price_number: editingPriceType === "specific" && editingPrice && !isNaN(editingPrice) ? parseFloat(editingPrice) : null,
+      price_percent: editingPriceType === "percentage" && editingPrice && !isNaN(editingPrice) ? parseFloat(editingPrice) : null,
+      start_date: editingStartDate || null,
+      end_date: editingEndDate || null,
+      show_time: editingShowTime || null,
+    };
+
     fetch(`${backendUrl}/api/${type}_alerts/${id}`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
           Accept: "application/json",
         },
-        body: JSON.stringify({
-          price: priceThreshold,
-        }),
+        body: JSON.stringify(updateData),
     })
     .then((response) => response.json())
     .then((data) => {
-      setUpdatedId({"id": id, "price": priceThreshold})
-      setPriceThreshold(0)
+      // Update the local state
+      if (type === "event") {
+        setEventAlerts(prevAlerts => 
+          prevAlerts.map(alert => 
+            alert.id === id 
+              ? { ...alert, ...updateData }
+              : alert
+          )
+        );
+      } else {
+        setCategoryAlerts(prevAlerts => 
+          prevAlerts.map(alert => 
+            alert.id === id 
+              ? { ...alert, ...updateData }
+              : alert
+          )
+        );
+      }
+      
+      // Reset editing state
       setEditingAlert(null);
+      setEditingPrice("");
+      setEditingPriceType("specific");
+      setEditingStartDate("");
+      setEditingEndDate("");
+      setEditingShowTime("");
+      
+      // Remove from loading set
+      setLoadingAlerts(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(id);
+        return newSet;
+      });
     })
-  }
+    .catch((error) => {
+      console.error("Error updating alert:", error);
+      
+      // Remove from loading set on error
+      setLoadingAlerts(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(id);
+        return newSet;
+      });
+    });
+  };
 
   const getMethodIcon = (method) => {
     switch (method) {
@@ -69,39 +139,82 @@ const AlertsPage = () => {
     }
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
+  const handleSubmit = (formData) => {
+    // Extract data from the form
+    const {
+      notificationMethod,
+      trackingType,
+      selectedItem,
+      priceType,
+      priceNumber,
+      pricePercent,
+      startDate,
+      endDate,
+      showTime
+    } = formData;
+
+    // Prepare the alert data for the new database structure
     const alertData = {
-        user_id: user.id,
-        [trackingType === "event" ? "event_name" : "category_name"]: selectedItem,
-        price: priceThreshold,
-        send_email: emailBool,
-        send_sms: smsBool,
-        send_push: pushBool,
+      user_id: user.id,
+      notification_method: notificationMethod,
+      price_number: priceType === "specific" ? priceNumber : null,
+      price_percent: priceType === "percentage" ? pricePercent : null,
+      start_date: startDate || null,
+      end_date: endDate || null,
+      show_time: showTime || null,
     };
-    const endpoint = (trackingType === "event") ? "api/event_alerts" : "api/category_alerts";
+
+    // Add the appropriate foreign key based on tracking type
+    if (trackingType === "event") {
+      // For events, we need to find the event ID by name
+      fetch(`${backendUrl}/api/events/${encodeURIComponent(selectedItem)}`)
+        .then(response => response.json())
+        .then(events => {
+          if (events) {
+            alertData.event_id = events.id;
+            createAlert(alertData, "event");
+          }
+        });
+    } else {
+      // For categories, we need to find the category ID by name
+      const matchingCategory = categoryObject.find(
+        (category) => category.name === selectedItem
+      );
+      
+      if (matchingCategory) {
+        alertData.category_id = matchingCategory.id;
+        createAlert(alertData, "category");
+      }
+    }
+  };
+
+  const createAlert = (alertData, type) => {
+    const endpoint = type === "event" ? "api/event_alerts" : "api/category_alerts";
+    
     fetch(`${backendUrl}/${endpoint}`, {
-        method: "POST",
-        headers: {
-            "Content-Type": "Application/JSON",
-        },
-        body: JSON.stringify(alertData),
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(alertData),
     })
     .then((response) => response.json())
     .then((newAlertData) => {
-        setSelectedItem();
-        setPriceThreshold();
-        if (trackingType === "event") {
-          setEventAlerts((prevAlerts) => [
-            ...(prevAlerts || []), // Spread existing array
-            newAlertData,          // Append new data
-          ]);
-        } else {
-          setCategoryAlerts((prevAlerts) => [
-              ...(prevAlerts || []), // Spread existing array
-              newAlertData,          // Append new data
-          ]);
-        }
+      // Reset form state
+      setSelectedItem("");
+      setNotificationMethod("email");
+      setTrackingType("event");
+      setIsDialogOpen(false);
+      
+      // Update the appropriate alerts list
+      if (type === "event") {
+        setEventAlerts((prevAlerts) => [...(prevAlerts || []), newAlertData]);
+      } else {
+        setCategoryAlerts((prevAlerts) => [...(prevAlerts || []), newAlertData]);
+      }
+    })
+    .catch((error) => {
+      console.error("Error creating alert:", error);
     });
   };
 
@@ -152,7 +265,10 @@ const AlertsPage = () => {
       )
         .then((response) => response.json())
         .then((data) => {
-          setCategoryOptions(data);
+          // Extract just the names from the category objects
+          setCategoryObject(data);
+          const categoryNames = data.map(category => category.name);
+          setCategoryOptions(categoryNames);
         });
     }, []);
 
@@ -209,78 +325,214 @@ const AlertsPage = () => {
             <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 500 }}>
               Events
             </Typography>
-              {eventAlerts?.map((alert) => (
+              {eventAlerts?.length > 0 ? (
+                eventAlerts.map((alert) => (
+                  <Paper
+                    key={alert.id}
+                    elevation={0}
+                    sx={{
+                      p: 1.5,
+                      border: "2px solid",
+                      borderColor: "grey.200",
+                      borderRadius: 4,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      mb: 1,
+                    }}
+                  >
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2, flex: 1 }}>
+                      <Box sx={{ p: 1.5, bgcolor: "grey.100", borderRadius: 3, display: "inline-block"}}>
+                        {getMethodIcon(alert.notification_method || "email")}
+                      </Box>
+                      <Box sx={{ flex: 1 }}>
+                        <Typography variant="h6" sx={{ mb: 0.5 }}>
+                          {alert.event.name}
+                        </Typography>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap" }}>
+                          {/* Price Display/Edit */}
+                          <Typography color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                            {editingAlert === alert ? (
+                              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                                  {editingPriceType === "percentage" ? "Discount:" : "Price:"}
+                                </Typography>
+                                <ToggleButtonGroup
+                                  value={editingPriceType}
+                                  exclusive
+                                  onChange={(event, newValue) => {
+                                    setEditingPriceType(newValue);
+                                    // Keep the current value when switching types
+                                  }}
+                                  sx={{
+                                    '& .MuiToggleButtonGroup-grouped': {
+                                      margin: 0,
+                                      border: 0,
+                                      '&:not(:first-of-type)': {
+                                        borderRadius: 0,
+                                      },
+                                      '&:first-of-type': {
+                                        borderRadius: 0,
+                                      },
+                                    },
+                                  }}
+                                >
+                                  <ToggleButton value="specific" sx={{ borderRadius: 0 }}>
+                                    $
+                                  </ToggleButton>
+                                  <ToggleButton value="percentage" sx={{ borderRadius: 0 }}>
+                                    %
+                                  </ToggleButton>
+                                </ToggleButtonGroup>
+                                <TextField
+                                  size="small"
+                                  type="number"
+                                  value={editingPrice}
+                                  onChange={(e) => setEditingPrice(e.target.value)}
+                                  sx={{ width: 80 }}
+                                  InputProps={{
+                                    startAdornment: editingPriceType === "percentage" ? null : <span>$</span>,
+                                    endAdornment: editingPriceType === "percentage" ? <span>%</span> : null,
+                                  }}
+                                />
+                              </Box>
+                            ) : (
+                              <>
+                                {alert.price_number ? (
+                                  `$${alert.price_number}`
+                                ) : alert.price_percent ? (
+                                  `${alert.price_percent}%`
+                                ) : (
+                                  `$${alert.price_number || alert.price}`
+                                )}
+                              </>
+                            )}
+                          </Typography>
+
+                          {/* Date Range Display/Edit */}
+                          {(alert.start_date || alert.end_date || editingAlert === alert) && (
+                            <Typography color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                              {editingAlert === alert ? (
+                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                  <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                                    Date Range:
+                                  </Typography>
+                                  <TextField
+                                    size="small"
+                                    type="date"
+                                    value={editingStartDate}
+                                    onChange={(e) => setEditingStartDate(e.target.value)}
+                                    sx={{ width: 120 }}
+                                    placeholder="Start"
+                                  />
+                                  <TextField
+                                    size="small"
+                                    type="date"
+                                    value={editingEndDate}
+                                    onChange={(e) => setEditingEndDate(e.target.value)}
+                                    sx={{ width: 120 }}
+                                    placeholder="End"
+                                  />
+                                </Box>
+                              ) : (
+                                <>
+                                  {alert.start_date && alert.end_date ? (
+                                    `${new Date(alert.start_date).toLocaleDateString()} - ${new Date(alert.end_date).toLocaleDateString()}`
+                                  ) : alert.start_date ? (
+                                    `From: ${new Date(alert.start_date).toLocaleDateString()}`
+                                  ) : (
+                                    `Until: ${new Date(alert.end_date).toLocaleDateString()}`
+                                  )}
+                                </>
+                              )}
+                            </Typography>
+                          )}
+
+                          {/* Show Time Display/Edit */}
+                          {(alert.show_time || editingAlert === alert) && (
+                            <Typography color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                              {editingAlert === alert ? (
+                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                  <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                                    Show Time:
+                                  </Typography>
+                                  <FormControl size="small" sx={{ minWidth: 100 }}>
+                                    <Select
+                                      value={editingShowTime}
+                                      onChange={(e) => setEditingShowTime(e.target.value)}
+                                      displayEmpty
+                                    >
+                                      <MenuItem value="">Any Time</MenuItem>
+                                      <MenuItem value="matinee">Matinee</MenuItem>
+                                      <MenuItem value="evening">Evening</MenuItem>
+                                    </Select>
+                                  </FormControl>
+                                </Box>
+                              ) : (
+                                <>
+                                  {alert.show_time === "matinee" ? "Matinee" : 
+                                   alert.show_time === "evening" ? "Evening" : 
+                                   "Any Time"}
+                                </>
+                              )}
+                            </Typography>
+                          )}
+                        </Box>
+                      </Box>
+                    </Box>
+                    
+                    {loadingAlerts.has(alert.id) ? (
+                      <Box sx={{ display: "flex", gap: 1, border: '1px solid grey', borderRadius: 10, p: 0.5 }}>
+                        <CircularProgress size={20} />
+                      </Box>
+                    ) : editingAlert === alert ? 
+                      <Box sx={{ display: "flex", gap: 1, border: '1px solid grey', borderRadius: 10, p: 0.5 }}>
+                        <IconButton size="small" onClick={() => handlePatch(alert.id, "event")}>
+                          <Check />
+                        </IconButton>
+                        <IconButton size="small" onClick={() => {
+                          setEditingAlert(null);
+                          setEditingPrice("");
+                          setEditingPriceType("specific");
+                          setEditingStartDate("");
+                          setEditingEndDate("");
+                          setEditingShowTime("");
+                        }}>
+                          <Close />
+                        </IconButton>
+                      </Box>
+                    : 
+                      <Box sx={{ display: "flex", gap: 1 }}>
+                        <IconButton onClick={() => handleEdit(alert)}>
+                          <Edit />
+                        </IconButton>
+                        <IconButton onClick={(e) => handleDeleteAlert(e, alert.id, alert.event ? "event" : "category")}>
+                          <Delete />
+                        </IconButton>
+                      </Box>
+                    }
+                  </Paper>
+                ))
+              ) : (
                 <Paper
-                  key={alert.id}
                   elevation={0}
                   sx={{
-                    p: 1,
+                    p: 3,
                     border: "2px solid",
                     borderColor: "grey.200",
                     borderRadius: 4,
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
+                    textAlign: "center",
                     mb: 1,
                   }}
                 >
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                    <Box sx={{ p: 1.5, bgcolor: "grey.100", borderRadius: 3, display: "inline-block"}}>
-                      {getMethodIcon("email")}
-                    </Box>
-                    <Box>
-                      <Typography variant="h6" sx={{ mb: 0.5 }}>
-                        {alert.event.name}
-                      </Typography>
-                      <Typography color="text.secondary">
-                        Max Price:{" "}
-                        {editingAlert === alert ? (
-                          <TextField
-                            // defaultValue={alert.price} 
-                            onChange={(event) => handlePriceThreshold(event)} // Handle changes
-                            variant="outlined" // Use a compact variant
-                            type="number"
-                            value={priceThreshold}
-                            inputProps={{
-                              style: {
-                                fontSize: "inherit", // Match the font size to the surrounding text
-                                padding: 0, // Remove extra padding
-                                textAlign: "center", // Center align if necessary
-                              },
-                              startAdornment: <span>$</span>,
-                            }}
-                            sx={{
-                              width: "50px", 
-                              // minWidth: "50px", // Set a minimum width for stability
-                              fontWeight: 500, // Match the font weight
-                            }}
-                          />
-                        ) : (
-                          <Box component="span" sx={{ fontWeight: 500 }}>
-                            ${(updatedId && (updatedId.id === alert.id)) ? updatedId.price : alert.price}
-                          </Box>
-                        )}
-                      </Typography>
-                    </Box>
-                  </Box>
-                  {editingAlert === alert ? 
-                    <Box sx={{ display: "flex", gap: 1, border: '1px solid grey', borderRadius: 10 }}>
-                      <IconButton onClick={() => handlePatch(alert.id, "event")}>
-                        <Check />
-                      </IconButton>
-                    </Box>
-                  : 
-                    <Box sx={{ display: "flex", gap: 1 }}>
-                      <IconButton onClick={() => handleEdit(alert)}>
-                        <Edit />
-                      </IconButton>
-                      <IconButton onClick={(e) => handleDeleteAlert(e, alert.id, alert.event ? "event" : "category")}>
-                        <Delete />
-                      </IconButton>
-                    </Box>
-                  }
+                  <Typography variant="body1" color="text.secondary" sx={{ mb: 1 }}>
+                    You have no event alerts.
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Create one below to see it here.
+                  </Typography>
                 </Paper>
-              ))}
+              )}
             </Grid>
 
             {/* Right side: category alerts */}
@@ -288,77 +540,214 @@ const AlertsPage = () => {
               <Typography variant="h6" sx={{ mb: 1.5, fontWeight: 500 }}>
                 Categories
               </Typography>
-              {categoryAlerts?.map((alert) => (
+              {categoryAlerts?.length > 0 ? (
+                categoryAlerts.map((alert) => (
+                  <Paper
+                    key={alert.id}
+                    elevation={0}
+                    sx={{
+                      p: 1.5,
+                      border: "2px solid",
+                      borderColor: "grey.200",
+                      borderRadius: 4,
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      mb: 2, // Add some space between items
+                    }}
+                  >
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2, flex: 1 }}>
+                      <Box sx={{ p: 1.5, bgcolor: "grey.100", borderRadius: 3 }}>
+                        {getMethodIcon(alert.notification_method || "email")}
+                      </Box>
+                      <Box sx={{ flex: 1 }}>
+                        <Typography variant="h6" sx={{ mb: 0.5 }}>
+                          {alert.category.name}
+                        </Typography>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap" }}>
+                          {/* Price Display/Edit */}
+                          <Typography color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                            {editingAlert === alert ? (
+                              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                                  {editingPriceType === "percentage" ? "Discount:" : "Price:"}
+                                </Typography>
+                                <ToggleButtonGroup
+                                  value={editingPriceType}
+                                  exclusive
+                                  onChange={(event, newValue) => {
+                                    setEditingPriceType(newValue);
+                                    // Keep the current value when switching types
+                                  }}
+                                  sx={{
+                                    '& .MuiToggleButtonGroup-grouped': {
+                                      margin: 0,
+                                      border: 0,
+                                      '&:not(:first-of-type)': {
+                                        borderRadius: 0,
+                                      },
+                                      '&:first-of-type': {
+                                        borderRadius: 0,
+                                      },
+                                    },
+                                  }}
+                                >
+                                  <ToggleButton value="specific" sx={{ borderRadius: 0 }}>
+                                    $
+                                  </ToggleButton>
+                                  <ToggleButton value="percentage" sx={{ borderRadius: 0 }}>
+                                    %
+                                  </ToggleButton>
+                                </ToggleButtonGroup>
+                                <TextField
+                                  size="small"
+                                  type="number"
+                                  value={editingPrice}
+                                  onChange={(e) => setEditingPrice(e.target.value)}
+                                  sx={{ width: 80 }}
+                                  InputProps={{
+                                    startAdornment: editingPriceType === "percentage" ? null : <span>$</span>,
+                                    endAdornment: editingPriceType === "percentage" ? <span>%</span> : null,
+                                  }}
+                                />
+                              </Box>
+                            ) : (
+                              <>
+                                {alert.price_number ? (
+                                  `$${alert.price_number}`
+                                ) : alert.price_percent ? (
+                                  `${alert.price_percent}%`
+                                ) : (
+                                  `$${alert.price_number || alert.price}`
+                                )}
+                              </>
+                            )}
+                          </Typography>
+
+                          {/* Date Range Display/Edit */}
+                          {(alert.start_date || alert.end_date || editingAlert === alert) && (
+                            <Typography color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                              {editingAlert === alert ? (
+                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                  <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                                    Date Range:
+                                  </Typography>
+                                  <TextField
+                                    size="small"
+                                    type="date"
+                                    value={editingStartDate}
+                                    onChange={(e) => setEditingStartDate(e.target.value)}
+                                    sx={{ width: 120 }}
+                                    placeholder="Start"
+                                  />
+                                  <TextField
+                                    size="small"
+                                    type="date"
+                                    value={editingEndDate}
+                                    onChange={(e) => setEditingEndDate(e.target.value)}
+                                    sx={{ width: 120 }}
+                                    placeholder="End"
+                                  />
+                                </Box>
+                              ) : (
+                                <>
+                                  {alert.start_date && alert.end_date ? (
+                                    `${new Date(alert.start_date).toLocaleDateString()} - ${new Date(alert.end_date).toLocaleDateString()}`
+                                  ) : alert.start_date ? (
+                                    `From: ${new Date(alert.start_date).toLocaleDateString()}`
+                                  ) : (
+                                    `Until: ${new Date(alert.end_date).toLocaleDateString()}`
+                                  )}
+                                </>
+                              )}
+                            </Typography>
+                          )}
+
+                          {/* Show Time Display/Edit */}
+                          {(alert.show_time || editingAlert === alert) && (
+                            <Typography color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                              {editingAlert === alert ? (
+                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                  <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                                    Show Time:
+                                  </Typography>
+                                  <FormControl size="small" sx={{ minWidth: 100 }}>
+                                    <Select
+                                      value={editingShowTime}
+                                      onChange={(e) => setEditingShowTime(e.target.value)}
+                                      displayEmpty
+                                    >
+                                      <MenuItem value="">Any Time</MenuItem>
+                                      <MenuItem value="matinee">Matinee</MenuItem>
+                                      <MenuItem value="evening">Evening</MenuItem>
+                                    </Select>
+                                  </FormControl>
+                                </Box>
+                              ) : (
+                                <>
+                                  {alert.show_time === "matinee" ? "Matinee" : 
+                                   alert.show_time === "evening" ? "Evening" : 
+                                   "Any Time"}
+                                </>
+                              )}
+                            </Typography>
+                          )}
+                        </Box>
+                      </Box>
+                    </Box>
+                    
+                    {loadingAlerts.has(alert.id) ? (
+                      <Box sx={{ display: "flex", gap: 1, border: '1px solid grey', borderRadius: 10, p: 0.5 }}>
+                        <CircularProgress size={20} />
+                      </Box>
+                    ) : editingAlert === alert ? 
+                      <Box sx={{ display: "flex", gap: 1, border: '1px solid grey', borderRadius: 10, p: 0.5 }}>
+                        <IconButton size="small" onClick={() => handlePatch(alert.id, "category")}>
+                          <Check />
+                        </IconButton>
+                        <IconButton size="small" onClick={() => {
+                          setEditingAlert(null);
+                          setEditingPrice("");
+                          setEditingPriceType("specific");
+                          setEditingStartDate("");
+                          setEditingEndDate("");
+                          setEditingShowTime("");
+                        }}>
+                          <Close />
+                        </IconButton>
+                      </Box>
+                    : 
+                      <Box sx={{ display: "flex", gap: 1 }}>
+                        <IconButton onClick={() => handleEdit(alert)}>
+                          <Edit />
+                        </IconButton>
+                        <IconButton onClick={(e) => handleDeleteAlert(e, alert.id, alert.event ? "event" : "category")}>
+                          <Delete />
+                        </IconButton>
+                      </Box>
+                    }
+                  </Paper>
+                ))
+              ) : (
                 <Paper
-                  key={alert.id}
                   elevation={0}
                   sx={{
-                    p: 1,
+                    p: 3,
                     border: "2px solid",
                     borderColor: "grey.200",
                     borderRadius: 4,
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    mb: 2, // Add some space between items
+                    textAlign: "center",
+                    mb: 2,
                   }}
                 >
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                    <Box sx={{ p: 1.5, bgcolor: "grey.100", borderRadius: 3 }}>
-                      {getMethodIcon("email")}
-                    </Box>
-                    <Box>
-                      <Typography variant="h6" sx={{ mb: 0.5 }}>
-                        {alert.category.name}
-                      </Typography>
-                      <Typography color="text.secondary">
-                        Max Price:{" "}
-                        {editingAlert === alert ? (
-                          <TextField
-                            defaultValue={alert.price} // Default value for editing
-                            onChange={(event) => handlePriceThreshold(event)} // Handle changes
-                            variant="outlined" // Use a compact variant
-                            type="number"
-                            value={priceThreshold}
-                            inputProps={{
-                              style: {
-                                fontSize: "inherit", // Match the font size to the surrounding text
-                                padding: 0, // Remove extra padding
-                                textAlign: "center", // Center align if necessary
-                              },
-                            }}
-                            sx={{
-                              width: "50px", // Auto-adjust width to content
-                              minWidth: "50px", // Set a minimum width for stability
-                              fontWeight: 500, // Match the font weight
-                            }}
-                          />
-                        ) : (
-                          <Box component="span" sx={{ fontWeight: 500 }}>
-                            ${(updatedId && (updatedId.id === alert.id)) ? updatedId.price : alert.price}
-                          </Box>
-                        )}
-                      </Typography>
-                    </Box>
-                  </Box>
-                  {editingAlert === alert ? 
-                    <Box sx={{ display: "flex", gap: 1, border: '1px solid grey', borderRadius: 10 }}>
-                      <IconButton onClick={() => handlePatch(alert.id, "category")}>
-                        <Check />
-                      </IconButton>
-                    </Box>
-                  : 
-                    <Box sx={{ display: "flex", gap: 1 }}>
-                      <IconButton onClick={() => handleEdit(alert)}>
-                        <Edit />
-                      </IconButton>
-                      <IconButton onClick={(e) => handleDeleteAlert(e, alert.id, alert.event ? "event" : "category")}>
-                        <Delete />
-                      </IconButton>
-                    </Box>
-                  }
+                  <Typography variant="body1" color="text.secondary" sx={{ mb: 1 }}>
+                    You have no category alerts.
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    Create one below to see it here.
+                  </Typography>
                 </Paper>
-              ))}
+              )}
             </Grid>
           </Grid>
         </Box>
@@ -401,9 +790,35 @@ const AlertsPage = () => {
               alignItems: "center",
             }}
           >
-            <Typography variant="h4">
-              Add New Alert
-            </Typography>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+              <Typography variant="h4">
+                Add New Alert
+              </Typography>
+              <FormControl sx={{ minWidth: 200 }}>
+                <Select
+                  value={notificationMethod}
+                  onChange={(e) => setNotificationMethod(e.target.value)}
+                  displayEmpty
+                  sx={{ 
+                    borderRadius: '12px',
+                    fontSize: '0.9rem',
+                    '& .MuiOutlinedInput-notchedOutline': {
+                      borderWidth: 1,
+                    },
+                  }}
+                >
+                  <MenuItem value="email" sx={{ fontSize: '0.9rem' }}>
+                    <Email sx={{ mr: 1, fontSize: '1.1rem' }} /> Email Notification
+                  </MenuItem>
+                  <MenuItem value="sms" sx={{ fontSize: '0.9rem' }}>
+                    <Lock sx={{ mr: 1, fontSize: '1.1rem' }} /> SMS Notification
+                  </MenuItem>
+                  <MenuItem value="push" disabled sx={{ fontSize: '0.9rem' }}>
+                    <NotificationsActive sx={{ mr: 1, fontSize: '1.1rem' }} /> Push Notification
+                  </MenuItem>
+                </Select>
+              </FormControl>
+            </Box>
             <IconButton onClick={() => setIsDialogOpen(false)}>
               <Close />
             </IconButton>
@@ -415,9 +830,7 @@ const AlertsPage = () => {
               handleSubmit={handleSubmit}
               trackingType={trackingType}
               selectedItem={selectedItem}
-              emailBool={emailBool}
-              smsBool={smsBool}
-              pushBool={pushBool}
+              notificationMethod={notificationMethod}
               priceThreshold={priceThreshold}
               handleTrackingTypeChange={handleTrackingTypeChange}
               setOptions={setOptions}

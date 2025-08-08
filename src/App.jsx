@@ -26,21 +26,30 @@ function App() {
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
   
-      // Optional: confirm validity with server
-      // fetch(`${backendUrl}/api/check_session`, {
-      //   credentials: "include",
-      // })
-      //   .then(res => res.ok ? res.json() : Promise.reject())
-      //   .then(validUser => setUser(validUser))
-      //   .catch(() => {
-      //     localStorage.removeItem("user");
-      //     setUser(null);
-      //   });
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+  
+      // Check with the backend for the latest data
+      fetch(`${backendUrl}/api/check_session`, {
+        credentials: "include", // important for cookies/session
+      })
+        .then((res) => {
+          if (!res.ok) throw new Error("Session invalid");
+          return res.json();
+        })
+        .then((freshUser) => {
+          setUser(freshUser);
+          localStorage.setItem("user", JSON.stringify(freshUser)); // update local storage
+        })
+        .catch(() => {
+          // Session is no longer valid
+          localStorage.removeItem("user");
+          setUser(null);
+        });
     }
-  }, []);
+  }, [backendUrl]);
 
   async function attemptLogin(userInfo) {
     try {
