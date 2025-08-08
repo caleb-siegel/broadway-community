@@ -1,117 +1,356 @@
 import React, { useState, useEffect } from "react";
-import { Typography, Box, Button, TextField, IconButton, ToggleButtonGroup, ToggleButton, InputAdornment, useStepContext, Tooltip, Autocomplete } from "@mui/material";
-import { Email, Sms, NotificationsActive } from "@mui/icons-material";
+import { Typography, Box, Button, TextField, IconButton, ToggleButtonGroup, ToggleButton, InputAdornment, useStepContext, Tooltip, Autocomplete, FormControl, InputLabel, Select, MenuItem, Chip } from "@mui/material";
+import { Email, Sms, NotificationsActive, Lock, ExpandMore, ExpandLess } from "@mui/icons-material";
 import { useOutletContext } from "react-router-dom";
 
-const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, selectedItem, emailBool, smsBool, pushBool, priceThreshold, handleTrackingTypeChange, setOptions, options, handleSearchChange, searchValue, handleSelectedItem, handlePriceThreshold }) => {
+const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, selectedItem, priceThreshold, handleTrackingTypeChange, setOptions, options, handleSearchChange, searchValue, handleSelectedItem, handlePriceThreshold, notificationMethod, onNotificationMethodChange }) => {
     const { user } = useOutletContext();
 
-    const [notificationMethod, setNotificationMethod] = useState(initialData?.notificationMethod || "email");    
-
-    const handleNotificationChange = (event, newMethod) => {
-        if (newMethod) {
-            setNotificationMethod(newMethod);
+    const [priceType, setPriceType] = useState('percentage');
+    const [priceNumber, setPriceNumber] = useState(initialData?.priceNumber || null);
+    const [pricePercent, setPricePercent] = useState(initialData?.pricePercent || null);
+    const [startDate, setStartDate] = useState(initialData?.startDate || "");
+    const [endDate, setEndDate] = useState(initialData?.endDate || "");
+    const [showTime, setShowTime] = useState(initialData?.showTime || "");
+    const [showDateRange, setShowDateRange] = useState(false);
+    const [showTimeOptions, setShowTimeOptions] = useState(false);
+    
+    const handlePriceTypeChange = (event, newType) => {
+        if (newType) {
+            setPriceType(newType);
         }
     };
-    
+
+    const handleShowTimeChange = (event) => {
+        setShowTime(event.target.value);
+    };
+
+    const toggleDateRange = () => {
+        setShowDateRange(!showDateRange);
+        if (showDateRange) {
+            setStartDate("");
+            setEndDate("");
+        }
+    };
+
+    const toggleShowTime = () => {
+        setShowTimeOptions(!showTimeOptions);
+        if (showTimeOptions) {
+            setShowTime("");
+        }
+    };
+
+    const handleFormSubmit = (event) => {
+        event.preventDefault();
+        
+        // Prepare the form data with all the new fields
+        const formData = {
+            notificationMethod,
+            trackingType,
+            selectedItem,
+            priceType,
+            priceNumber: priceType === "specific" ? Number(priceNumber) : null,
+            pricePercent: priceType === "percentage" ? Number(pricePercent) : null,
+            startDate: showDateRange ? startDate : null,
+            endDate: showDateRange ? endDate : null,
+            showTime: showTimeOptions ? showTime : null,
+        };
+        console.log('formdata: ', formData)
+        // Call the parent's handleSubmit with the complete form data
+        handleSubmit(formData);
+    };
+
+    // Common styles for form sections
+    const sectionStyle = {
+        mb: 3,
+    };
+
+    const headerStyle = {
+        fontSize: '1rem',
+        fontWeight: 600,
+        color: 'text.primary',
+        mb: 1.5,
+    };
+
+    const toggleButtonGroupStyle = {
+        '& .MuiToggleButton-root': {
+            borderRadius: '20px',
+            py: 1,
+            px: 2,
+            textTransform: 'none',
+            fontSize: '0.9rem',
+            '&.Mui-selected': {
+                backgroundColor: 'primary.main',
+                color: 'white',
+                '&:hover': {
+                    backgroundColor: 'primary.dark',
+                },
+            },
+        },
+        '& .MuiToggleButtonGroup-grouped': {
+            mx: 0.5,
+            border: '1px solid',
+            borderColor: 'divider',
+            '&:not(:first-of-type)': {
+                borderRadius: '20px',
+            },
+            '&:first-of-type': {
+                borderRadius: '20px',
+            },
+        },
+    };
 
     return (
-        <Box component="form" onSubmit={handleSubmit} sx={{ p: 2, "& > *": { mb: 4 } }}>
-            {/* Notification Method */}
-            <Box>
-                <Typography variant="h6" gutterBottom>Notification Method</Typography>
-                <ToggleButtonGroup value={notificationMethod} exclusive onChange={handleNotificationChange} fullWidth >
-                    {/* Email Button */}
-                    <ToggleButton value="email" sx={{ py: 2, flex: 1, display: "flex", alignItems: "center", justifyContent: "center", }} >
-                        <Email sx={{ mr: 1 }} /> Email
-                    </ToggleButton>
+        <Box component="form" onSubmit={handleFormSubmit} sx={{ p: { xs: 2, sm: 3 }, "& > *": { mb: 3 } }}>
+            {/* What to Track and Price Alert Type - Side by Side */}
+            <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3 }}>
+                {/* What to Track Section */}
+                <Box sx={sectionStyle}>
+                    <Typography sx={headerStyle}>What to Track</Typography>
+                    <ToggleButtonGroup 
+                        value={trackingType} 
+                        exclusive 
+                        onChange={(e, value) => value && handleTrackingTypeChange(value)} 
+                        fullWidth 
+                        sx={toggleButtonGroupStyle}
+                    >
+                        <ToggleButton value="event">Events</ToggleButton>
+                        <ToggleButton value="category">Categories</ToggleButton>
+                    </ToggleButtonGroup>
 
-                    {/* SMS Button (Greyed Out and Disabled) */}
-                    <Tooltip title="This is not yet available" arrow>
-                        <span style={{ flex: 1 }}>
-                            <ToggleButton
-                                value="sms"
-                                disabled
-                                sx={{
-                                    py: 2,
-                                    flex: 1,
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    color: "text.disabled", // Grey text
-                                    bgcolor: "action.disabledBackground", // Grey background
-                                    "&.Mui-disabled": {
-                                        cursor: "not-allowed", // Change cursor to indicate disabled state
-                                    },
-                                }}
-                            >
-                                <Sms sx={{ mr: 1 }} /> SMS
-                            </ToggleButton>
-                        </span>
-                    </Tooltip>
-
-                    {/* Push Button (Greyed Out and Disabled) */}
-                    <Tooltip title="This is not yet available" arrow>
-                        <span style={{ flex: 1 }}>
-                            <ToggleButton
-                                value="push"
-                                disabled
-                                sx={{
-                                    py: 2,
-                                    flex: 1,
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    color: "text.disabled", // Grey text
-                                    bgcolor: "action.disabledBackground", // Grey background
-                                    "&.Mui-disabled": {
-                                        cursor: "not-allowed", // Change cursor to indicate disabled state
-                                    },
-                                }}
-                            >
-                                <NotificationsActive sx={{ mr: 1 }} /> Push
-                            </ToggleButton>
-                        </span>
-                    </Tooltip>
-                </ToggleButtonGroup>
-            </Box>
-    
-            {/* Tracking Type */}
-            <Box>
-                <Typography variant="h6" gutterBottom> What to Track </Typography>
-                <ToggleButtonGroup value={trackingType} exclusive onChange={(e, value) => value && handleTrackingTypeChange(value)} fullWidth sx={{ mb: 2 }} >
-                    <ToggleButton value="event" sx={{ py: 2 }}> Events </ToggleButton>
-                    <ToggleButton value="category" sx={{ py: 2 }}> Categories </ToggleButton>
-                </ToggleButtonGroup>
-
-                <Autocomplete fullWidth options={options} inputValue={searchValue} onInputChange={(event, newValue) => handleSearchChange(event, newValue)} value={selectedItem} onChange={(event, newValue) => handleSelectedItem(newValue)}
-                    renderInput={(params) => (
-                        <TextField
-                            {...params}
-                            placeholder={`Search for ${
-                                trackingType === "event" ? "an event" : "a category"
-                            }...`}
-                            InputProps={{
-                                ...params.InputProps,
-                            }}
-                            sx={{ "& .MuiOutlinedInput-root": { borderRadius: 4, fontSize: "1.1rem", "& fieldset": { borderWidth: 2, }, }, }}
+                    <Box sx={{ mt: 2 }}>
+                        <Autocomplete 
+                            fullWidth 
+                            options={options} 
+                            inputValue={searchValue} 
+                            onInputChange={(event, newValue) => handleSearchChange(event, newValue)} 
+                            value={selectedItem} 
+                            onChange={(event, newValue) => handleSelectedItem(newValue)}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    placeholder={`Search for ${trackingType === "event" ? "an event" : "a category"}...`}
+                                    InputProps={{
+                                        ...params.InputProps,
+                                    }}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            borderRadius: '12px',
+                                            fontSize: '0.9rem',
+                                            '& fieldset': {
+                                                borderWidth: 1,
+                                            },
+                                        },
+                                    }}
+                                />
+                            )}
                         />
-                    )}
-                />
+                    </Box>
+                </Box>
+
+                {/* Price Alert Type Section */}
+                <Box sx={sectionStyle}>
+                    <Typography sx={headerStyle}>Price Alert Type</Typography>
+                    <ToggleButtonGroup 
+                        value={priceType} 
+                        exclusive 
+                        onChange={handlePriceTypeChange} 
+                        fullWidth 
+                        sx={toggleButtonGroupStyle}
+                    >
+                        <ToggleButton value="specific">Specific Price</ToggleButton>
+                        <ToggleButton value="percentage">Percentage Discount</ToggleButton>
+                    </ToggleButtonGroup>
+
+                    <Box sx={{ mt: 2 }}>
+                        {priceType === "specific" ? (
+                            <TextField 
+                                fullWidth 
+                                type="number" 
+                                placeholder="Enter maximum price" 
+                                value={priceNumber} 
+                                onChange={(e) => setPriceNumber(e.target.value)} 
+                                InputProps={{ 
+                                    startAdornment: <InputAdornment position="start">$</InputAdornment> 
+                                }} 
+                                sx={{ 
+                                    '& .MuiOutlinedInput-root': {
+                                        borderRadius: '12px',
+                                        fontSize: '0.9rem',
+                                        '& fieldset': {
+                                            borderWidth: 1,
+                                        },
+                                    },
+                                }} 
+                            />
+                        ) : (
+                            <TextField 
+                                fullWidth 
+                                type="number" 
+                                placeholder="Enter percentage discount to the average" 
+                                value={pricePercent} 
+                                onChange={(e) => setPricePercent(e.target.value)} 
+                                InputProps={{ 
+                                    endAdornment: <InputAdornment position="end">%</InputAdornment> 
+                                }} 
+                                sx={{ 
+                                    '& .MuiOutlinedInput-root': {
+                                        borderRadius: '12px',
+                                        fontSize: '0.9rem',
+                                        '& fieldset': {
+                                            borderWidth: 1,
+                                        },
+                                    },
+                                }} 
+                            />
+                        )}
+                    </Box>
+                </Box>
             </Box>
-    
-            {/* Price Threshold */}
-            <Box>
-                <Typography variant="h6" gutterBottom> Price Threshold </Typography>
-                <TextField fullWidth type="number" placeholder="Enter maximum price" value={priceThreshold} onChange={(e) => handlePriceThreshold(e)} InputProps={{ startAdornment: ( <InputAdornment position="start">$</InputAdornment> ), }} sx={{ "& .MuiOutlinedInput-root": { borderRadius: 4, fontSize: "1.1rem", "& fieldset": { borderWidth: 2, }, }, }} />
+
+            {/* Optional Preferences */}
+            <Box sx={sectionStyle}>
+                <Typography sx={headerStyle}>Optional Preferences</Typography>
+                <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap", mb: 2 }}>
+                    <Chip
+                        label="Date Range"
+                        onClick={toggleDateRange}
+                        variant={showDateRange ? "filled" : "outlined"}
+                        color={showDateRange ? "primary" : "default"}
+                        icon={showDateRange ? <ExpandLess /> : <ExpandMore />}
+                        sx={{ 
+                            borderRadius: '20px',
+                            fontSize: '0.85rem',
+                            height: '32px',
+                            '&:hover': {
+                                backgroundColor: showDateRange ? "primary.main" : "action.hover"
+                            }
+                        }}
+                    />
+                    
+                    <Chip
+                        label="Show Time"
+                        onClick={toggleShowTime}
+                        variant={showTimeOptions ? "filled" : "outlined"}
+                        color={showTimeOptions ? "primary" : "default"}
+                        icon={showTimeOptions ? <ExpandLess /> : <ExpandMore />}
+                        sx={{ 
+                            borderRadius: '20px',
+                            fontSize: '0.85rem',
+                            height: '32px',
+                            '&:hover': {
+                                backgroundColor: showTimeOptions ? "primary.main" : "action.hover"
+                            }
+                        }}
+                    />
+                </Box>
+
+                {/* Optional Preferences - Always half width */}
+                {(showDateRange || showTimeOptions) && (
+                    <Box sx={{ 
+                        display: 'grid', 
+                        gridTemplateColumns: 'repeat(2, 1fr)', 
+                        gap: 2,
+                        maxWidth: '50%'
+                    }}>
+                        {showDateRange && (
+                            <Box>
+                                <Typography variant="subtitle2" sx={{ mb: 1, fontSize: '0.85rem' }}>Date Range</Typography>
+                                <Box sx={{ display: "flex", gap: 1 }}>
+                                    <TextField
+                                        fullWidth
+                                        type="date"
+                                        label="Start Date"
+                                        value={startDate}
+                                        onChange={(e) => setStartDate(e.target.value)}
+                                        InputLabelProps={{ shrink: true }}
+                                        sx={{ 
+                                            '& .MuiOutlinedInput-root': {
+                                                borderRadius: '12px',
+                                                fontSize: '0.9rem',
+                                                '& fieldset': {
+                                                    borderWidth: 1,
+                                                },
+                                            },
+                                        }}
+                                    />
+                                    <TextField
+                                        fullWidth
+                                        type="date"
+                                        label="End Date"
+                                        value={endDate}
+                                        onChange={(e) => setEndDate(e.target.value)}
+                                        InputLabelProps={{ shrink: true }}
+                                        sx={{ 
+                                            '& .MuiOutlinedInput-root': {
+                                                borderRadius: '12px',
+                                                fontSize: '0.9rem',
+                                                '& fieldset': {
+                                                    borderWidth: 1,
+                                                },
+                                            },
+                                        }}
+                                    />
+                                </Box>
+                            </Box>
+                        )}
+
+                        {showTimeOptions && (
+                            <Box>
+                                <Typography variant="subtitle2" sx={{ mb: 1, fontSize: '0.85rem' }}>Show Time</Typography>
+                                <FormControl fullWidth>
+                                    <Select
+                                        value={showTime}
+                                        displayEmpty
+                                        onChange={handleShowTimeChange}
+                                        sx={{ 
+                                            borderRadius: '12px',
+                                            fontSize: '0.9rem',
+                                            '& .MuiOutlinedInput-notchedOutline': {
+                                                borderWidth: 1,
+                                            },
+                                        }}
+                                    >
+                                        <MenuItem value="matinee" sx={{ fontSize: '0.9rem' }}>Matinee</MenuItem>
+                                        <MenuItem value="evening" sx={{ fontSize: '0.9rem' }}>Evening</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Box>
+                        )}
+                    </Box>
+                )}
             </Box>
     
             {/* Save Button */}
-            <Button variant="contained" fullWidth onClick={onClose} type="submit" sx={{ bgcolor: "black", color: "white", py: 2, borderRadius: 4, fontSize: "1.1rem", "&:hover": { bgcolor: "rgb(45, 45, 45)", }, }} >
+            <Button 
+                variant="contained" 
+                fullWidth 
+                onClick={onClose} 
+                type="submit" 
+                sx={{ 
+                    bgcolor: "primary.main",
+                    color: "white",
+                    py: 1.5,
+                    borderRadius: '12px',
+                    fontSize: '0.95rem',
+                    textTransform: 'none',
+                    fontWeight: 600,
+                    boxShadow: 'none',
+                    '&:hover': {
+                        bgcolor: "primary.dark",
+                        boxShadow: 'none',
+                    },
+                }} 
+            >
                 Save Alert
             </Button>
+            {notificationMethod === "sms" && (
+                <Typography variant="body2" sx={{ mt: 1.5, textAlign: 'center', color: 'text.secondary' }}>
+                    *SMS notifications require a premium subscription
+                </Typography>
+            )}
         </Box>
-        );
-    };
+    );
+};
 
 export default AlertForm
