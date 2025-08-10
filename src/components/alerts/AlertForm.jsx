@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Typography, Box, Button, TextField, IconButton, ToggleButtonGroup, ToggleButton, InputAdornment, useStepContext, Tooltip, Autocomplete, FormControl, InputLabel, Select, MenuItem, Chip } from "@mui/material";
+import { Typography, Box, Button, TextField, IconButton, ToggleButtonGroup, ToggleButton, InputAdornment, useStepContext, Tooltip, Autocomplete, FormControl, InputLabel, Select, MenuItem, Chip, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
 import { Email, Sms, NotificationsActive, Lock, ExpandMore, ExpandLess } from "@mui/icons-material";
 import { useOutletContext } from "react-router-dom";
 
@@ -14,7 +14,74 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
     const [showTime, setShowTime] = useState(initialData?.showTime || "");
     const [showDateRange, setShowDateRange] = useState(false);
     const [showTimeOptions, setShowTimeOptions] = useState(false);
+    const [showWeekdayOptions, setShowWeekdayOptions] = useState(false);
+    const [selectedWeekdays, setSelectedWeekdays] = useState(initialData?.weekday || []);
     
+    // Handle initialData changes (for editing existing alerts)
+    useEffect(() => {
+        if (initialData) {
+            setPriceNumber(initialData.priceNumber || null);
+            setPricePercent(initialData.pricePercent || null);
+            setStartDate(initialData.startDate || "");
+            setEndDate(initialData.endDate || "");
+            setShowTime(initialData.showTime || "");
+            
+            // Handle weekday data conversion (could be array, string, or null)
+            let weekdays = [];
+            if (initialData.weekday) {
+                if (Array.isArray(initialData.weekday)) {
+                    weekdays = initialData.weekday;
+                } else if (typeof initialData.weekday === 'string') {
+                    try {
+                        weekdays = JSON.parse(initialData.weekday);
+                    } catch (e) {
+                        weekdays = [];
+                    }
+                }
+            }
+            setSelectedWeekdays(weekdays);
+            
+            // Set the appropriate toggles based on data
+            setShowDateRange(!!(initialData.startDate || initialData.endDate));
+            setShowTimeOptions(!!initialData.showTime);
+            setShowWeekdayOptions(!!(weekdays && weekdays.length > 0));
+            
+            // Set price type based on what's available
+            if (initialData.pricePercent) {
+                setPriceType('percentage');
+            } else if (initialData.priceNumber) {
+                setPriceType('specific');
+            }
+        }
+    }, [initialData]);
+
+    const weekdays = [
+        { value: 0, label: 'Sunday' },
+        { value: 1, label: 'Monday' },
+        { value: 2, label: 'Tuesday' },
+        { value: 3, label: 'Wednesday' },
+        { value: 4, label: 'Thursday' },
+        { value: 5, label: 'Friday' },
+        { value: 6, label: 'Saturday' }
+    ];
+
+    const handleWeekdayChange = (weekdayValue) => {
+        setSelectedWeekdays(prev => {
+            if (prev.includes(weekdayValue)) {
+                return prev.filter(day => day !== weekdayValue);
+            } else {
+                return [...prev, weekdayValue].sort();
+            }
+        });
+    };
+
+    const toggleWeekdayOptions = () => {
+        setShowWeekdayOptions(!showWeekdayOptions);
+        if (showWeekdayOptions) {
+            setSelectedWeekdays([]);
+        }
+    };
+
     const handlePriceTypeChange = (event, newType) => {
         if (newType) {
             setPriceType(newType);
@@ -54,6 +121,7 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
             startDate: showDateRange ? startDate : null,
             endDate: showDateRange ? endDate : null,
             showTime: showTimeOptions ? showTime : null,
+            weekday: showWeekdayOptions ? selectedWeekdays : null,
         };
         console.log('formdata: ', formData)
         // Call the parent's handleSubmit with the complete form data
@@ -243,10 +311,26 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
                             }
                         }}
                     />
+
+                    <Chip
+                        label="Weekdays"
+                        onClick={toggleWeekdayOptions}
+                        variant={showWeekdayOptions ? "filled" : "outlined"}
+                        color={showWeekdayOptions ? "primary" : "default"}
+                        icon={showWeekdayOptions ? <ExpandLess /> : <ExpandMore />}
+                        sx={{ 
+                            borderRadius: '20px',
+                            fontSize: '0.85rem',
+                            height: '32px',
+                            '&:hover': {
+                                backgroundColor: showWeekdayOptions ? "primary.main" : "action.hover"
+                            }
+                        }}
+                    />
                 </Box>
 
                 {/* Optional Preferences - Always half width */}
-                {(showDateRange || showTimeOptions) && (
+                {(showDateRange || showTimeOptions || showWeekdayOptions) && (
                     <Box sx={{ 
                         display: 'grid', 
                         gridTemplateColumns: 'repeat(2, 1fr)', 
@@ -315,6 +399,30 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
                                         <MenuItem value="evening" sx={{ fontSize: '0.9rem' }}>Evening</MenuItem>
                                     </Select>
                                 </FormControl>
+                            </Box>
+                        )}
+
+                        {showWeekdayOptions && (
+                            <Box>
+                                <Typography variant="subtitle2" sx={{ mb: 1, fontSize: '0.85rem' }}>Weekdays</Typography>
+                                <FormGroup>
+                                    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 1 }}>
+                                        {weekdays.map((day) => (
+                                            <FormControlLabel
+                                                key={day.value}
+                                                control={
+                                                    <Checkbox
+                                                        checked={selectedWeekdays.includes(day.value)}
+                                                        onChange={() => handleWeekdayChange(day.value)}
+                                                        size="small"
+                                                    />
+                                                }
+                                                label={day.label}
+                                                sx={{ fontSize: '0.8rem' }}
+                                            />
+                                        ))}
+                                    </Box>
+                                </FormGroup>
                             </Box>
                         )}
                     </Box>
