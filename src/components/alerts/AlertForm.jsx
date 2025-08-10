@@ -200,9 +200,7 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
             showTime: showTimeOptions ? showTime : null,
             weekday: showWeekdayOptions ? selectedWeekdays : null,
         };
-        
-        console.log('formdata: ', formData);
-        
+                
         // Call the parent's handleSubmit with the complete form data
         handleSubmit(formData);
         setIsSubmitting(false);
