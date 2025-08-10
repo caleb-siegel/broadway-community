@@ -36,6 +36,7 @@ const AlertsPage = () => {
   const [editingStartDate, setEditingStartDate] = useState("");
   const [editingEndDate, setEditingEndDate] = useState("");
   const [editingShowTime, setEditingShowTime] = useState("");
+  const [editingWeekdays, setEditingWeekdays] = useState([]);
   const [loadingAlerts, setLoadingAlerts] = useState(new Set()); // Track which alerts are loading
 
   const handleEdit = (alert) => {
@@ -56,6 +57,21 @@ const AlertsPage = () => {
     setEditingStartDate(alert.start_date || "");
     setEditingEndDate(alert.end_date || "");
     setEditingShowTime(alert.show_time || "");
+    
+    // Handle weekday data conversion (could be array, string, or null)
+    let weekdays = [];
+    if (alert.weekday) {
+      if (Array.isArray(alert.weekday)) {
+        weekdays = alert.weekday;
+      } else if (typeof alert.weekday === 'string') {
+        try {
+          weekdays = JSON.parse(alert.weekday);
+        } catch (e) {
+          weekdays = [];
+        }
+      }
+    }
+    setEditingWeekdays(weekdays);
   };
 
   const handlePatch = (id, type) => {
@@ -68,6 +84,7 @@ const AlertsPage = () => {
       start_date: editingStartDate || null,
       end_date: editingEndDate || null,
       show_time: editingShowTime || null,
+      weekday: editingWeekdays.length > 0 ? editingWeekdays : null,
     };
 
     fetch(`${backendUrl}/api/${type}_alerts/${id}`, {
@@ -150,7 +167,8 @@ const AlertsPage = () => {
       pricePercent,
       startDate,
       endDate,
-      showTime
+      showTime,
+      weekday
     } = formData;
 
     // Prepare the alert data for the new database structure
@@ -162,12 +180,13 @@ const AlertsPage = () => {
       start_date: startDate || null,
       end_date: endDate || null,
       show_time: showTime || null,
+      weekday: weekday || null,
     };
 
     // Add the appropriate foreign key based on tracking type
     if (trackingType === "event") {
       // For events, we need to find the event ID by name
-      fetch(`${backendUrl}/api/events/${encodeURIComponent(selectedItem)}`)
+      fetch(`${backendUrl}/api/events/name/${encodeURIComponent(selectedItem)}`)
         .then(response => response.json())
         .then(events => {
           if (events) {
@@ -477,6 +496,64 @@ const AlertsPage = () => {
                               )}
                             </Typography>
                           )}
+
+                          {/* Weekday Display/Edit */}
+                          {(alert.weekday || editingAlert === alert) && (
+                            <Typography color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                              {editingAlert === alert ? (
+                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                  <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                                    Weekdays:
+                                  </Typography>
+                                  <FormControl size="small" sx={{ minWidth: 150 }}>
+                                    <Select
+                                      multiple
+                                      value={editingWeekdays}
+                                      onChange={(e) => setEditingWeekdays(e.target.value)}
+                                      displayEmpty
+                                      renderValue={(selected) => {
+                                        if (selected.length === 0) return "Any Day";
+                                        if (selected.length === 7) return "Every Day";
+                                        const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                                        return selected.map(day => weekdays[day]).join(', ');
+                                      }}
+                                    >
+                                      <MenuItem value={0}>Sunday</MenuItem>
+                                      <MenuItem value={1}>Monday</MenuItem>
+                                      <MenuItem value={2}>Tuesday</MenuItem>
+                                      <MenuItem value={3}>Wednesday</MenuItem>
+                                      <MenuItem value={4}>Thursday</MenuItem>
+                                      <MenuItem value={5}>Friday</MenuItem>
+                                      <MenuItem value={6}>Saturday</MenuItem>
+                                    </Select>
+                                  </FormControl>
+                                </Box>
+                              ) : (
+                                <>
+                                  {alert.weekday && alert.weekday.length > 0 ? (
+                                    (() => {
+                                      const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                                      let weekdayArray = alert.weekday;
+                                      
+                                      // Handle weekday data conversion (could be array, string, or null)
+                                      if (typeof alert.weekday === 'string') {
+                                        try {
+                                          weekdayArray = JSON.parse(alert.weekday);
+                                        } catch (e) {
+                                          weekdayArray = [];
+                                        }
+                                      }
+                                      
+                                      if (weekdayArray.length === 7) return "Every Day";
+                                      return weekdayArray.map(day => weekdays[day]).join(', ');
+                                    })()
+                                  ) : (
+                                    "Any Day"
+                                  )}
+                                </>
+                              )}
+                            </Typography>
+                          )}
                         </Box>
                       </Box>
                     </Box>
@@ -497,6 +574,7 @@ const AlertsPage = () => {
                           setEditingStartDate("");
                           setEditingEndDate("");
                           setEditingShowTime("");
+                          setEditingWeekdays([]);
                         }}>
                           <Close />
                         </IconButton>
@@ -692,6 +770,64 @@ const AlertsPage = () => {
                               )}
                             </Typography>
                           )}
+
+                          {/* Weekday Display/Edit */}
+                          {(alert.weekday || editingAlert === alert) && (
+                            <Typography color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                              {editingAlert === alert ? (
+                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                  <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                                    Weekdays:
+                                  </Typography>
+                                  <FormControl size="small" sx={{ minWidth: 150 }}>
+                                    <Select
+                                      multiple
+                                      value={editingWeekdays}
+                                      onChange={(e) => setEditingWeekdays(e.target.value)}
+                                      displayEmpty
+                                      renderValue={(selected) => {
+                                        if (selected.length === 0) return "Any Day";
+                                        if (selected.length === 7) return "Every Day";
+                                        const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                                        return selected.map(day => weekdays[day]).join(', ');
+                                      }}
+                                    >
+                                      <MenuItem value={0}>Sunday</MenuItem>
+                                      <MenuItem value={1}>Monday</MenuItem>
+                                      <MenuItem value={2}>Tuesday</MenuItem>
+                                      <MenuItem value={3}>Wednesday</MenuItem>
+                                      <MenuItem value={4}>Thursday</MenuItem>
+                                      <MenuItem value={5}>Friday</MenuItem>
+                                      <MenuItem value={6}>Saturday</MenuItem>
+                                    </Select>
+                                  </FormControl>
+                                </Box>
+                              ) : (
+                                <>
+                                  {alert.weekday && alert.weekday.length > 0 ? (
+                                    (() => {
+                                      const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                                      let weekdayArray = alert.weekday;
+                                      
+                                      // Handle weekday data conversion (could be array, string, or null)
+                                      if (typeof alert.weekday === 'string') {
+                                        try {
+                                          weekdayArray = JSON.parse(alert.weekday);
+                                        } catch (e) {
+                                          weekdayArray = [];
+                                        }
+                                      }
+                                      
+                                      if (weekdayArray.length === 7) return "Every Day";
+                                      return weekdayArray.map(day => weekdays[day]).join(', ');
+                                    })()
+                                  ) : (
+                                    "Any Day"
+                                  )}
+                                </>
+                              )}
+                            </Typography>
+                          )}
                         </Box>
                       </Box>
                     </Box>
@@ -712,6 +848,7 @@ const AlertsPage = () => {
                           setEditingStartDate("");
                           setEditingEndDate("");
                           setEditingShowTime("");
+                          setEditingWeekdays([]);
                         }}>
                           <Close />
                         </IconButton>
