@@ -157,6 +157,12 @@ const AlertsPage = () => {
   };
 
   const handleSubmit = (formData) => {
+    console.log(selectedItem)
+    console.log(priceNumber, pricePercent)
+    if (!selectedItem || (!priceNumber && !pricePercent)) {
+      alert("Please fill in all required fields.");
+      return;
+    }
     // Extract data from the form
     const {
       notificationMethod,
