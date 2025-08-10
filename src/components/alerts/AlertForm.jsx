@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Typography, Box, Button, TextField, IconButton, ToggleButtonGroup, ToggleButton, InputAdornment, useStepContext, Tooltip, Autocomplete, FormControl, InputLabel, Select, MenuItem, Chip, Checkbox, FormControlLabel, FormGroup } from "@mui/material";
+import { Typography, Box, Button, TextField, IconButton, ToggleButtonGroup, ToggleButton, InputAdornment, useStepContext, Tooltip, Autocomplete, FormControl, InputLabel, Select, MenuItem, Chip, Checkbox, FormControlLabel, FormGroup, Alert } from "@mui/material";
 import { Email, Sms, NotificationsActive, Lock, ExpandMore, ExpandLess } from "@mui/icons-material";
 import { useOutletContext } from "react-router-dom";
 
@@ -7,8 +7,8 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
     const { user } = useOutletContext();
 
     const [priceType, setPriceType] = useState('percentage');
-    const [priceNumber, setPriceNumber] = useState(initialData?.priceNumber || null);
-    const [pricePercent, setPricePercent] = useState(initialData?.pricePercent || null);
+    const [priceNumber, setPriceNumber] = useState(initialData?.priceNumber || "");
+    const [pricePercent, setPricePercent] = useState(initialData?.pricePercent || "");
     const [startDate, setStartDate] = useState(initialData?.startDate || "");
     const [endDate, setEndDate] = useState(initialData?.endDate || "");
     const [showTime, setShowTime] = useState(initialData?.showTime || "");
@@ -17,11 +17,15 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
     const [showWeekdayOptions, setShowWeekdayOptions] = useState(false);
     const [selectedWeekdays, setSelectedWeekdays] = useState(initialData?.weekday || []);
     
+    // Validation states
+    const [errors, setErrors] = useState({});
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    
     // Handle initialData changes (for editing existing alerts)
     useEffect(() => {
         if (initialData) {
-            setPriceNumber(initialData.priceNumber || null);
-            setPricePercent(initialData.pricePercent || null);
+            setPriceNumber(initialData.priceNumber || "");
+            setPricePercent(initialData.pricePercent || "");
             setStartDate(initialData.startDate || "");
             setEndDate(initialData.endDate || "");
             setShowTime(initialData.showTime || "");
@@ -55,6 +59,27 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
         }
     }, [initialData]);
 
+    // Clear errors when user makes changes
+    useEffect(() => {
+        if (errors.selectedItem && selectedItem) {
+            setErrors(prev => ({ ...prev, selectedItem: null }));
+        }
+    }, [selectedItem, errors.selectedItem]);
+
+    useEffect(() => {
+        if (errors.price && (priceNumber || pricePercent)) {
+            setErrors(prev => ({ ...prev, price: null }));
+        }
+    }, [priceNumber, pricePercent, errors.price]);
+
+    useEffect(() => {
+        if (errors.dateRange && startDate && endDate) {
+            if (new Date(startDate) <= new Date(endDate)) {
+                setErrors(prev => ({ ...prev, dateRange: null }));
+            }
+        }
+    }, [startDate, endDate, errors.dateRange]);
+
     const weekdays = [
         { value: 0, label: 'Sunday' },
         { value: 1, label: 'Monday' },
@@ -64,6 +89,36 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
         { value: 5, label: 'Friday' },
         { value: 6, label: 'Saturday' }
     ];
+
+    const validateForm = () => {
+        const newErrors = {};
+
+        // Validate selected item
+        if (!selectedItem || selectedItem.trim() === '') {
+            newErrors.selectedItem = 'Please select an item to track';
+        }
+
+        // Validate price
+        if (priceType === 'specific') {
+            if (!priceNumber || priceNumber.trim() === '' || isNaN(priceNumber) || Number(priceNumber) <= 0) {
+                newErrors.price = 'Please enter a valid price';
+            }
+        } else if (priceType === 'percentage') {
+            if (!pricePercent || pricePercent.trim() === '' || isNaN(pricePercent) || Number(pricePercent) <= 0) {
+                newErrors.price = 'Please enter a valid percentage';
+            }
+        }
+
+        // Validate date range if both dates are provided
+        if (showDateRange && startDate && endDate) {
+            if (new Date(startDate) > new Date(endDate)) {
+                newErrors.dateRange = 'End date cannot be before start date';
+            }
+        }
+
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
 
     const handleWeekdayChange = (weekdayValue) => {
         setSelectedWeekdays(prev => {
@@ -85,6 +140,16 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
     const handlePriceTypeChange = (event, newType) => {
         if (newType) {
             setPriceType(newType);
+            // Clear price values when switching type to avoid confusion
+            if (newType === 'specific') {
+                setPricePercent("");
+            } else {
+                setPriceNumber("");
+            }
+            // Clear price error
+            if (errors.price) {
+                setErrors(prev => ({ ...prev, price: null }));
+            }
         }
     };
 
@@ -97,6 +162,10 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
         if (showDateRange) {
             setStartDate("");
             setEndDate("");
+            // Clear date range error
+            if (errors.dateRange) {
+                setErrors(prev => ({ ...prev, dateRange: null }));
+            }
         }
     };
 
@@ -109,6 +178,14 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
 
     const handleFormSubmit = (event) => {
         event.preventDefault();
+        
+        setIsSubmitting(true);
+        
+        // Validate form
+        if (!validateForm()) {
+            setIsSubmitting(false);
+            return;
+        }
         
         // Prepare the form data with all the new fields
         const formData = {
@@ -123,9 +200,12 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
             showTime: showTimeOptions ? showTime : null,
             weekday: showWeekdayOptions ? selectedWeekdays : null,
         };
-        console.log('formdata: ', formData)
+        
+        console.log('formdata: ', formData);
+        
         // Call the parent's handleSubmit with the complete form data
         handleSubmit(formData);
+        setIsSubmitting(false);
     };
 
     // Common styles for form sections
@@ -146,7 +226,7 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
             py: 1,
             px: 2,
             textTransform: 'none',
-            fontSize: '0.9rem',
+            fontSize: '0.8rem',
             '&.Mui-selected': {
                 backgroundColor: 'primary.main',
                 color: 'white',
@@ -170,8 +250,28 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
 
     return (
         <Box component="form" onSubmit={handleFormSubmit} sx={{ p: { xs: 2, sm: 3 }, "& > *": { mb: 3 } }}>
-            {/* What to Track and Price Alert Type - Side by Side */}
-            <Box sx={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 3 }}>
+            {/* Display validation errors */}
+            {Object.keys(errors).length > 0 && (
+                <Alert severity="error" sx={{ mb: 3 }}>
+                    <Typography variant="body2" sx={{ fontWeight: 600, mb: 1 }}>
+                        Please fix the following errors:
+                    </Typography>
+                    <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                        {Object.values(errors).map((error, index) => (
+                            <li key={index}>
+                                <Typography variant="body2">{error}</Typography>
+                            </li>
+                        ))}
+                    </ul>
+                </Alert>
+            )}
+
+            {/* What to Track and Price Alert Type - Responsive Layout */}
+            <Box sx={{ 
+                display: 'grid', 
+                gridTemplateColumns: { xs: '1fr', md: '1fr 1fr' },
+                gap: 3 
+            }}>
                 {/* What to Track Section */}
                 <Box sx={sectionStyle}>
                     <Typography sx={headerStyle}>What to Track</Typography>
@@ -198,6 +298,8 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
                                 <TextField
                                     {...params}
                                     placeholder={`Search for ${trackingType === "event" ? "an event" : "a category"}...`}
+                                    error={!!errors.selectedItem}
+                                    helperText={errors.selectedItem}
                                     InputProps={{
                                         ...params.InputProps,
                                     }}
@@ -238,6 +340,8 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
                                 placeholder="Enter maximum price" 
                                 value={priceNumber} 
                                 onChange={(e) => setPriceNumber(e.target.value)} 
+                                error={!!errors.price}
+                                helperText={errors.price}
                                 InputProps={{ 
                                     startAdornment: <InputAdornment position="start">$</InputAdornment> 
                                 }} 
@@ -258,13 +362,15 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
                                 placeholder="Enter percentage discount to the average" 
                                 value={pricePercent} 
                                 onChange={(e) => setPricePercent(e.target.value)} 
+                                error={!!errors.price}
+                                helperText={errors.price}
                                 InputProps={{ 
                                     endAdornment: <InputAdornment position="end">%</InputAdornment> 
                                 }} 
                                 sx={{ 
                                     '& .MuiOutlinedInput-root': {
                                         borderRadius: '12px',
-                                        fontSize: '0.9rem',
+                                        fontSize: '0.8rem',
                                         '& fieldset': {
                                             borderWidth: 1,
                                         },
@@ -329,18 +435,29 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
                     />
                 </Box>
 
-                {/* Optional Preferences - Always half width */}
+                {/* Display date range error */}
+                {errors.dateRange && (
+                    <Alert severity="error" sx={{ mb: 2 }}>
+                        {errors.dateRange}
+                    </Alert>
+                )}
+
+                {/* Optional Preferences - Responsive Layout */}
                 {(showDateRange || showTimeOptions || showWeekdayOptions) && (
                     <Box sx={{ 
                         display: 'grid', 
-                        gridTemplateColumns: 'repeat(2, 1fr)', 
+                        gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
                         gap: 2,
-                        maxWidth: '50%'
+                        maxWidth: { xs: '100%', md: '50%' }
                     }}>
                         {showDateRange && (
-                            <Box>
+                            <Box sx={{ gridColumn: { xs: '1', md: 'auto' } }}>
                                 <Typography variant="subtitle2" sx={{ mb: 1, fontSize: '0.85rem' }}>Date Range</Typography>
-                                <Box sx={{ display: "flex", gap: 1 }}>
+                                <Box sx={{ 
+                                    display: "flex", 
+                                    flexDirection: { xs: 'column', sm: 'row' },
+                                    gap: 1 
+                                }}>
                                     <TextField
                                         fullWidth
                                         type="date"
@@ -403,10 +520,14 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
                         )}
 
                         {showWeekdayOptions && (
-                            <Box>
+                            <Box sx={{ gridColumn: { xs: '1', md: 'span 2' } }}>
                                 <Typography variant="subtitle2" sx={{ mb: 1, fontSize: '0.85rem' }}>Weekdays</Typography>
                                 <FormGroup>
-                                    <Box sx={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 1 }}>
+                                    <Box sx={{ 
+                                        display: 'grid', 
+                                        gridTemplateColumns: { xs: 'repeat(2, 1fr)', sm: 'repeat(4, 1fr)', md: 'repeat(7, 1fr)' },
+                                        gap: 1 
+                                    }}>
                                         {weekdays.map((day) => (
                                             <FormControlLabel
                                                 key={day.value}
@@ -418,7 +539,12 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
                                                     />
                                                 }
                                                 label={day.label}
-                                                sx={{ fontSize: '0.8rem' }}
+                                                sx={{ 
+                                                    fontSize: '0.8rem',
+                                                    '& .MuiFormControlLabel-label': {
+                                                        fontSize: { xs: '0.75rem', sm: '0.8rem' }
+                                                    }
+                                                }}
                                             />
                                         ))}
                                     </Box>
@@ -433,8 +559,8 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
             <Button 
                 variant="contained" 
                 fullWidth 
-                onClick={onClose} 
                 type="submit" 
+                disabled={isSubmitting}
                 sx={{ 
                     bgcolor: "primary.main",
                     color: "white",
@@ -448,9 +574,13 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
                         bgcolor: "primary.dark",
                         boxShadow: 'none',
                     },
+                    '&:disabled': {
+                        bgcolor: 'grey.400',
+                        color: 'white'
+                    }
                 }} 
             >
-                Save Alert
+                {isSubmitting ? 'Saving...' : 'Save Alert'}
             </Button>
             {notificationMethod === "sms" && (
                 <Typography variant="body2" sx={{ mt: 1.5, textAlign: 'center', color: 'text.secondary' }}>
