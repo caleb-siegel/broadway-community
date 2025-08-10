@@ -157,12 +157,6 @@ const AlertsPage = () => {
   };
 
   const handleSubmit = (formData) => {
-    console.log(selectedItem)
-    console.log(priceNumber, pricePercent)
-    if (!selectedItem || (!priceNumber && !pricePercent)) {
-      alert("Please fill in all required fields.");
-      return;
-    }
     // Extract data from the form
     const {
       notificationMethod,
@@ -372,7 +366,7 @@ const AlertsPage = () => {
                       </Box>
                       <Box sx={{ flex: 1 }}>
                         <Typography variant="h6" sx={{ mb: 0.5 }}>
-                          {alert.event.name}
+                          {alert.event?.name}
                         </Typography>
                         <Box sx={{ display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap" }}>
                           {/* Price Display/Edit */}
