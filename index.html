@@ -32,14 +32,18 @@
     <!-- <meta property="og:url" content="https://calebsiegel.com" /> -->
     <meta property="og:type" content="website" />
 
-    <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+    <!-- ========== Brevo Push Notifications ========== -->
+    <script src="https://cdn.brevo.com/js/sdk-loader.js" async></script>
     <script>
-      window.OneSignalDeferred = window.OneSignalDeferred || [];
-      OneSignalDeferred.push(async function(OneSignal) {
-        await OneSignal.init({
-          appId: "c6a19c62-9be2-4450-b673-473b022912a6",
-        });
-      });
+      // Version: 2.0
+      window.Brevo = window.Brevo || [];
+      Brevo.push([
+        "init",
+        {
+          client_key: "s7e9cqn7ok6n2h7odc5bmlnd",
+          // Optional: Add other initialization options, see documentation
+        }
+      ]);
     </script>
     
   </head>
