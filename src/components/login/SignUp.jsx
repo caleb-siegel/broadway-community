@@ -83,10 +83,9 @@ export default function SignUp(props) {
   const [newLastName, setNewLastName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const { attemptLogin } = useOutletContext();
-  const [smsConsent, setSmsConsent] = useState(true);
+  const [smsConsent, setSmsConsent] = useState(false);
   const [phoneError, setPhoneError] = useState(false);
   const [phoneErrorMessage, setPhoneErrorMessage] = useState("");
-  
   // Update validateInputs to require phone
   const validateInputs = () => {
     let isValid = true;
