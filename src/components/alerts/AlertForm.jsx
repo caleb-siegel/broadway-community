@@ -12,8 +12,10 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
     const [startDate, setStartDate] = useState(initialData?.startDate || "");
     const [endDate, setEndDate] = useState(initialData?.endDate || "");
     const [showTime, setShowTime] = useState(initialData?.showTime || "");
+    const [timeToShow, setTimeToShow] = useState(initialData?.timeToShow || "");
     const [showDateRange, setShowDateRange] = useState(false);
     const [showTimeOptions, setShowTimeOptions] = useState(false);
+    const [showTimeToShowOptions, setShowTimeToShowOptions] = useState(false);
     const [showWeekdayOptions, setShowWeekdayOptions] = useState(false);
     const [selectedWeekdays, setSelectedWeekdays] = useState(initialData?.weekday || []);
     
@@ -29,6 +31,7 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
             setStartDate(initialData.startDate || "");
             setEndDate(initialData.endDate || "");
             setShowTime(initialData.showTime || "");
+            setTimeToShow(initialData.timeToShow || "");
             
             // Handle weekday data conversion (could be array, string, or null)
             let weekdays = [];
@@ -49,6 +52,7 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
             setShowDateRange(!!(initialData.startDate || initialData.endDate));
             setShowTimeOptions(!!initialData.showTime);
             setShowWeekdayOptions(!!(weekdays && weekdays.length > 0));
+            setTimeToShowOptions(!!initialData.timeToShow);
             
             // Set price type based on what's available
             if (initialData.pricePercent) {
@@ -157,6 +161,10 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
         setShowTime(event.target.value);
     };
 
+    const handleTimeToShowChange = (event) => {
+        setTimeToShow(event.target.value);
+    };
+
     const toggleDateRange = () => {
         setShowDateRange(!showDateRange);
         if (showDateRange) {
@@ -173,6 +181,13 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
         setShowTimeOptions(!showTimeOptions);
         if (showTimeOptions) {
             setShowTime("");
+        }
+    };
+
+    const toggleTimeToShow = () => {
+        setShowTimeToShowOptions(!showTimeToShowOptions);
+        if (showTimeToShowOptions) {
+            setTimeToShow("");
         }
     };
 
@@ -199,6 +214,7 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
             endDate: showDateRange ? endDate : null,
             showTime: showTimeOptions ? showTime : null,
             weekday: showWeekdayOptions ? selectedWeekdays : null,
+            timeToShow: showTimeToShowOptions ? timeToShow : null,
         };
                 
         // Call the parent's handleSubmit with the complete form data
@@ -431,6 +447,22 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
                             }
                         }}
                     />
+
+                    <Chip
+                        label="Time Before Show"
+                        onClick={toggleTimeToShow}
+                        variant={showTimeToShowOptions ? "filled" : "outlined"}
+                        color={showTimeToShowOptions ? "primary" : "default"}
+                        icon={showTimeToShowOptions ? <ExpandLess /> : <ExpandMore />}
+                        sx={{ 
+                            borderRadius: '20px',
+                            fontSize: '0.85rem',
+                            height: '32px',
+                            '&:hover': {
+                                backgroundColor: showTimeToShowOptions ? "primary.main" : "action.hover"
+                            }
+                        }}
+                    />
                 </Box>
 
                 {/* Display date range error */}
@@ -441,7 +473,7 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
                 )}
 
                 {/* Optional Preferences - Responsive Layout */}
-                {(showDateRange || showTimeOptions || showWeekdayOptions) && (
+                {(showDateRange || showTimeOptions || showWeekdayOptions || showTimeToShowOptions) && (
                     <Box sx={{ 
                         display: 'grid', 
                         gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
@@ -547,6 +579,26 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
                                         ))}
                                     </Box>
                                 </FormGroup>
+                            </Box>
+                        )}
+
+                        {showTimeToShowOptions && (
+                            <Box>
+                                <Typography variant="subtitle2" sx={{ mb: 1, fontSize: '0.85rem' }}>Minimum # of hours before the show starts</Typography>
+                                <FormControl fullWidth>
+                                    <TextField
+                                        value={timeToShow}
+                                        type='number'
+                                        onChange={handleTimeToShowChange}
+                                        sx={{
+                                            borderRadius: '12px',
+                                            fontSize: '0.9rem',
+                                            '& .MuiOutlinedInput-notchedOutline': {
+                                                borderWidth: 1,
+                                            },
+                                        }}
+                                    />
+                                </FormControl>
                             </Box>
                         )}
                     </Box>

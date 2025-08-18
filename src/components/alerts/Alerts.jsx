@@ -37,6 +37,7 @@ const AlertsPage = () => {
   const [editingEndDate, setEditingEndDate] = useState("");
   const [editingShowTime, setEditingShowTime] = useState("");
   const [editingWeekdays, setEditingWeekdays] = useState([]);
+  const [editingTimeToShow, setEditingTimeToShow] = useState("");
   const [loadingAlerts, setLoadingAlerts] = useState(new Set()); // Track which alerts are loading
 
   const handleEdit = (alert) => {
@@ -57,6 +58,7 @@ const AlertsPage = () => {
     setEditingStartDate(alert.start_date || "");
     setEditingEndDate(alert.end_date || "");
     setEditingShowTime(alert.show_time || "");
+    setEditingTimeToShow(alert.time_to_show || "");
     
     // Handle weekday data conversion (could be array, string, or null)
     let weekdays = [];
@@ -84,6 +86,7 @@ const AlertsPage = () => {
       start_date: editingStartDate || null,
       end_date: editingEndDate || null,
       show_time: editingShowTime || null,
+      time_to_show: editingTimeToShow || null,
       weekday: editingWeekdays.length > 0 ? editingWeekdays : null,
     };
 
@@ -123,6 +126,7 @@ const AlertsPage = () => {
       setEditingStartDate("");
       setEditingEndDate("");
       setEditingShowTime("");
+      setEditingTimeToShow("");
       
       // Remove from loading set
       setLoadingAlerts(prev => {
@@ -168,7 +172,8 @@ const AlertsPage = () => {
       startDate,
       endDate,
       showTime,
-      weekday
+      weekday,
+      timeToShow,
     } = formData;
 
     // Prepare the alert data for the new database structure
@@ -181,6 +186,7 @@ const AlertsPage = () => {
       end_date: endDate || null,
       show_time: showTime || null,
       weekday: weekday || null,
+      time_to_show: timeToShow || null,
     };
 
     // Add the appropriate foreign key based on tracking type
@@ -554,6 +560,32 @@ const AlertsPage = () => {
                               )}
                             </Typography>
                           )}
+
+                          {/* Time Until Show Display/Edit */}
+                          {(alert.time_to_show || editingAlert === alert) && (
+                            <Typography color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                              {editingAlert === alert ? (
+                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                  <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                                  Minimum Hours Before Show:
+                                  </Typography>
+                                  <FormControl size="small" sx={{ minWidth: 100 }}>
+                                    <TextField
+                                      size="small"
+                                      type="number"
+                                      value={editingTimeToShow}
+                                      onChange={(e) => setEditingTimeToShow(e.target.value)}
+                                      sx={{ width: 80 }}
+                                    />
+                                  </FormControl>
+                                </Box>
+                              ) : (
+                                <>
+                                  {`At least ${alert.time_to_show} ${alert.time_to_show === 1 ? 'Hour' : 'Hours'} Before Show`}
+                                </>
+                              )}
+                            </Typography>
+                          )}
                         </Box>
                       </Box>
                     </Box>
@@ -574,6 +606,7 @@ const AlertsPage = () => {
                           setEditingStartDate("");
                           setEditingEndDate("");
                           setEditingShowTime("");
+                          setEditingTimeToShow("");
                           setEditingWeekdays([]);
                         }}>
                           <Close />
@@ -828,6 +861,32 @@ const AlertsPage = () => {
                               )}
                             </Typography>
                           )}
+
+                          {/* Time Until Show Display/Edit */}
+                          {(alert.time_to_show || editingAlert === alert) && (
+                            <Typography color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                              {editingAlert === alert ? (
+                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                                  <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                                    Minimum Hours Before Show:
+                                  </Typography>
+                                  <FormControl size="small" sx={{ minWidth: 100 }}>
+                                    <TextField
+                                      size="small"
+                                      type="number"
+                                      value={editingTimeToShow}
+                                      onChange={(e) => setEditingTimeToShow(e.target.value)}
+                                      sx={{ width: 80 }}
+                                    />
+                                  </FormControl>
+                                </Box>
+                              ) : (
+                                <>
+                                  {`At least ${alert.time_to_show} ${alert.time_to_show === 1 ? 'Hour' : 'Hours'} Before Show`}
+                                </>
+                              )}
+                            </Typography>
+                          )}
                         </Box>
                       </Box>
                     </Box>
@@ -848,6 +907,7 @@ const AlertsPage = () => {
                           setEditingStartDate("");
                           setEditingEndDate("");
                           setEditingShowTime("");
+                          setEditingTimeToShow("");
                           setEditingWeekdays([]);
                         }}>
                           <Close />
