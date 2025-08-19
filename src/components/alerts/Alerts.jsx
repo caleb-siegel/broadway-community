@@ -1007,7 +1007,7 @@ const AlertsPage = () => {
                   <MenuItem value="email" sx={{ fontSize: '0.9rem' }}>
                     <Email sx={{ mr: 1, fontSize: '1.1rem' }} /> Email Notification
                   </MenuItem>
-                  <MenuItem value="sms" disabled sx={{ fontSize: '0.9rem' }}>
+                  <MenuItem value="sms" sx={{ fontSize: '0.9rem' }}>
                     <Lock sx={{ mr: 1, fontSize: '1.1rem' }} /> SMS Notification
                   </MenuItem>
                   <MenuItem value="push" disabled sx={{ fontSize: '0.9rem' }}>
