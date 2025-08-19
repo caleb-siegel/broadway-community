@@ -85,9 +85,9 @@ function App() {
         if (!userResponse.ok) {
           throw new Error('Failed to get user info from Google');
         }
-        
+        console.log(`userresponse: ${userResponse}`)
         const userInfo = await userResponse.json();
-        console.log(`userinfo: ${userInfo}`)
+        console.log(`userinfo keys: ${Object.keys(userInfo)}`)
         
         // Send to your backend
         const backendResponse = await fetch(`${backendUrl}/api/auth/google`, {
