@@ -87,6 +87,7 @@ function App() {
         }
         
         const userInfo = await userResponse.json();
+        console.log(`userinfo: ${userInfo}`)
         
         // Send to your backend
         const backendResponse = await fetch(`${backendUrl}/api/auth/google`, {
