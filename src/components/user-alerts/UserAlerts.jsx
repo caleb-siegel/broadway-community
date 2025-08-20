@@ -359,7 +359,7 @@ const UserAlerts = () => {
                       <Typography variant="subtitle1">
                         {alert.event.name} — {alert.user.first_name} {alert.user.last_name}
                       </Typography>
-                      <Typography color="text.secondary">Max Price: ${alert.price}</Typography>
+                      <Typography color="text.secondary">Max Price: {alert.price_number ? `$${alert.price_number}` : `${alert.price_percent}%`}</Typography>
                       <Typography color="text.secondary" sx={{ fontSize: 12 }}>
                         {alert.created_at ? new Date(alert.created_at).toLocaleString() : ""}
                       </Typography>
@@ -493,7 +493,7 @@ const UserAlerts = () => {
                       <Typography variant="subtitle1">
                         {alert.category.name} — {alert.user.first_name} {alert.user.last_name}
                       </Typography>
-                      <Typography color="text.secondary">Max Price: ${alert.price}</Typography>
+                      <Typography color="text.secondary">Max Price: {alert.price_number ? `$${alert.price_number}` : `${alert.price_percent}%`}</Typography>
                       <Typography color="text.secondary" sx={{ fontSize: 12 }}>
                         {alert.created_at ? new Date(alert.created_at).toLocaleString() : ""}
                       </Typography>
