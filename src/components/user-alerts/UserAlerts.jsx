@@ -282,7 +282,7 @@ const UserAlerts = () => {
                         {filteredAlerts.map(alert => (
                           <Paper key={alert.id} sx={{ p: 1, mb: 1 }}>
                             <Typography variant="subtitle1">{alert.event.name}</Typography>
-                            <Typography color="text.secondary">Max Price: ${alert.price}</Typography>
+                            <Typography color="text.secondary">Max Price: {alert.price_number ? `$${alert.price_number}` : `${alert.price_percent}%`}</Typography>
                           </Paper>
                         ))}
                       </AccordionDetails>
@@ -336,7 +336,7 @@ const UserAlerts = () => {
                           {filteredAlerts.map(alert => (
                             <Paper key={alert.id} sx={{ p: 1, mb: 1 }}>
                               <Typography variant="subtitle1">{`${alert.user.first_name} ${alert.user.last_name}`}</Typography>
-                              <Typography color="text.secondary">Max Price: ${alert.price}</Typography>
+                              <Typography color="text.secondary">Max Price: {alert.price_number ? `$${alert.price_number}` : `${alert.price_percent}%`}</Typography>
                             </Paper>
                           ))}
                         </AccordionDetails>
@@ -416,7 +416,7 @@ const UserAlerts = () => {
                         {filteredAlerts.map(alert => (
                           <Paper key={alert.id} sx={{ p: 1, mb: 1 }}>
                             <Typography variant="subtitle1">{alert.category.name}</Typography>
-                            <Typography color="text.secondary">Max Price: ${alert.price}</Typography>
+                            <Typography color="text.secondary">Max Price: {alert.price_number ? `$${alert.price_number}` : `${alert.price_percent}%`}</Typography>
                           </Paper>
                         ))}
                       </AccordionDetails>
@@ -470,7 +470,7 @@ const UserAlerts = () => {
                           {filteredAlerts.map(alert => (
                             <Paper key={alert.id} sx={{ p: 1, mb: 1 }}>
                               <Typography variant="subtitle1">{`${alert.user.first_name} ${alert.user.last_name}`}</Typography>
-                              <Typography color="text.secondary">Max Price: ${alert.price}</Typography>
+                              <Typography color="text.secondary">Max Price: {alert.price_number ? `$${alert.price_number}` : `${alert.price_percent}%`}</Typography>
                             </Paper>
                           ))}
                         </AccordionDetails>
