@@ -54,7 +54,9 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId }) =>
   const navigate = useNavigate();
 
   const [todaytixPrice, setTodaytixPrice] = useState(null);
-  const [compareLoading, setCompareLoading] = useState(false);
+  const [seatgeekPrice, setSeatgeekPrice] = useState(null);
+  const [compareLoadingTodayTix, setCompareLoadingTodayTix] = useState(false);
+  const [compareLoadingSeatGeek, setCompareLoadingSeatGeek] = useState(false);
   const [compareId, setCompareId] = useState(0);
   const [updatedTimes, setUpdatedTimes] = useState({});
   const [showScrollTop, setShowScrollTop] = useState(false);
@@ -90,16 +92,32 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId }) =>
     });
   };
 
-  const fetchTodayTix = (e, id) => {
+  const fetchComparisonPrices = (e, id) => {
     e.stopPropagation();
     setCompareId(id === compareId ? 0 : id);
-    setCompareLoading(true);
+    setCompareLoadingTodayTix(true);
+    setCompareLoadingSeatGeek(true);
+    
+    // Fetch TodayTix
     fetch(`${backendUrl}/api/fetch_todaytix/${id}`)
       .then((response) => response.json())
       .then((data) => {
         setTodaytixPrice(data["today_tix_price"]);
-        setCompareLoading(false);
+        setCompareLoadingTodayTix(false);
       });
+    
+    // Fetch SeatGeek
+    fetch(`${backendUrl}/api/fetch_seatgeek/${id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data)
+        setSeatgeekPrice(data["seatgeek_price"]);
+        setCompareLoadingSeatGeek(false);
+      })
+    // const seatgeekResponse = fetch(`${backendUrl}/api/fetch_seatgeek/${id}`)
+    // const seatgeekData = seatgeekResponse.json();
+    // setSeatgeekPrice(seatgeekData["seatgeek_price"]);
+    // setCompareLoadingSeatGeek(false);
   };
 
   const closeModal = (e) => {
@@ -241,7 +259,7 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId }) =>
                           <div style={{ position: 'relative' }}>
                             <button 
                               className={`list__action-btn ${compareId === show.id ? 'active' : ''}`}
-                              onClick={(e) => fetchTodayTix(e, show.id)}
+                              onClick={(e) => fetchComparisonPrices(e, show.id)}
                             >
                               Compare Prices
                             </button>
@@ -250,20 +268,28 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId }) =>
                                 <button onClick={closeModal} className="list__modal-close">
                                   <i className='bx bx-x'></i>
                                 </button>
-                                {compareLoading ? (
-                                  <div className="list__price-loading" />
-                                ) : (
                                   <>
                                     <div className="list__price-comparison-row">
                                       <span>Stubhub:</span>
                                       <strong>${show.event_info[0]?.price}</strong>
                                     </div>
                                     <div className="list__price-comparison-row">
-                                      <span>TodayTix price:</span>
-                                      <strong>${todaytixPrice}</strong>
+                                      <span>TodayTix:</span>
+                                      {compareLoadingTodayTix ? (
+                                        <div className="list__price-loading" />
+                                      ) : (
+                                        <strong>${todaytixPrice}</strong>
+                                      )}
+                                    </div>
+                                    <div className="list__price-comparison-row">
+                                      <span>SeatGeek:</span>
+                                      {compareLoadingSeatGeek ? (
+                                        <div className="list__price-loading" />
+                                      ) : (
+                                        <strong>${seatgeekPrice}</strong>
+                                      )}
                                     </div>
                                   </>
-                                )}
                               </div>
                             )}
                           </div>

@@ -14,8 +14,8 @@ function App() {
   // const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
-  const backendUrl = "https://broadwaycommunity-backend.vercel.app"
-  // const backendUrl = "http://127.0.0.1:5000"
+  // const backendUrl = "https://broadwaycommunity-backend.vercel.app"
+  const backendUrl = "http://127.0.0.1:5000"
 
   // useEffect(() => {
   //   if (user) {

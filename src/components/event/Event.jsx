@@ -24,6 +24,7 @@ const Event = () => {
   const { backendUrl } = useOutletContext();
   const [event, setEvent] = useState(null);
   const [todaytixPrice, setTodaytixPrice] = useState(null);
+  const [seatgeekPrice, setSeatgeekPrice] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -36,6 +37,10 @@ const Event = () => {
         const todaytixResponse = await fetch(`${backendUrl}/api/fetch_todaytix/${id}`);
         const todaytixData = await todaytixResponse.json();
         setTodaytixPrice(todaytixData["today_tix_price"]);
+
+        const seatgeekResponse = await fetch(`${backendUrl}/api/fetch_seatgeek/${id}`)
+        const seatgeekData = await seatgeekResponse.json();
+        setSeatgeekPrice(seatgeekData["seatgeek_price"])
       } catch (error) {
         console.error('Error fetching event data:', error);
       } finally {
@@ -175,6 +180,13 @@ const Event = () => {
                     <div className="event__price-box">
                       <div className="event__price-header">TodayTix</div>
                       <div className="event__price-amount">${todaytixPrice}</div>
+                    </div>
+                  )}
+
+                  {todaytixPrice && (
+                    <div className="event__price-box">
+                      <div className="event__price-header">SeatGeek</div>
+                      <div className="event__price-amount">${seatgeekPrice}</div>
                     </div>
                   )}
                 </div>
