@@ -10,12 +10,12 @@ const AlertsPage = () => {
   const { user } = useOutletContext();
   const { backendUrl } = useOutletContext();
 
-  useEffect(() => {
-    if (user) {
-      setEventAlerts(user.event_alerts || []);
-      setCategoryAlerts(user.category_alerts || []);
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (user) {
+  //     setEventAlerts(user.event_alerts || []);
+  //     setCategoryAlerts(user.category_alerts || []);
+  //   }
+  // }, [user]);
 
   const [eventAlerts, setEventAlerts] = useState(user?.event_alerts || []);
   const [categoryAlerts, setCategoryAlerts] = useState(user?.category_alerts || []);
@@ -29,6 +29,7 @@ const AlertsPage = () => {
   const [options, setOptions] = useState([]);
   const [updatedId, setUpdatedId] = useState({})
   const [categoryObject, setCategoryObject] = useState({})
+  const [isLoading, setIsLoading] = useState(true);
   
   // New editing states
   const [editingPrice, setEditingPrice] = useState("");
@@ -39,6 +40,21 @@ const AlertsPage = () => {
   const [editingWeekdays, setEditingWeekdays] = useState([]);
   const [editingTimeToShow, setEditingTimeToShow] = useState("");
   const [loadingAlerts, setLoadingAlerts] = useState(new Set()); // Track which alerts are loading
+
+  useEffect(() => {
+    if (user) {
+      setIsLoading(true);
+      Promise.all([
+        fetch(`${backendUrl}/api/users/${user?.id}/event_alerts`).then(res => res.json()),
+        fetch(`${backendUrl}/api/users/${user?.id}/category_alerts`).then(res => res.json())
+      ]).then(([eventData, categoryData]) => {
+        setEventAlerts(eventData);
+        setCategoryAlerts(categoryData);
+        setIsLoading(false);
+      });
+    }
+  }, [user]);
+
 
   const handleEdit = (alert) => {
     setEditingAlert(alert);
@@ -316,6 +332,14 @@ const AlertsPage = () => {
 
   const handlePriceThreshold = (e) => {
     setPriceThreshold(e.target.value)
+  }
+
+  if (isLoading) {
+    return (
+      <Container sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '50vh' }}>
+        <CircularProgress />
+      </Container>
+    );
   }
 
   return (
