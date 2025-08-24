@@ -21,6 +21,7 @@ import { useOutletContext } from "react-router-dom";
 import { InputAdornment, IconButton } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import PhoneNumberField from "./PhoneNumberField";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -238,7 +239,7 @@ export default function SignUp(props) {
            error={emailError}
            helperText={emailErrorMessage}
          />
-         <TextField
+         {/* <TextField
            label="Phone number*"
            fullWidth
            placeholder="(123) 456-7890"
@@ -246,7 +247,13 @@ export default function SignUp(props) {
            onChange={(e) => setNewNumber(e.target.value)}
            error={phoneError}
            helperText={phoneErrorMessage}
-         />
+         /> */}
+         <PhoneNumberField
+          value={newNumber}
+          onChange={setNewNumber}
+          error={phoneError}
+          helperText={phoneErrorMessage}
+        />
          <TextField
            label="Password*"
            type={showPassword ? "text" : "password"}
