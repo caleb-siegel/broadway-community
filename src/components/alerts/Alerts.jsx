@@ -379,6 +379,30 @@ const AlertsPage = () => {
           Set alerts to receive emails whenever tickets are selling below your max price. Manage your alerts here.
         </Typography>
 
+        {/* Add New Alert */}
+        <Button
+          variant="contained"
+          fullWidth
+          startIcon={<Add />}
+          onClick={() => {
+            setEditingAlert(null);
+            setIsDialogOpen(true);
+          }}
+          sx={{
+            bgcolor: "black",
+            color: "white",
+            py: 2,
+            borderRadius: 4,
+            fontSize: "1.1rem",
+            "&:hover": {
+              bgcolor: "rgb(45, 45, 45)",
+            },
+            marginBottom: "2rem"
+          }}
+        >
+          Add New Alert
+        </Button>
+
         {/* Current Alerts */}
         <Box sx={{ mb: 4 }}>
           <Typography variant="h4" sx={{ mb: 3, fontWeight: 500 }}>
@@ -401,34 +425,38 @@ const AlertsPage = () => {
                       borderColor: "grey.200",
                       borderRadius: 4,
                       display: "flex",
+                      flexDirection: { xs: 'column', sm: 'row' },
                       justifyContent: "space-between",
-                      alignItems: "center",
+                      alignItems: { xs: 'stretch', sm: 'center' },
                       mb: 1,
+                      gap: { xs: 1, sm: 0 },
                     }}
                   >
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 2, flex: 1 }}>
-                      <Box sx={{ p: 1.5, bgcolor: "grey.100", borderRadius: 3, display: "inline-block"}}>
+                    <Box sx={{ display: "flex", alignItems: "center", gap: 2, flex: 1, minWidth: 0 }}>
+                      <Box sx={{ p: 1.5, bgcolor: "grey.100", borderRadius: 3, display: "inline-block", flexShrink: 0 }}>
                         {getMethodIcon(alert.notification_method || "email")}
                       </Box>
-                      <Box sx={{ flex: 1 }}>
+                      <Box sx={{ flex: 1, minWidth: 0 }}>
                         <Typography variant="h6" sx={{ mb: 0.5 }}>
                           {alert.event?.name}
                         </Typography>
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap" }}>
+                        <Box sx={{ display: "flex", flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, gap: 2, flexWrap: "wrap", maxWidth: "100%" }}>
                           {/* Price Display/Edit */}
-                          <Typography color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                          <Typography color="text.secondary" sx={{ display: "flex", flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, gap: 1, width: '100%' }}>
                             {editingAlert === alert ? (
-                              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                              <Box sx={{ display: "flex", flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, gap: 1, width: '100%' }}>
+                                <Typography variant="body2" sx={{ whiteSpace: "nowrap", flexShrink: 0 }}>
                                   {editingPriceType === "percentage" ? "Discount:" : "Price:"}
                                 </Typography>
-                                <ToggleButtonGroup
+                                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap' }}>
+                                  <ToggleButtonGroup
                                   value={editingPriceType}
                                   exclusive
                                   onChange={(event, newValue) => {
                                     setEditingPriceType(newValue);
                                     // Keep the current value when switching types
                                   }}
+                                  size="small"
                                   sx={{
                                     '& .MuiToggleButtonGroup-grouped': {
                                       margin: 0,
@@ -442,10 +470,10 @@ const AlertsPage = () => {
                                     },
                                   }}
                                 >
-                                  <ToggleButton value="specific" sx={{ borderRadius: 0 }}>
+                                  <ToggleButton value="specific" sx={{ borderRadius: 0, px: 1 }}>
                                     $
                                   </ToggleButton>
-                                  <ToggleButton value="percentage" sx={{ borderRadius: 0 }}>
+                                  <ToggleButton value="percentage" sx={{ borderRadius: 0, px: 1 }}>
                                     %
                                   </ToggleButton>
                                 </ToggleButtonGroup>
@@ -454,13 +482,14 @@ const AlertsPage = () => {
                                   type="number"
                                   value={editingPrice}
                                   onChange={(e) => setEditingPrice(e.target.value)}
-                                  sx={{ width: 80 }}
+                                  sx={{ width: 80, minWidth: 80 }}
                                   InputProps={{
                                     startAdornment: editingPriceType === "percentage" ? null : <span>$</span>,
                                     endAdornment: editingPriceType === "percentage" ? <span>%</span> : null,
                                   }}
                                 />
-                              </Box>
+                                  </Box>
+                                </Box>
                             ) : (
                               <>
                                 {alert.price_number ? (
@@ -476,28 +505,30 @@ const AlertsPage = () => {
 
                           {/* Date Range Display/Edit */}
                           {(alert.start_date || alert.end_date || editingAlert === alert) && (
-                            <Typography color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                            <Typography color="text.secondary" sx={{ display: "flex", flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, gap: 1, width: '100%' }}>
                               {editingAlert === alert ? (
-                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                  <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                                <Box sx={{ display: "flex", flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, gap: 1, width: '100%' }}>
+                                  <Typography variant="body2" sx={{ whiteSpace: "nowrap", flexShrink: 0 }}>
                                     Date Range:
                                   </Typography>
-                                  <TextField
-                                    size="small"
-                                    type="date"
-                                    value={editingStartDate}
-                                    onChange={(e) => setEditingStartDate(e.target.value)}
-                                    sx={{ width: 120 }}
-                                    placeholder="Start"
-                                  />
-                                  <TextField
-                                    size="small"
-                                    type="date"
-                                    value={editingEndDate}
-                                    onChange={(e) => setEditingEndDate(e.target.value)}
-                                    sx={{ width: 120 }}
-                                    placeholder="End"
-                                  />
+                                  <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 1, flexWrap: 'wrap' }}>
+                                    <TextField
+                                      size="small"
+                                      type="date"
+                                      value={editingStartDate}
+                                      onChange={(e) => setEditingStartDate(e.target.value)}
+                                      sx={{ width: { xs: '100%', sm: 120 }, minWidth: { xs: 'auto', sm: 120 } }}
+                                      placeholder="Start"
+                                    />
+                                    <TextField
+                                      size="small"
+                                      type="date"
+                                      value={editingEndDate}
+                                      onChange={(e) => setEditingEndDate(e.target.value)}
+                                      sx={{ width: { xs: '100%', sm: 120 }, minWidth: { xs: 'auto', sm: 120 } }}
+                                      placeholder="End"
+                                    />
+                                  </Box>
                                 </Box>
                               ) : (
                                 <>
@@ -505,9 +536,9 @@ const AlertsPage = () => {
                                     `${new Date(alert.start_date).toLocaleDateString()} - ${new Date(alert.end_date).toLocaleDateString()}`
                                   ) : alert.start_date ? (
                                     `From: ${new Date(alert.start_date).toLocaleDateString()}`
-                                  ) : (
+                                  ) : alert.end_date ? (
                                     `Until: ${new Date(alert.end_date).toLocaleDateString()}`
-                                  )}
+                                  ) : null}
                                 </>
                               )}
                             </Typography>
@@ -515,13 +546,13 @@ const AlertsPage = () => {
 
                           {/* Show Time Display/Edit */}
                           {(alert.show_time || editingAlert === alert) && (
-                            <Typography color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                            <Typography color="text.secondary" sx={{ display: "flex", flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, gap: 1, width: '100%' }}>
                               {editingAlert === alert ? (
-                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                  <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                                <Box sx={{ display: "flex", flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, gap: 1, width: '100%' }}>
+                                  <Typography variant="body2" sx={{ whiteSpace: "nowrap", flexShrink: 0 }}>
                                     Show Time:
                                   </Typography>
-                                  <FormControl size="small" sx={{ minWidth: 100 }}>
+                                  <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 100 }, width: { xs: '100%', sm: 'auto' } }}>
                                     <Select
                                       value={editingShowTime}
                                       onChange={(e) => setEditingShowTime(e.target.value)}
@@ -545,13 +576,13 @@ const AlertsPage = () => {
 
                           {/* Weekday Display/Edit */}
                           {(alert.weekday || editingAlert === alert) && (
-                            <Typography color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                            <Typography color="text.secondary" sx={{ display: "flex", flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, gap: 1, width: '100%' }}>
                               {editingAlert === alert ? (
-                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                  <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                                <Box sx={{ display: "flex", flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, gap: 1, width: '100%' }}>
+                                  <Typography variant="body2" sx={{ whiteSpace: "nowrap", flexShrink: 0 }}>
                                     Weekdays:
                                   </Typography>
-                                  <FormControl size="small" sx={{ minWidth: 150 }}>
+                                  <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 150 }, width: { xs: '100%', sm: 'auto' } }}>
                                     <Select
                                       multiple
                                       value={editingWeekdays}
@@ -603,19 +634,19 @@ const AlertsPage = () => {
 
                           {/* Time Until Show Display/Edit */}
                           {(alert.time_to_show || editingAlert === alert) && (
-                            <Typography color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                            <Typography color="text.secondary" sx={{ display: "flex", flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, gap: 1, width: '100%' }}>
                               {editingAlert === alert ? (
-                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                  <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                                <Box sx={{ display: "flex", flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, gap: 1, width: '100%' }}>
+                                  <Typography variant="body2" sx={{ whiteSpace: "nowrap", flexShrink: 0 }}>
                                   Minimum Hours Before Show:
                                   </Typography>
-                                  <FormControl size="small" sx={{ minWidth: 100 }}>
+                                  <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 100 }, width: { xs: '100%', sm: 'auto' } }}>
                                     <TextField
                                       size="small"
                                       type="number"
                                       value={editingTimeToShow}
                                       onChange={(e) => setEditingTimeToShow(e.target.value)}
-                                      sx={{ width: 80 }}
+                                      sx={{ width: { xs: '100%', sm: 80 }, minWidth: { xs: 'auto', sm: 80 } }}
                                     />
                                   </FormControl>
                                 </Box>
@@ -631,11 +662,11 @@ const AlertsPage = () => {
                     </Box>
                     
                     {loadingAlerts.has(alert.id) ? (
-                      <Box sx={{ display: "flex", gap: 1, border: '1px solid grey', borderRadius: 10, p: 0.5 }}>
+                      <Box sx={{ display: "flex", gap: 1, border: '1px solid grey', borderRadius: 10, p: 0.5, flexShrink: 0, alignSelf: { xs: 'center', sm: 'auto' } }}>
                         <CircularProgress size={20} />
                       </Box>
                     ) : editingAlert === alert ? 
-                      <Box sx={{ display: "flex", gap: 1, border: '1px solid grey', borderRadius: 10, p: 0.5 }}>
+                      <Box sx={{ display: "flex", gap: 1, border: '1px solid grey', borderRadius: 10, p: 0.5, flexShrink: 0, alignSelf: { xs: 'center', sm: 'auto' } }}>
                         <IconButton size="small" onClick={() => handlePatch(alert.id, "event")}>
                           <Check />
                         </IconButton>
@@ -653,7 +684,7 @@ const AlertsPage = () => {
                         </IconButton>
                       </Box>
                     : 
-                      <Box sx={{ display: "flex", gap: 1 }}>
+                      <Box sx={{ display: "flex", gap: 1, flexShrink: 0, alignSelf: { xs: 'center', sm: 'auto' } }}>
                         <IconButton onClick={() => handleEdit(alert)}>
                           <Edit />
                         </IconButton>
@@ -715,7 +746,7 @@ const AlertsPage = () => {
                         <Typography variant="h6" sx={{ mb: 0.5 }}>
                           {alert.category.name}
                         </Typography>
-                        <Box sx={{ display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap" }}>
+                        <Box sx={{ display: "flex", alignItems: "center", gap: 2, flexWrap: "wrap", maxWidth: "100%" }}>
                           {/* Price Display/Edit */}
                           <Typography color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                             {editingAlert === alert ? (
@@ -777,28 +808,30 @@ const AlertsPage = () => {
 
                           {/* Date Range Display/Edit */}
                           {(alert.start_date || alert.end_date || editingAlert === alert) && (
-                            <Typography color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                            <Typography color="text.secondary" sx={{ display: "flex", flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, gap: 1, width: '100%' }}>
                               {editingAlert === alert ? (
-                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                  <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                                <Box sx={{ display: "flex", flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, gap: 1, width: '100%' }}>
+                                  <Typography variant="body2" sx={{ whiteSpace: "nowrap", flexShrink: 0 }}>
                                     Date Range:
                                   </Typography>
-                                  <TextField
-                                    size="small"
-                                    type="date"
-                                    value={editingStartDate}
-                                    onChange={(e) => setEditingStartDate(e.target.value)}
-                                    sx={{ width: 120 }}
-                                    placeholder="Start"
-                                  />
-                                  <TextField
-                                    size="small"
-                                    type="date"
-                                    value={editingEndDate}
-                                    onChange={(e) => setEditingEndDate(e.target.value)}
-                                    sx={{ width: 120 }}
-                                    placeholder="End"
-                                  />
+                                  <Box sx={{ display: 'flex', flexDirection: { xs: 'column', sm: 'row' }, gap: 1, flexWrap: 'wrap' }}>
+                                    <TextField
+                                      size="small"
+                                      type="date"
+                                      value={editingStartDate}
+                                      onChange={(e) => setEditingStartDate(e.target.value)}
+                                      sx={{ width: { xs: '100%', sm: 120 }, minWidth: { xs: 'auto', sm: 120 } }}
+                                      placeholder="Start"
+                                    />
+                                    <TextField
+                                      size="small"
+                                      type="date"
+                                      value={editingEndDate}
+                                      onChange={(e) => setEditingEndDate(e.target.value)}
+                                      sx={{ width: { xs: '100%', sm: 120 }, minWidth: { xs: 'auto', sm: 120 } }}
+                                      placeholder="End"
+                                    />
+                                  </Box>
                                 </Box>
                               ) : (
                                 <>
@@ -816,13 +849,13 @@ const AlertsPage = () => {
 
                           {/* Show Time Display/Edit */}
                           {(alert.show_time || editingAlert === alert) && (
-                            <Typography color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                            <Typography color="text.secondary" sx={{ display: "flex", flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, gap: 1, width: '100%' }}>
                               {editingAlert === alert ? (
-                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                  <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                                <Box sx={{ display: "flex", flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, gap: 1, width: '100%' }}>
+                                  <Typography variant="body2" sx={{ whiteSpace: "nowrap", flexShrink: 0 }}>
                                     Show Time:
                                   </Typography>
-                                  <FormControl size="small" sx={{ minWidth: 100 }}>
+                                  <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 100 }, width: { xs: '100%', sm: 'auto' } }}>
                                     <Select
                                       value={editingShowTime}
                                       onChange={(e) => setEditingShowTime(e.target.value)}
@@ -846,13 +879,13 @@ const AlertsPage = () => {
 
                           {/* Weekday Display/Edit */}
                           {(alert.weekday || editingAlert === alert) && (
-                            <Typography color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                            <Typography color="text.secondary" sx={{ display: "flex", flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, gap: 1, width: '100%' }}>
                               {editingAlert === alert ? (
-                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                  <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                                <Box sx={{ display: "flex", flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, gap: 1, width: '100%' }}>
+                                  <Typography variant="body2" sx={{ whiteSpace: "nowrap", flexShrink: 0 }}>
                                     Weekdays:
                                   </Typography>
-                                  <FormControl size="small" sx={{ minWidth: 150 }}>
+                                  <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 150 }, width: { xs: '100%', sm: 'auto' } }}>
                                     <Select
                                       multiple
                                       value={editingWeekdays}
@@ -904,19 +937,19 @@ const AlertsPage = () => {
 
                           {/* Time Until Show Display/Edit */}
                           {(alert.time_to_show || editingAlert === alert) && (
-                            <Typography color="text.secondary" sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                            <Typography color="text.secondary" sx={{ display: "flex", flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, gap: 1, width: '100%' }}>
                               {editingAlert === alert ? (
-                                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                                  <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+                                <Box sx={{ display: "flex", flexDirection: { xs: 'column', sm: 'row' }, alignItems: { xs: 'stretch', sm: 'center' }, gap: 1, width: '100%' }}>
+                                  <Typography variant="body2" sx={{ whiteSpace: "nowrap", flexShrink: 0 }}>
                                     Minimum Hours Before Show:
                                   </Typography>
-                                  <FormControl size="small" sx={{ minWidth: 100 }}>
+                                  <FormControl size="small" sx={{ minWidth: { xs: '100%', sm: 100 }, width: { xs: '100%', sm: 'auto' } }}>
                                     <TextField
                                       size="small"
                                       type="number"
                                       value={editingTimeToShow}
                                       onChange={(e) => setEditingTimeToShow(e.target.value)}
-                                      sx={{ width: 80 }}
+                                      sx={{ width: { xs: '100%', sm: 80 }, minWidth: { xs: 'auto', sm: 80 } }}
                                     />
                                   </FormControl>
                                 </Box>
@@ -932,11 +965,11 @@ const AlertsPage = () => {
                     </Box>
                     
                     {loadingAlerts.has(alert.id) ? (
-                      <Box sx={{ display: "flex", gap: 1, border: '1px solid grey', borderRadius: 10, p: 0.5 }}>
+                      <Box sx={{ display: "flex", gap: 1, border: '1px solid grey', borderRadius: 10, p: 0.5, flexShrink: 0 }}>
                         <CircularProgress size={20} />
                       </Box>
                     ) : editingAlert === alert ? 
-                      <Box sx={{ display: "flex", gap: 1, border: '1px solid grey', borderRadius: 10, p: 0.5 }}>
+                      <Box sx={{ display: "flex", gap: 1, border: '1px solid grey', borderRadius: 10, p: 0.5, flexShrink: 0 }}>
                         <IconButton size="small" onClick={() => handlePatch(alert.id, "category")}>
                           <Check />
                         </IconButton>
@@ -954,7 +987,7 @@ const AlertsPage = () => {
                         </IconButton>
                       </Box>
                     : 
-                      <Box sx={{ display: "flex", gap: 1 }}>
+                      <Box sx={{ display: "flex", gap: 1, flexShrink: 0 }}>
                         <IconButton onClick={() => handleEdit(alert)}>
                           <Edit />
                         </IconButton>
@@ -989,29 +1022,7 @@ const AlertsPage = () => {
           </Grid>
         </Box>
 
-        {/* Add New Alert */}
-        <Button
-          variant="contained"
-          fullWidth
-          startIcon={<Add />}
-          onClick={() => {
-            setEditingAlert(null);
-            setIsDialogOpen(true);
-          }}
-          sx={{
-            bgcolor: "black",
-            color: "white",
-            py: 2,
-            borderRadius: 4,
-            fontSize: "1.1rem",
-            "&:hover": {
-              bgcolor: "rgb(45, 45, 45)",
-            },
-            marginBottom: "2rem"
-          }}
-        >
-          Add New Alert
-        </Button>
+        
 
         {/* Alert Dialog */}
         <Dialog
@@ -1019,6 +1030,12 @@ const AlertsPage = () => {
           onClose={() => setIsDialogOpen(false)}
           maxWidth="md"
           fullWidth
+          sx={{
+            '& .MuiDialog-paper': {
+              margin: { xs: 1, sm: 2 },
+              width: { xs: 'calc(100% - 2px)', sm: 'auto' }
+            }
+          }}
         >
           <DialogTitle
             sx={{

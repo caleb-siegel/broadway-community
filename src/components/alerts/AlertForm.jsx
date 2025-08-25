@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Typography, Box, Button, TextField, IconButton, ToggleButtonGroup, ToggleButton, InputAdornment, useStepContext, Tooltip, Autocomplete, FormControl, InputLabel, Select, MenuItem, Chip, Checkbox, FormControlLabel, FormGroup, Alert } from "@mui/material";
 import { Email, Sms, NotificationsActive, Lock, ExpandMore, ExpandLess } from "@mui/icons-material";
 import { useOutletContext } from "react-router-dom";
+import PhoneInput from "../shared/PhoneInput";
 
 const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, selectedItem, priceThreshold, handleTrackingTypeChange, setOptions, options, handleSearchChange, searchValue, handleSelectedItem, handlePriceThreshold, notificationMethod, onNotificationMethodChange, averagePrice }) => {
-    const { user } = useOutletContext();
+    const { user, backendUrl } = useOutletContext();
 
     const [priceType, setPriceType] = useState('percentage');
     const [priceNumber, setPriceNumber] = useState(initialData?.priceNumber || "");
@@ -18,11 +19,34 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
     const [showTimeToShowOptions, setShowTimeToShowOptions] = useState(false);
     const [showWeekdayOptions, setShowWeekdayOptions] = useState(false);
     const [selectedWeekdays, setSelectedWeekdays] = useState(initialData?.weekday || []);
+    const [phoneNumber, setPhoneNumber] = useState(user?.phone_number || "");
+    const [hasPhoneNumber, setHasPhoneNumber] = useState(user?.phone_number ? true : false);
+    const [isUpdatingPhone, setIsUpdatingPhone] = useState(false);
     
     // Validation states
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     
+    // Fetch latest user data from database
+    useEffect(() => {
+        const fetchUserData = async () => {
+            if (user?.id) {
+                try {
+                    const response = await fetch(`${backendUrl}/api/users/${user.id}`);
+                    if (response.ok) {
+                        const userData = await response.json();
+                        setPhoneNumber(userData.phone_number || "");
+                        setHasPhoneNumber(!!userData.phone_number);
+                    }
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                }
+            }
+        };
+        
+        fetchUserData();
+    }, [user?.id]);
+
     // Handle initialData changes (for editing existing alerts)
     useEffect(() => {
         if (initialData) {
@@ -84,6 +108,8 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
         }
     }, [startDate, endDate, errors.dateRange]);
 
+
+
     const weekdays = [
         { value: 0, label: 'Sunday' },
         { value: 1, label: 'Monday' },
@@ -118,6 +144,11 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
             if (new Date(startDate) > new Date(endDate)) {
                 newErrors.dateRange = 'End date cannot be before start date';
             }
+        }
+
+        // Validate phone number for SMS notifications
+        if (notificationMethod === "sms" && !hasPhoneNumber) {
+            newErrors.phone = 'Phone number is required for SMS notifications';
         }
 
         setErrors(newErrors);
@@ -163,6 +194,38 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
 
     const handleTimeToShowChange = (event) => {
         setTimeToShow(event.target.value);
+    };
+
+    const updateUserPhoneNumber = async (newPhoneNumber) => {
+        setIsUpdatingPhone(true);
+        try {
+            const response = await fetch(`${backendUrl}/api/users/${user.id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    phone_number: newPhoneNumber,
+                    sms_consent: true
+                }),
+            });
+            
+            if (response.ok) {
+                const updatedUser = await response.json();
+                // Update the user context if needed
+                setPhoneNumber(newPhoneNumber);
+                setHasPhoneNumber(true);
+                return true;
+            } else {
+                console.error('Failed to update phone number');
+                return false;
+            }
+        } catch (error) {
+            console.error('Error updating phone number:', error);
+            return false;
+        } finally {
+            setIsUpdatingPhone(false);
+        }
     };
 
     const toggleDateRange = () => {
@@ -263,7 +326,7 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
     };
 
     return (
-        <Box component="form" onSubmit={handleFormSubmit} sx={{ p: { xs: 2, sm: 3 }, "& > *": { mb: 3 } }}>
+        <Box component="form" onSubmit={handleFormSubmit} sx={{ p: { xs: 1, sm: 3 }, "& > *": { mb: 3 } }}>
             {/* Display validation errors */}
             {Object.keys(errors).length > 0 && (
                 <Alert severity="error" sx={{ mb: 3 }}>
@@ -278,6 +341,30 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
                         ))}
                     </ul>
                 </Alert>
+            )}
+
+            {/* Phone Number Section for SMS */}
+            {notificationMethod === "sms" && !hasPhoneNumber && (
+                <Box sx={sectionStyle}>
+                    <Typography sx={headerStyle}>Phone Number Required</Typography>
+                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        To receive SMS notifications, you need to add a phone number to your account.
+                    </Typography>
+                    <PhoneInput
+                        value={phoneNumber}
+                        onChange={setPhoneNumber}
+                        label="Phone Number"
+                        required
+                    />
+                    <Button
+                        variant="outlined"
+                        onClick={() => updateUserPhoneNumber(phoneNumber)}
+                        disabled={!phoneNumber || isUpdatingPhone || phoneNumber.replace(/\D/g, '').length < 11}
+                        sx={{ mt: 2 }}
+                    >
+                        {isUpdatingPhone ? 'Updating...' : 'Update Phone Number'}
+                    </Button>
+                </Box>
             )}
 
             {/* What to Track and Price Alert Type - Responsive Layout */}
@@ -486,7 +573,7 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
                         display: 'grid', 
                         gridTemplateColumns: { xs: '1fr', md: 'repeat(2, 1fr)' },
                         gap: 2,
-                        maxWidth: { xs: '100%', md: '50%' }
+                        maxWidth: { xs: '100%', md: '100%' }
                     }}>
                         {showDateRange && (
                             <Box sx={{ gridColumn: { xs: '1', md: 'auto' } }}>
@@ -618,7 +705,7 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
                 variant="contained" 
                 fullWidth 
                 type="submit" 
-                disabled={isSubmitting}
+                disabled={isSubmitting || (notificationMethod === "sms" && !hasPhoneNumber)}
                 sx={{ 
                     bgcolor: "primary.main",
                     color: "white",

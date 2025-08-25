@@ -18,6 +18,55 @@ const UserAlerts = () => {
   const { backendUrl } = useOutletContext();
   const { user } = useOutletContext();
 
+  // Helper function to format alert details
+  const formatAlertDetails = (alert) => {
+    const details = [];
+    
+    // Price information
+    if (alert.price_number) {
+      details.push(`Max Price: $${alert.price_number}`);
+    } else if (alert.price_percent) {
+      details.push(`Min Discount: ${alert.price_percent}%`);
+    }
+    
+    // Date range
+    if (alert.start_date && alert.end_date) {
+      details.push(`Date Range: ${new Date(alert.start_date).toLocaleDateString()} - ${new Date(alert.end_date).toLocaleDateString()}`);
+    } else if (alert.start_date) {
+      details.push(`From: ${new Date(alert.start_date).toLocaleDateString()}`);
+    } else if (alert.end_date) {
+      details.push(`Until: ${new Date(alert.end_date).toLocaleDateString()}`);
+    }
+    
+    // Show time
+    if (alert.show_time) {
+      details.push(`Show Time: ${alert.show_time === 'matinee' ? 'Matinee' : 'Evening'}`);
+    }
+    
+    // Weekdays
+    if (alert.weekday && alert.weekday.length > 0) {
+      const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      if (alert.weekday.length === 7) {
+        details.push('Weekdays: Every Day');
+      } else {
+        const selectedDays = alert.weekday.map(day => weekdays[day]).join(', ');
+        details.push(`Weekdays: ${selectedDays}`);
+      }
+    }
+    
+    // Time to show
+    if (alert.time_to_show) {
+      details.push(`Min Hours Before Show: ${alert.time_to_show}`);
+    }
+    
+    // Notification method
+    if (alert.notification_method) {
+      details.push(`Notification: ${alert.notification_method.toUpperCase()}`);
+    }
+    
+    return details;
+  };
+
   const [userAlerts, setUserAlerts] = useState([]);
   const [userCategoryAlerts, setUserCategoryAlerts] = useState([]);
   const [tab, setTab] = useState(0);
@@ -282,7 +331,11 @@ const UserAlerts = () => {
                         {filteredAlerts.map(alert => (
                           <Paper key={alert.id} sx={{ p: 1, mb: 1 }}>
                             <Typography variant="subtitle1">{alert.event.name}</Typography>
-                            <Typography color="text.secondary">Max Price: {alert.price_number ? `$${alert.price_number}` : `${alert.price_percent}%`}</Typography>
+                            {formatAlertDetails(alert).map((detail, index) => (
+                              <Typography key={index} color="text.secondary" sx={{ fontSize: '0.85rem' }}>
+                                {detail}
+                              </Typography>
+                            ))}
                           </Paper>
                         ))}
                       </AccordionDetails>
@@ -336,7 +389,11 @@ const UserAlerts = () => {
                           {filteredAlerts.map(alert => (
                             <Paper key={alert.id} sx={{ p: 1, mb: 1 }}>
                               <Typography variant="subtitle1">{`${alert.user.first_name} ${alert.user.last_name}`}</Typography>
-                              <Typography color="text.secondary">Max Price: {alert.price_number ? `$${alert.price_number}` : `${alert.price_percent}%`}</Typography>
+                              {formatAlertDetails(alert).map((detail, index) => (
+                                <Typography key={index} color="text.secondary" sx={{ fontSize: '0.85rem' }}>
+                                  {detail}
+                                </Typography>
+                              ))}
                             </Paper>
                           ))}
                         </AccordionDetails>
@@ -359,7 +416,11 @@ const UserAlerts = () => {
                       <Typography variant="subtitle1">
                         {alert.event.name} — {alert.user.first_name} {alert.user.last_name}
                       </Typography>
-                      <Typography color="text.secondary">Max Price: {alert.price_number ? `$${alert.price_number}` : `${alert.price_percent}%`}</Typography>
+                      {formatAlertDetails(alert).map((detail, index) => (
+                        <Typography key={index} color="text.secondary" sx={{ fontSize: '0.85rem' }}>
+                          {detail}
+                        </Typography>
+                      ))}
                       <Typography color="text.secondary" sx={{ fontSize: 12 }}>
                         {alert.created_at ? new Date(alert.created_at).toLocaleString() : ""}
                       </Typography>
@@ -416,7 +477,11 @@ const UserAlerts = () => {
                         {filteredAlerts.map(alert => (
                           <Paper key={alert.id} sx={{ p: 1, mb: 1 }}>
                             <Typography variant="subtitle1">{alert.category.name}</Typography>
-                            <Typography color="text.secondary">Max Price: {alert.price_number ? `$${alert.price_number}` : `${alert.price_percent}%`}</Typography>
+                            {formatAlertDetails(alert).map((detail, index) => (
+                              <Typography key={index} color="text.secondary" sx={{ fontSize: '0.85rem' }}>
+                                {detail}
+                              </Typography>
+                            ))}
                           </Paper>
                         ))}
                       </AccordionDetails>
@@ -470,7 +535,11 @@ const UserAlerts = () => {
                           {filteredAlerts.map(alert => (
                             <Paper key={alert.id} sx={{ p: 1, mb: 1 }}>
                               <Typography variant="subtitle1">{`${alert.user.first_name} ${alert.user.last_name}`}</Typography>
-                              <Typography color="text.secondary">Max Price: {alert.price_number ? `$${alert.price_number}` : `${alert.price_percent}%`}</Typography>
+                              {formatAlertDetails(alert).map((detail, index) => (
+                                <Typography key={index} color="text.secondary" sx={{ fontSize: '0.85rem' }}>
+                                  {detail}
+                                </Typography>
+                              ))}
                             </Paper>
                           ))}
                         </AccordionDetails>
@@ -493,7 +562,11 @@ const UserAlerts = () => {
                       <Typography variant="subtitle1">
                         {alert.category.name} — {alert.user.first_name} {alert.user.last_name}
                       </Typography>
-                      <Typography color="text.secondary">Max Price: {alert.price_number ? `$${alert.price_number}` : `${alert.price_percent}%`}</Typography>
+                      {formatAlertDetails(alert).map((detail, index) => (
+                        <Typography key={index} color="text.secondary" sx={{ fontSize: '0.85rem' }}>
+                          {detail}
+                        </Typography>
+                      ))}
                       <Typography color="text.secondary" sx={{ fontSize: 12 }}>
                         {alert.created_at ? new Date(alert.created_at).toLocaleString() : ""}
                       </Typography>

@@ -21,6 +21,7 @@ import { useOutletContext } from "react-router-dom";
 import { InputAdornment, IconButton } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import PhoneInput from "../shared/PhoneInput";
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: "flex",
@@ -100,10 +101,10 @@ export default function SignUp(props) {
       setEmailErrorMessage("");
     }
 
-    // Phone number validation (simple digits check)
-    if (!newNumber || !/^\(?\d{3}\)?[- ]?\d{3}[- ]?\d{4}$/.test(newNumber)) {
+    // Phone number validation (check for country code + digits)
+    if (!newNumber || !/^\+\d{10,15}$/.test(newNumber)) {
       setPhoneError(true);
-      setPhoneErrorMessage("Please enter a valid phone number.");
+      setPhoneErrorMessage("Please enter a valid phone number with country code.");
       isValid = false;
     } else {
       setPhoneError(false);
@@ -238,14 +239,13 @@ export default function SignUp(props) {
            error={emailError}
            helperText={emailErrorMessage}
          />
-         <TextField
-           label="Phone number*"
-           fullWidth
-           placeholder="(123) 456-7890"
+         <PhoneInput
            value={newNumber}
-           onChange={(e) => setNewNumber(e.target.value)}
+           onChange={setNewNumber}
            error={phoneError}
            helperText={phoneErrorMessage}
+           label="Phone number"
+           required
          />
          <TextField
            label="Password*"
