@@ -3,7 +3,7 @@ import { Typography, Box, Button, TextField, IconButton, ToggleButtonGroup, Togg
 import { Email, Sms, NotificationsActive, Lock, ExpandMore, ExpandLess } from "@mui/icons-material";
 import { useOutletContext } from "react-router-dom";
 
-const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, selectedItem, priceThreshold, handleTrackingTypeChange, setOptions, options, handleSearchChange, searchValue, handleSelectedItem, handlePriceThreshold, notificationMethod, onNotificationMethodChange }) => {
+const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, selectedItem, priceThreshold, handleTrackingTypeChange, setOptions, options, handleSearchChange, searchValue, handleSelectedItem, handlePriceThreshold, notificationMethod, onNotificationMethodChange, averagePrice }) => {
     const { user } = useOutletContext();
 
     const [priceType, setPriceType] = useState('percentage');
@@ -330,6 +330,14 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
                             )}
                         />
                     </Box>
+                    {trackingType === "event" && selectedItem && averagePrice !== null && (
+                        <Typography 
+                            variant="body2" 
+                            sx={{ mt: 1, color: "text.secondary", fontSize: "0.85rem" }}
+                        >
+                            Generally can get tickets to {selectedItem} for as low as ${Math.round(averagePrice)}
+                        </Typography>
+                    )}
                 </Box>
 
                 {/* Price Alert Type Section */}
