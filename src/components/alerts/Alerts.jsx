@@ -40,6 +40,7 @@ const AlertsPage = () => {
   const [editingWeekdays, setEditingWeekdays] = useState([]);
   const [editingTimeToShow, setEditingTimeToShow] = useState("");
   const [loadingAlerts, setLoadingAlerts] = useState(new Set()); // Track which alerts are loading
+  const [averagePrice, setAveragePrice] = useState(null);
 
   useEffect(() => {
     if (user) {
@@ -326,8 +327,23 @@ const AlertsPage = () => {
       }
   };
 
-  const handleSelectedItem = (newValue) => {
+  const handleSelectedItem = async (newValue) => {
     setSelectedItem(newValue)
+
+    if (trackingType === "event" && newValue) {
+      try {
+          const response = await fetch(`${backendUrl}/api/events/name/${encodeURIComponent(newValue)}`);
+          if (!response.ok) throw new Error("Event not found");
+          const data = await response.json();
+          const avg = data.event_info?.[0]?.average_lowest_price ?? null;
+          setAveragePrice(avg);
+      } catch (err) {
+          console.error(err);
+          setAveragePrice(null);
+      }
+  } else {
+      setAveragePrice(null);
+  }
   }
 
   const handlePriceThreshold = (e) => {
@@ -1060,6 +1076,7 @@ const AlertsPage = () => {
               searchValue={searchValue}
               handleSelectedItem={handleSelectedItem}
               handlePriceThreshold={handlePriceThreshold}
+              averagePrice={averagePrice}
             />
           </DialogContent>
         </Dialog>
