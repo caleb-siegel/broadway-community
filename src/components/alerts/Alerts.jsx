@@ -29,7 +29,7 @@ const AlertsPage = () => {
   const [options, setOptions] = useState([]);
   const [updatedId, setUpdatedId] = useState({})
   const [categoryObject, setCategoryObject] = useState({})
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   
   // New editing states
   const [editingPrice, setEditingPrice] = useState("");
