@@ -8,6 +8,8 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { Mousewheel, FreeMode, Navigation, Pagination, Scrollbar, A11y, } from "swiper/modules"; 
 import { useOutletContext, useNavigate } from "react-router-dom";
+import AlertDialog from "../shared/AlertDialog";
+import { Notifications } from "@mui/icons-material";
 
 const getDiscountClass = (discount) => {
   if (discount >= 15) return 'slider__price-flag--negative';
@@ -22,7 +24,7 @@ const formatDiscountText = (discount) => {
   return `${Math.round(absDiscount)}% ${discount > 0 ? 'Above' : 'Below'} Avg`;
 };
 
-const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId }) => {
+const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId, category }) => {
   //   const generateWhatsAppLink = (show) => {
   //     const message = `${show.event_info[0]?.name}: $${show.event_info[0]?.price}
   // ${show.event_info[0]?.formatted_date}
@@ -38,6 +40,8 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId }) 
   const [todaytixPrice, setTodaytixPrice] = useState(null)
   const [compareLoading, setCompareLoading] = useState(false)
   const [compareId, setCompareId] = useState(0)
+  const [alertDialogOpen, setAlertDialogOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
   const fetchTodayTix = (e, id) => {
     e.stopPropagation();
     setCompareId(id)
@@ -58,6 +62,12 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId }) 
   const handleBuyClick = (e, link) => {
     e.stopPropagation();
     window.open(link, '_blank', 'noopener,noreferrer');
+  };
+
+  const handleAlertClick = (e, show) => {
+    e.stopPropagation();
+    setSelectedEvent(show);
+    setAlertDialogOpen(true);
   };
 
   return (
@@ -130,14 +140,25 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId }) 
                   <img src={show.image} alt="" className="slider__img" />
 
                   <h3 className="slider__name">
-                    {show.event_info[0]?.name}
+                    <div className="slider__title-section">
+                      <span>{show.event_info[0]?.name}</span>
+                      <div className="slider__title-buttons">
+                        <button
+                          className="slider__alert-button"
+                          onClick={(e) => handleAlertClick(e, show)}
+                          title="Create alert for this event"
+                        >
+                          <Notifications />
+                        </button>
+                        <button
+                          className="slider__refresh-button"
+                          onClick={(e) => handleRefresh(e, show.id)}
+                        >
+                          <i className="bx bx-refresh home__refresh-button-icon"></i>
+                        </button>
+                      </div>
+                    </div>
                     {/* <i className={show.image}></i> */}
-                    <button
-                      className="slider__refresh-button"
-                      onClick={(e) => handleRefresh(e, show.id)}
-                    >
-                      <i className="bx bx-refresh home__refresh-button-icon"></i>
-                    </button>
                     {/* <a
                                   href={generateWhatsAppLink(show)}
                                   className="slider__button slider__button--whatsapp"
@@ -221,6 +242,17 @@ const Slider = ({ shows, refreshIndividualData, individualLoading, loadingId }) 
         <div className="swiper-button-next"></div>
         <div className="swiper-button-prev"></div>
       </Swiper>
+
+      {/* Alert Dialog */}
+      {selectedEvent && (
+        <AlertDialog
+          open={alertDialogOpen}
+          onClose={() => setAlertDialogOpen(false)}
+          eventName={selectedEvent.event_info[0]?.name}
+          eventId={selectedEvent.id}
+          categoryName={category}
+        />
+      )}
     </section>
   );
 };

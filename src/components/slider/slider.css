@@ -40,6 +40,44 @@
   margin-bottom: var(--mb-0-5);
 }
 
+.slider__title-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.slider__title-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.slider__alert-button {
+  background: none;
+  border: none;
+  color: var(--first-color);
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  min-width: 28px;
+  height: 28px;
+}
+
+.slider__alert-button:hover {
+  background-color: rgba(71, 117, 234, 0.1);
+  transform: scale(1.1);
+}
+
+.slider__alert-button svg {
+  width: 18px;
+  height: 18px;
+}
+
 .slider__price-flag {
   position: absolute;
   top: 0.5rem;

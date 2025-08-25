@@ -3,6 +3,8 @@ import "./list.css";
 import { useOutletContext, useNavigate } from "react-router-dom";
 // import Filter from "../filter/Filter";
 import Sort from "../sort/Sort";
+import AlertDialog from "../shared/AlertDialog";
+import { Notifications } from "@mui/icons-material";
 
 const getDiscountClass = (discount) => {
   if (discount >= 15) return 'list__discount-chip--negative';
@@ -49,7 +51,7 @@ const formatUpdatedTime = (timestamp) => {
   }
 };
 
-const List = ({ shows, refreshIndividualData, individualLoading, loadingId }) => {
+const List = ({ shows, refreshIndividualData, individualLoading, loadingId, category }) => {
   const { backendUrl } = useOutletContext();
   const navigate = useNavigate();
 
@@ -60,6 +62,8 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId }) =>
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [filteredShows, setFilteredShows] = useState(shows);
   const [isLoading, setIsLoading] = useState(false);
+  const [alertDialogOpen, setAlertDialogOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
   useEffect(() => {
     setFilteredShows(shows);
@@ -132,6 +136,12 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId }) =>
     }
   };
 
+  const handleAlertClick = (e, show) => {
+    e.stopPropagation();
+    setSelectedEvent(show);
+    setAlertDialogOpen(true);
+  };
+
   const handleSort = (sortBy) => {
     const sorted = [...filteredShows].sort((a, b) => {
       const priceA = a.event_info[0]?.price || 0;
@@ -198,7 +208,14 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId }) =>
 
                     <div className="list__main-section">
                       <h3 className="list__title">
-                        {show.event_info[0]?.name}
+                        <span className="list__title-text">{show.event_info[0]?.name}</span>
+                        <button
+                          className="list__alert-button"
+                          onClick={(e) => handleAlertClick(e, show)}
+                          title="Create alert for this event"
+                        >
+                          <Notifications style={{ width: '16px', height: '16px' }} />
+                        </button>
                       </h3>
                       {show.category_id !== 1 && (
                         <div className="list__category-name">
@@ -271,6 +288,8 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId }) =>
                       </div>
                     </div>
 
+
+
                     <button
                       onClick={(e) => handleBuyClick(e, show.event_info[0]?.link)}
                       className="list__buy-button"
@@ -298,6 +317,17 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId }) =>
           </>
         )}
       </div>
+
+      {/* Alert Dialog */}
+      {selectedEvent && (
+        <AlertDialog
+          open={alertDialogOpen}
+          onClose={() => setAlertDialogOpen(false)}
+          eventName={selectedEvent.event_info[0]?.name}
+          eventId={selectedEvent.id}
+          categoryName={category}
+        />
+      )}
     </div>
   );
 };

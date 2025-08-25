@@ -200,6 +200,7 @@ function Home() {
                   refreshIndividualData={refreshIndividualData}
                   individualLoading={individualLoading}
                   loadingId={loadingId}
+                  category={category}
                 />
 
                 <div className="home__controls">
@@ -231,6 +232,7 @@ function Home() {
                     refreshIndividualData={refreshIndividualData}
                     individualLoading={individualLoading}
                     loadingId={loadingId}
+                    category={category}
                   />
                 </div>
               </>
