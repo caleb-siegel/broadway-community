@@ -335,7 +335,7 @@ const AlertForm = ({ onClose, initialData = null, handleSubmit, trackingType, se
                             variant="body2" 
                             sx={{ mt: 1, color: "text.secondary", fontSize: "0.85rem" }}
                         >
-                            Generally can get tickets to {selectedItem} for as low as ${Math.round(averagePrice)}
+                            Generally can get tickets to {selectedItem} for as low as ${Math.round(averagePrice).toLocaleString()}
                         </Typography>
                     )}
                 </Box>
