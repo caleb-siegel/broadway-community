@@ -5,6 +5,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { ThemeProvider } from "@emotion/react";
 import { createTheme } from "@mui/material";
 import Error from "./components/Error.jsx";
+import Landing from "./components/landing/Landing.jsx";
 import Home from "./components/home/Home.jsx";
 import SignInSide from "./components/login/SignInSide.jsx";
 import SignUp from "./components/login/SignUp";
@@ -24,6 +25,14 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
+        element: <Home />,
+      },
+      {
+        path: "home",
+        element: <Landing />,
+      },
+      {
+        path: "deals",
         element: <Home />,
       },
       {

@@ -1,0 +1,715 @@
+/* Landing Page Styles */
+.landing {
+    padding-top: calc(var(--header-height) + 1.5rem);
+    min-height: 100vh;
+}
+
+/* Loading State */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    gap: 2rem;
+}
+
+.loading-text {
+    color: #156064;
+    font-weight: 500;
+}
+
+/* Error Message */
+.error-message {
+    text-align: center;
+    margin: 2rem 0;
+    padding: 1rem;
+    background: rgba(244, 67, 54, 0.1);
+    border-radius: 8px;
+    border: 1px solid rgba(244, 67, 54, 0.3);
+}
+
+/* Hero Section */
+.hero {
+    background: linear-gradient(135deg, #156064 0%, #333333 100%);
+    color: white;
+    padding: 3rem 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.03)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+    opacity: 0.3;
+}
+
+.hero-content {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+/* Hero Typography - Complete MUI Override */
+.hero-title {
+    font-size: 3.5rem !important;
+    font-weight: 500 !important; /* Softer than MUI's default 600 */
+    margin: 0 0 1.5rem 0 !important; /* Remove MUI margins */
+    color: white !important;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    line-height: 1.1 !important;
+    letter-spacing: -0.02em !important; /* Tighter letter spacing for elegance */
+    font-family: inherit !important; /* Use the page's font family */
+}
+
+.hero-subtitle {
+    font-size: 1.5rem !important;
+    font-weight: 400 !important; /* Lighter weight for elegance */
+    margin: 0 0 1.5rem 0 !important;
+    color: #F8E16C !important;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+    line-height: 1.3 !important;
+    letter-spacing: 0.01em !important;
+    font-family: inherit !important;
+}
+
+.hero-description {
+    font-size: 1.1rem !important;
+    line-height: 1.7 !important;
+    margin: 0 0 3rem 0 !important;
+    color: rgba(255, 255, 255, 0.95) !important;
+    max-width: 700px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.01em !important;
+    font-family: inherit !important;
+}
+
+/* Hero Statistics */
+.hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    text-align: center;
+    padding: 1.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px; /* More rounded */
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+
+.stat-item:hover {
+    transform: translateY(-4px);
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.stat-icon {
+    font-size: 2.5rem !important;
+    color: #F8E16C !important;
+    margin-bottom: 0.5rem;
+}
+
+.stat-number {
+    color: white !important;
+    font-weight: 500 !important; /* Softer weight */
+    margin: 0 0 0.5rem 0 !important;
+    font-size: 2rem !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.01em !important;
+    font-family: inherit !important;
+}
+
+.stat-label {
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-size: 0.9rem !important;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 400 !important;
+    line-height: 1.2 !important;
+    margin: 0 !important;
+    font-family: inherit !important;
+}
+
+.hero-buttons {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* CTA Buttons */
+.cta-button {
+    padding: 14px 28px;
+    font-weight: 500 !important; /* Softer than MUI's default 600 */
+    text-transform: none;
+    border-radius: 16px; /* More rounded */
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 1rem;
+    letter-spacing: 0.3px;
+    font-family: inherit !important;
+}
+
+.cta-button.primary {
+    background: linear-gradient(135deg, #F8E16C 0%, #FFC2B4 100%);
+    color: #333333;
+    border: none;
+    box-shadow: 0 4px 15px rgba(248, 225, 108, 0.3);
+}
+
+.cta-button.primary:hover {
+    background: linear-gradient(135deg, #FFC2B4 0%, #F8E16C 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(248, 225, 108, 0.4);
+}
+
+.cta-button.secondary {
+    border: 2px solid #F8E16C;
+    color: #F8E16C;
+    background: transparent;
+}
+
+.cta-button.secondary:hover {
+    background: #F8E16C;
+    color: #333333;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(248, 225, 108, 0.3);
+}
+
+.cta-button.large {
+    padding: 18px 36px;
+    font-size: 1.1rem;
+}
+
+/* Section Styles */
+section {
+    padding: 5rem 0;
+}
+
+/* Section Typography - Complete MUI Override */
+.section-title {
+    text-align: center;
+    margin: 0 0 1.5rem 0 !important;
+    color: #156064 !important;
+    font-weight: 500 !important; /* Softer weight */
+    position: relative;
+    font-size: 2.5rem !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.01em !important;
+    font-family: inherit !important;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(90deg, #F8E16C, #FFC2B4);
+    border-radius: 2px;
+}
+
+.section-subtitle {
+    text-align: center;
+    margin: 0 0 4rem 0 !important;
+    color: #666 !important;
+    font-size: 1.1rem !important;
+    /* max-width: 700px; */
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6 !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.01em !important;
+    font-family: inherit !important;
+}
+
+/* Deals Showcase */
+.deals-showcase {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.deals-slider-container {
+    position: relative;
+    margin-top: 3rem;
+    padding: 0 40px;
+}
+
+.deals-slider {
+    padding-bottom: 40px;
+}
+
+.deal-card {
+    background: white;
+    border-radius: 14px !important; /* More rounded */
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    border: none;
+    height: 100%;
+    /* max-width: 280px !important; Limit maximum width */
+    margin: 0 auto;
+    
+}
+
+.deal-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+}
+
+.deal-image-container {
+    position: relative;
+    /* height: 200px; */
+    overflow: hidden !important;
+}
+
+.deal-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.deal-card:hover .deal-image {
+    transform: scale(1.05);
+}
+
+.deal-overlay {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+}
+
+.deal-discount {
+    font-weight: 500 !important; /* Softer weight */
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    background: rgba(40, 167, 69, 0.9) !important;
+    backdrop-filter: blur(10px);
+    border-radius: 12px; /* More rounded */
+    color: white !important;
+}
+
+.deal-content {
+    padding: 1.2rem; /* Reduced from 1.5rem */
+    text-align: center;
+}
+
+/* Deal Typography - Complete MUI Override */
+.deal-show {
+    color: #156064 !important;
+    margin: 0 0 1rem 0 !important;
+    font-weight: 500 !important; /* Softer weight */
+    font-size: 1.1rem !important;
+    line-height: 1.3 !important;
+    letter-spacing: 0.01em !important;
+    font-family: inherit !important;
+}
+
+.deal-price {
+    color: #FF6B35 !important;
+    font-weight: 500 !important; /* Softer weight */
+    font-size: 1.8rem !important;
+    line-height: 1.2 !important;
+    letter-spacing: -0.01em !important;
+    margin: 0 !important;
+    font-family: inherit !important;
+}
+
+/* Swiper Navigation */
+.swiper-button-next,
+.swiper-button-prev {
+    color: #156064 !important;
+    background: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+    background: #F8E16C;
+    transform: scale(1.1);
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+/* Swiper Pagination */
+.swiper-pagination-bullet {
+    background: #156064;
+    opacity: 0.3;
+    transition: all 0.3s ease;
+}
+
+.swiper-pagination-bullet-active {
+    opacity: 1;
+    background: #F8E16C;
+    transform: scale(1.2);
+}
+
+/* Features Section */
+.features-grid {
+    margin-top: 3rem;
+}
+
+.feature-card {
+    padding: 2.5rem;
+    text-align: center;
+    height: 100%;
+    border: none;
+    border-radius: 24px; /* More rounded */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    background: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #F8E16C, #FFC2B4);
+    transform: scaleX(0);
+    transition: transform 0.4s ease;
+}
+
+.feature-card:hover::before {
+    transform: scaleX(1);
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+}
+
+.feature-icon {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 50%;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+.feature-card:hover .feature-icon {
+    transform: scale(1.1);
+}
+
+/* Feature Typography - Complete MUI Override */
+.feature-title {
+    color: #156064 !important;
+    margin: 0 0 1.5rem 0 !important;
+    font-weight: 500 !important; /* Softer weight */
+    font-size: 1.3rem !important;
+    line-height: 1.3 !important;
+    letter-spacing: 0.01em !important;
+    font-family: inherit !important;
+}
+
+.feature-description {
+    color: #666 !important;
+    line-height: 1.7 !important;
+    font-size: 1rem !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.01em !important;
+    margin: 0 !important;
+    font-family: inherit !important;
+}
+
+/* Alert System Section */
+.alert-system {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.alert-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+}
+
+.alert-features-list {
+    margin: 2.5rem 0;
+}
+
+.alert-feature-item {
+    padding: 0.75rem 0;
+    transition: transform 0.3s ease;
+}
+
+.alert-feature-item:hover {
+    transform: translateX(8px);
+}
+
+.check-icon {
+    color: #28a745 !important;
+    font-size: 1.2rem !important;
+}
+
+.alert-demo {
+    padding: 2.5rem;
+    background: white;
+    border-radius: 24px; /* More rounded */
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+    border: none;
+}
+
+.alert-demo-header {
+    text-align: center;
+    margin: 0 0 2rem 0 !important;
+    padding-bottom: 1.5rem;
+    border-bottom: 3px solid #F8E16C;
+    font-weight: 500 !important; /* Softer weight */
+    font-size: 1.1rem !important;
+    line-height: 1.3 !important;
+    letter-spacing: 0.01em !important;
+    font-family: inherit !important;
+}
+
+.alert-demo-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+}
+
+.alert-demo-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    border-radius: 16px; /* More rounded */
+    transition: transform 0.3s ease;
+}
+
+.alert-demo-item:hover {
+    transform: translateX(4px);
+}
+
+.demo-icon {
+    color: #156064;
+    font-size: 1.3rem;
+}
+
+/* CTA Section */
+.cta-section {
+    background: linear-gradient(135deg, #156064 0%, #333333 100%);
+    color: white;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.cta-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain2" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="rgba(255,255,255,0.03)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain2)"/></svg>');
+    opacity: 0.3;
+}
+
+/* CTA Typography - Complete MUI Override */
+.cta-title {
+    color: white !important;
+    margin: 0 0 1.5rem 0 !important;
+    position: relative;
+    z-index: 1;
+    font-size: 2.5rem !important;
+    font-weight: 500 !important; /* Softer weight */
+    line-height: 1.2 !important;
+    letter-spacing: -0.01em !important;
+    font-family: inherit !important;
+}
+
+.cta-description {
+    color: rgba(255, 255, 255, 0.95) !important;
+    margin: 0 0 3rem 0 !important;
+    font-size: 1.1rem !important;
+    line-height: 1.6 !important;
+    position: relative;
+    z-index: 1;
+    font-weight: 400 !important;
+    letter-spacing: 0.01em !important;
+    font-family: inherit !important;
+}
+
+.cta-buttons {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 1;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 992px) {
+    .hero-title {
+        font-size: 2.8rem !important;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.25rem !important;
+    }
+    
+    .section-title {
+        font-size: 2.2rem !important;
+    }
+    
+    .cta-title {
+        font-size: 2.2rem !important;
+    }
+    
+    .alert-content {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+    
+    .alert-visual {
+        order: -1;
+    }
+    
+    .hero-stats {
+        gap: 2rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .landing {
+        padding-top: calc(var(--header-height) + 1rem);
+    }
+    
+    .hero {
+        padding: 3.5rem 0;
+    }
+    
+    .hero-title {
+        font-size: 2.2rem !important;
+    }
+    
+    .hero-subtitle {
+        font-size: 1.1rem !important;
+    }
+    
+    .hero-description {
+        font-size: 1rem !important;
+    }
+    
+    .section-title {
+        font-size: 2rem !important;
+    }
+    
+    .cta-title {
+        font-size: 2rem !important;
+    }
+    
+    .hero-stats {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+    
+    .stat-item {
+        padding: 1rem;
+    }
+    
+    .hero-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .cta-button {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    .cta-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .cta-button.large {
+        width: 100%;
+        max-width: 300px;
+    }
+    
+    section {
+        padding: 3.5rem 0;
+    }
+    
+    .deals-slider-container {
+        padding: 0 20px;
+    }
+    
+    .features-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .hero-title {
+        font-size: 1.9rem !important;
+    }
+    
+    .hero-subtitle {
+        font-size: 1rem !important;
+    }
+    
+    .section-title {
+        font-size: 1.8rem !important;
+    }
+    
+    .cta-title {
+        font-size: 1.8rem !important;
+    }
+    
+    .deals-slider-container {
+        padding: 0 10px;
+    }
+    
+    .deal-card {
+        margin: 0 10px !important;
+    }
+    
+    .feature-card {
+        padding: 2rem;
+    }
+    
+    .alert-demo {
+        padding: 2rem;
+    }
+    
+    .stat-number {
+        font-size: 1.5rem !important;
+    }
+    
+    .stat-icon {
+        font-size: 2rem !important;
+    }
+}
