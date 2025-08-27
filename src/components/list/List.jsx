@@ -276,7 +276,7 @@ const List = ({ shows, refreshIndividualData, individualLoading, loadingId, cate
                                       <strong>${show.event_info[0]?.price}</strong>
                                     </div>
                                     <div className="list__price-comparison-row">
-                                      <span>TodayTix price:</span>
+                                      <span>TodayTix:</span>
                                       <strong>${todaytixPrice}</strong>
                                     </div>
                                   </>
