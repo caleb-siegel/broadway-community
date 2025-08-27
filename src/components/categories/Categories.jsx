@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from "react";
 import "./categories.css";
 import { useOutletContext } from "react-router-dom";
+import { CircularProgress } from "@mui/material"; 
 
 const Categories = ({ category, handleSetCategory }) => {
   const { backendUrl } = useOutletContext();
   const [categoryOptions, setCategoryOptions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   
   useEffect(() => {
     fetch(`${backendUrl}/api/category_names`)
       .then((response) => response.json())
       .then((data) => {
         setCategoryOptions(data);
+        setIsLoading(false);
       });
   }, []);
 
@@ -22,16 +25,21 @@ const Categories = ({ category, handleSetCategory }) => {
         className="categories__box"
         value={category}
         onChange={(event) => handleSetCategory(event)}
+        disabled={isLoading}
       >
-        {categoryOptions?.map((category) => (
-          <option 
-            className="categories__option" 
-            key={category.id} 
-            value={category.name}
-          >
-            {category.name}
-          </option>
-        ))}
+        {isLoading ? (
+          <option>Loading...</option>
+        ) : (
+          categoryOptions?.map((category) => (
+            <option 
+              className="categories__option" 
+              key={category.id} 
+              value={category.name}
+            >
+              {category.name}
+            </option>
+          ))
+        )}
       </select>
     </div>
   );
