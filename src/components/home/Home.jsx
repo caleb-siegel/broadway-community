@@ -179,7 +179,6 @@ function Home() {
       <div className="home__container container grid">
         <div className="home__content grid">
           <div className="home__data">
-            {/* <h1 className="home__title">Attend the Event for Cheap</h1> */}
             <h1 className="home__title">
               Find Tickets To
               <Categories
@@ -194,14 +193,14 @@ function Home() {
 
             {!loading ? (
               <>
-                <h2 className="home__featured-title">Featured Deals</h2>
+                {/* <h2 className="home__featured-title">Featured Deals</h2>
                 <Slider
                   shows={filteredShows}
                   refreshIndividualData={refreshIndividualData}
                   individualLoading={individualLoading}
                   loadingId={loadingId}
                   category={category}
-                />
+                /> */}
 
                 <div className="home__controls">
                   <div className="home__filters">
