@@ -266,10 +266,10 @@ section {
     
 }
 
-.deal-card:hover {
+/* .deal-card:hover {
     transform: translateY(-8px);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
-}
+} */
 
 .deal-image-container {
     position: relative;
@@ -284,9 +284,9 @@ section {
     transition: transform 0.4s ease;
 }
 
-.deal-card:hover .deal-image {
+/* .deal-card:hover .deal-image {
     transform: scale(1.05);
-}
+} */
 
 .deal-overlay {
     position: absolute;
