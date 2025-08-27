@@ -33,6 +33,8 @@
 
 .home__filters {
     display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .home__top-filters {
