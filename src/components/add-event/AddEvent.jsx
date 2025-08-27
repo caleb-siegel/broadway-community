@@ -392,7 +392,7 @@ function AddEvent() {
                                                         }}
                                                     >
                                                         <CardContent>
-                                                            <Typography>{category.name}</Typography>
+                                                            <Typography>{category.name} {category.id}</Typography>
                                                         </CardContent>
                                                     </Card>
                                                 );

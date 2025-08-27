@@ -48,7 +48,7 @@ const Header = ({ user, logout }) => {
         {Toggle ? (
           ""
         ) : (
-          <a href="/" className="nav__logo">
+          <a href="/home" className="nav__logo">
             Broadway Community
           </a>
         )}
@@ -60,7 +60,7 @@ const Header = ({ user, logout }) => {
           <ul className="nav__list grid">
             <li className="nav__item">
               <a
-                href="/"
+                href="/home"
                 value="#home"
                 onClick={(e) => handleActiveNav(e)}
                 className={
@@ -68,6 +68,19 @@ const Header = ({ user, logout }) => {
                 }
               >
                 <i className="uil uil-estate nav__icon"></i> Home
+              </a>
+            </li>
+
+            <li className="nav__item">
+              <a
+                href="/deals"
+                value="#deals"
+                onClick={(e) => handleActiveNav(e)}
+                className={
+                  activeNav === "#deals" ? "nav__link active-link" : "nav__link"
+                }
+              >
+                <i className="uil uil-ticket nav__icon"></i> Deals
               </a>
             </li>
 
