@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Container, Typography, Box, Button, TextField, Dialog, DialogContent, DialogTitle, IconButton, Paper, MenuItem, Grid, ToggleButtonGroup, ToggleButton, InputAdornment, FormControl, Select, Tooltip, CircularProgress } from "@mui/material";
 import { Email, Sms, NotificationsActive, Refresh, Add, Edit, Delete, Close, Check, Lock } from "@mui/icons-material";
 import { useOutletContext } from "react-router-dom";
+import { toast } from 'react-toastify';
 import AlertForm from "./AlertForm";
 import "./alerts.css";
 
@@ -258,13 +259,31 @@ const AlertsPage = () => {
       },
       body: JSON.stringify(alertData),
     })
-    .then((response) => response.json())
+    .then((response) => {
+      if (!response.ok) {
+        return response.json().then(errorData => {
+          throw new Error(errorData.message || 'Failed to create alert');
+        });
+      }
+      return response.json();
+    })
     .then((newAlertData) => {
       // Reset form state
       setSelectedItem("");
       setNotificationMethod("email");
       setTrackingType("event");
       setIsDialogOpen(false);
+      
+      // Show success toast
+      const alertTypeText = type === "event" ? "Event" : "Category";
+      toast.success(`${alertTypeText} alert created successfully!`, {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
       
       // Update the appropriate alerts list
       if (type === "event") {
@@ -283,6 +302,14 @@ const AlertsPage = () => {
     })
     .catch((error) => {
       console.error("Error creating alert:", error);
+      toast.error(`Failed to create alert: ${error.message}`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     });
   };
 
