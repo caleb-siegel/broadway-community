@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Dialog, DialogContent, DialogTitle, IconButton, Box, Typography, FormControl, Select, MenuItem } from "@mui/material";
 import { Close, Email, Sms, NotificationsActive, Lock } from "@mui/icons-material";
 import { useOutletContext } from "react-router-dom";
+import { toast } from 'react-toastify';
 import AlertForm from "../alerts/AlertForm";
 
 const AlertDialog = ({ open, onClose, eventName, eventId, categoryName }) => {
@@ -67,15 +68,29 @@ const AlertDialog = ({ open, onClose, eventName, eventId, categoryName }) => {
 
       if (response.ok) {
         onClose();
-        // Show success message
-        console.log('Alert created successfully');
+        // Show success toast notification
+        toast.success(`Alert created successfully for ${eventName}!`, {
+          position: "top-right",
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
       } else {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Failed to create alert');
       }
     } catch (error) {
       console.error('Error creating alert:', error);
-      alert('Failed to create alert: ' + error.message);
+      toast.error(`Failed to create alert: ${error.message}`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
     }
   };
 
