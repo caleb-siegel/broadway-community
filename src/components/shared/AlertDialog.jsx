@@ -52,7 +52,7 @@ const AlertDialog = ({ open, onClose, eventName, eventId, categoryName }) => {
         start_date: formData.startDate,
         end_date: formData.endDate,
         show_time: formData.showTime,
-        weekday: formData.weekday ? JSON.stringify(formData.weekday) : null,
+        weekday: formData.weekday || null,
         time_to_show: formData.timeToShow
       };
 
