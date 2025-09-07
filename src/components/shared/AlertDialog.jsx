@@ -50,8 +50,8 @@ const AlertDialog = ({ open, onClose, eventName, eventId, categoryName }) => {
         notification_method: formData.notificationMethod,
         price_number: formData.priceNumber,
         price_percent: formData.pricePercent,
-        start_date: formData.startDate,
-        end_date: formData.endDate,
+        start_date: formData.startDate || null,
+        end_date: formData.endDate || null,
         show_time: formData.showTime,
         weekday: formData.weekday || null,
         time_to_show: formData.timeToShow
