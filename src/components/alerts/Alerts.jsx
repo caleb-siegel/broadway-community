@@ -17,8 +17,8 @@ const AlertsPage = () => {
   //   }
   // }, [user]);
 
-  const [eventAlerts, setEventAlerts] = useState(user?.event_alerts || []);
-  const [categoryAlerts, setCategoryAlerts] = useState(user?.category_alerts || []);
+  const [eventAlerts, setEventAlerts] = useState(Array.isArray(user?.event_alerts) ? user.event_alerts : []);
+  const [categoryAlerts, setCategoryAlerts] = useState(Array.isArray(user?.category_alerts) ? user.category_alerts : []);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingAlert, setEditingAlert] = useState(null);
   const [showType, setShowType] = useState("Broadway");
@@ -46,8 +46,22 @@ const AlertsPage = () => {
     if (user) {
       setIsLoading(true);
       Promise.all([
-        fetch(`${backendUrl}/api/users/${user?.id}/event_alerts`).then(res => res.json()),
-        fetch(`${backendUrl}/api/users/${user?.id}/category_alerts`).then(res => res.json())
+        fetch(`${backendUrl}/api/users/${user?.id}/event_alerts`).then(res => {
+          if (res.ok) {
+            return res.json();
+          } else {
+            // Return empty array for 404 (no alerts found)
+            return [];
+          }
+        }),
+        fetch(`${backendUrl}/api/users/${user?.id}/category_alerts`).then(res => {
+          if (res.ok) {
+            return res.json();
+          } else {
+            // Return empty array for 404 (no alerts found)
+            return [];
+          }
+        })
       ]).then(([eventData, categoryData]) => {
         setEventAlerts(eventData);
         setCategoryAlerts(categoryData);
@@ -119,21 +133,25 @@ const AlertsPage = () => {
     .then((data) => {
       // Update the local state
       if (type === "event") {
-        setEventAlerts(prevAlerts => 
-          prevAlerts.map(alert => 
+        setEventAlerts(prevAlerts => {
+          // Ensure prevAlerts is always an array
+          const alertsArray = Array.isArray(prevAlerts) ? prevAlerts : [];
+          return alertsArray.map(alert => 
             alert.id === id 
               ? { ...alert, ...updateData }
               : alert
-          )
-        );
+          );
+        });
       } else {
-        setCategoryAlerts(prevAlerts => 
-          prevAlerts.map(alert => 
+        setCategoryAlerts(prevAlerts => {
+          // Ensure prevAlerts is always an array
+          const alertsArray = Array.isArray(prevAlerts) ? prevAlerts : [];
+          return alertsArray.map(alert => 
             alert.id === id 
               ? { ...alert, ...updateData }
               : alert
-          )
-        );
+          );
+        });
       }
       
       // Reset editing state
@@ -250,9 +268,17 @@ const AlertsPage = () => {
       
       // Update the appropriate alerts list
       if (type === "event") {
-        setEventAlerts((prevAlerts) => [...(prevAlerts || []), newAlertData]);
+        setEventAlerts((prevAlerts) => {
+          // Ensure prevAlerts is always an array
+          const alertsArray = Array.isArray(prevAlerts) ? prevAlerts : [];
+          return [...alertsArray, newAlertData];
+        });
       } else {
-        setCategoryAlerts((prevAlerts) => [...(prevAlerts || []), newAlertData]);
+        setCategoryAlerts((prevAlerts) => {
+          // Ensure prevAlerts is always an array
+          const alertsArray = Array.isArray(prevAlerts) ? prevAlerts : [];
+          return [...alertsArray, newAlertData];
+        });
       }
     })
     .catch((error) => {
@@ -271,9 +297,17 @@ const AlertsPage = () => {
       })
       .then((data) => {
         if (type === "event") {
-          setEventAlerts(eventAlerts.filter((a) => a.id !== id));
+          setEventAlerts(prevAlerts => {
+            // Ensure prevAlerts is always an array
+            const alertsArray = Array.isArray(prevAlerts) ? prevAlerts : [];
+            return alertsArray.filter((a) => a.id !== id);
+          });
         } else {
-          setCategoryAlerts(categoryAlerts.filter((a) => a.id !== id));
+          setCategoryAlerts(prevAlerts => {
+            // Ensure prevAlerts is always an array
+            const alertsArray = Array.isArray(prevAlerts) ? prevAlerts : [];
+            return alertsArray.filter((a) => a.id !== id);
+          });
         };
       });
     };
